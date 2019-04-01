@@ -6,8 +6,13 @@ See [examples](#examples) for clarity.
 It's written in Go and does not have any external dependency (besides Go standard library)
 
 # Build and install
-Simply run `go build`, then copy `repassgen` executable file to `~/bin` (in Linux/Unix) or any other directory in your `$PATH`.
-You can also run `go install` which will copy the `repassgen` executable file to `$GOPATH/bin/`
+Run:
+```sh
+go get
+go install
+```
+This will compile and then copy `repassgen` executable file to `$GOPATH/bin/` directory.
+
 
 # Feature Check List
 - [x] Simple Repetition: `{N}`
@@ -28,8 +33,8 @@ You can also run `go install` which will copy the `repassgen` executable file to
 - [x] `[:ascii:]` 	ASCII characters
 - [x] `$base64(...)` Base64 encode function
 - [x] `$base64url(...)` URL-safe Base64 encode function
-- [ ] `$base32(...)` Crockford's Base32 encode function (lowercase)
-- [ ] `$BASE32(...)` Crockford's Base32 encode function (uppercase)
+- [x] `$base32(...)` Crockford's Base32 encode function (lowercase)
+- [x] `$BASE32(...)` Crockford's Base32 encode function (uppercase)
 - [ ] `$hex(...)` Hex encode function (lowercase)
 - [ ] `$HEX(...)` Hex encode function (uppercase)
 
