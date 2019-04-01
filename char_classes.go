@@ -1,6 +1,6 @@
 package main
 
-var charsets = map[string][]rune{
+var charClasses = map[string][]rune{
 	// POSIX character classes, https://www.regular-expressions.info/posixbrackets.html
 	"alpha": []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"),
 	"alnum": []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),

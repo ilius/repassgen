@@ -81,7 +81,7 @@ func lexRangeColon(s *State) (LexType, error) {
 	switch c {
 	case ':':
 		name := string(s.patternBuff[s.patternBuffStart:n])
-		charset, ok := charsets[name]
+		charset, ok := charClasses[name]
 		if !ok {
 			return lexNil, fmt.Errorf("invalid charset %#v", name)
 		}
