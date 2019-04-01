@@ -1,7 +1,9 @@
 # Summary
 This program generates **fully customizable random passwords**, with almost **any desired pattern or length**, using the same syntax as [Regular Expressions](https://www.regular-expressions.info/quickstart.html) for **character classes** (POSIX-style) and **Repetition**.
-See [examples](#examples) for clearity.
-It's written in Go and does not have any external dependency (beside Go standard library)
+
+See [examples](#examples) for clarity.
+
+It's written in Go and does not have any external dependency (besides Go standard library)
 
 # Build and install
 Simply run `go build`, then copy `repassgen` executable file to `~/bin` (in Linux/Unix) or any other directory in your `$PATH`.
