@@ -19,4 +19,18 @@ var charsets = map[string][]rune{
 
 	// URL-compatible Base64
 	"b64url": []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"),
+
+	// Visible characters and spaces (anything except control characters)
+	"print": byteRange(0x20, 0x7E),
+
+	// All whitespace characters, including line breaks
+	"space": []rune(" \t\r\n\v\f"),
+}
+
+func byteRange(start byte, end byte) []rune {
+	a := make([]rune, 0, end-start+1)
+	for x := start; x <= end; x++ {
+		a = append(a, rune(x))
+	}
+	return a
 }
