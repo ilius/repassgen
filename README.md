@@ -26,6 +26,14 @@ You can also run `go install` which will copy the `repassgen` executable file to
 - [x] `[:blank:]` 	Space and tab
 - [x] `[:cntrl:]` 	Control characters
 - [x] `[:ascii:]` 	ASCII characters
+- [x] `$base64(...)` Base64 encode function
+- [x] `$base64url(...)` URL-safe Base64 encode function
+- [ ] `$base32(...)` Crockford's Base32 encode function (lowercase)
+- [ ] `$BASE32(...)` Crockford's Base32 encode function (uppercase)
+- [ ] `$hex(...)` Hex encode function (lowercase)
+- [ ] `$HEX(...)` Hex encode function (uppercase)
+
+
 
 # Examples
 - Alphanumeric password with length 12
@@ -122,4 +130,10 @@ You can also run `go install` which will copy the `repassgen` executable file to
     ```sh
     $ repassgen '[:alpha:]{12-16}'
     uamePKmuUUUcI
+    ```
+
+- Gerenate random bytes, then run Base64 encode function
+    ```sh
+    $ repassgen '$base64([:ascii:]{12})'
+    YxRAUFhbFxRwSBxM
     ```

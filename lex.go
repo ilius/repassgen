@@ -197,8 +197,55 @@ func lexCount(s *State) (LexType, error) {
 	return lexNil, fmt.Errorf("non-numeric character '%v' inside {...}", string(c))
 }
 
+func lexIdentParen(s *State) (LexType, error) {
+	if s.end() {
+		return lexNil, fmt.Errorf("'(' not closed")
+	}
+	n := uint(len(s.patternBuff))
+	// "$a()"  -->  c.patternBuffStart == 1
+	c := s.pattern[s.patternPos]
+	s.patternPos++
+	switch c {
+	case ')':
+		funcName := string(s.patternBuff[:s.patternBuffStart])
+		if funcName == "" {
+			return lexNil, fmt.Errorf("missing function name")
+		}
+		funcObj, ok := functions[funcName]
+		if !ok {
+			return lexNil, fmt.Errorf("invalid function '%v'", funcName)
+		}
+		argPattern := string(s.patternBuff[s.patternBuffStart:n])
+		argValue := Generate(argPattern)
+		result, err := funcObj(argValue)
+		if err != nil {
+			return lexNil, fmt.Errorf("%v returned error: %v", funcName, err)
+		}
+		s.addOutputNonRepeatable(result)
+		s.patternBuff = nil
+		return LexRoot, nil
+	}
+	s.patternBuff = append(s.patternBuff, c)
+	return lexIdentParen, nil
+}
+
 func lexIdent(s *State) (LexType, error) {
-	return lexNil, fmt.Errorf("'$' not implemented yet")
+	if s.end() {
+		return lexNil, fmt.Errorf("'(' not closed")
+	}
+	c := s.pattern[s.patternPos]
+	s.patternPos++
+	switch c {
+	case '[', '{', '$':
+		return lexRange, fmt.Errorf("expected a function call after $")
+	case '\\':
+		return lexRangeBackslash, nil
+	case '(':
+		s.patternBuffStart = uint(len(s.patternBuff))
+		return lexIdentParen, nil
+	}
+	s.patternBuff = append(s.patternBuff, c)
+	return lexIdent, nil
 }
 
 func lexNil(s *State) (LexType, error) {

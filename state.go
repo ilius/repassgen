@@ -18,6 +18,11 @@ func (s *State) addOutput(c rune) {
 	s.output = append(s.output, c)
 }
 
+func (s *State) addOutputNonRepeatable(data []rune) {
+	s.lastCharset = nil
+	s.output = append(s.output, data...)
+}
+
 func (s *State) addRandomOutput(charset []rune) {
 	s.lastCharset = charset
 	if len(charset) == 0 {
