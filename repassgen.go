@@ -120,7 +120,7 @@ func lexRangeColon(s *State) (LexType, error) {
 		if !ok {
 			return lexNil, fmt.Errorf("invalid charset %#v", name)
 		}
-		s.patternBuff = append(s.patternBuff[:s.patternBuffStart], []rune(charset)...)
+		s.patternBuff = append(s.patternBuff[:s.patternBuffStart], charset...)
 		return lexRange, nil
 	}
 	s.patternBuff = append(s.patternBuff, c)
