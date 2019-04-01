@@ -25,6 +25,12 @@ var charsets = map[string][]rune{
 
 	// All whitespace characters, including line breaks
 	"space": []rune(" \t\r\n\v\f"),
+
+	// Space and tab
+	"blank": []rune(" \t"),
+
+	// Control characters
+	"cntrl": append(byteRange(0x00, 0x1F), '\x7F'),
 }
 
 func byteRange(start byte, end byte) []rune {
