@@ -35,8 +35,8 @@ This will compile and then copy `repassgen` executable file to `$GOPATH/bin/` di
 - [x] `$base64url(...)` URL-safe Base64 encode function
 - [x] `$base32(...)` Crockford's Base32 encode function (lowercase)
 - [x] `$BASE32(...)` Crockford's Base32 encode function (uppercase)
-- [ ] `$hex(...)` Hex encode function (lowercase)
-- [ ] `$HEX(...)` Hex encode function (uppercase)
+- [x] `$hex(...)` Hex encode function (lowercase)
+- [x] `$HEX(...)` Hex encode function (uppercase)
 
 
 

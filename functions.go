@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/base64"
+	"encoding/hex"
 	"strings"
 
 	"github.com/ilius/crock32"
@@ -21,5 +22,13 @@ var functions = map[string]func(in []rune) ([]rune, error){
 	},
 	"BASE32": func(in []rune) ([]rune, error) {
 		return []rune(crock32.Encode([]byte(string(in)))), nil
+	},
+
+	// Hex encode functions (lowercase and uppercase)
+	"hex": func(in []rune) ([]rune, error) {
+		return []rune(hex.EncodeToString([]byte(string(in)))), nil
+	},
+	"HEX": func(in []rune) ([]rune, error) {
+		return []rune(strings.ToUpper(hex.EncodeToString([]byte(string(in))))), nil
 	},
 }
