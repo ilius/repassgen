@@ -142,3 +142,9 @@ This will compile and then copy `repassgen` executable file to `$GOPATH/bin/` di
     $ repassgen '$base64([:ascii:]{12})'
     YxRAUFhbFxRwSBxM
     ```
+
+- Gerenate random bytes, then run Crockford's Base32 encode function
+    ```sh
+    $ repassgen '$base32([:ascii:]{12})'
+    e274czjwcstd8v2ynv4
+    ```
