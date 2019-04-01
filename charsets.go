@@ -32,7 +32,11 @@ var charsets = map[string][]rune{
 	// Control characters
 	"cntrl": append(byteRange(0x00, 0x1F), '\x7F'),
 
+	// Visible characters (anything except spaces and control characters)
 	"graph": byteRange(0x21, 0x7E),
+
+	// Word characters (letters, numbers and underscores), [A-Za-z0-9_]
+	"word": []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"),
 }
 
 func byteRange(start byte, end byte) []rune {

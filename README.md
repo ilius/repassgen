@@ -24,7 +24,7 @@ You can also run `go install` which will copy the `repassgen` executable file to
 - [x] `[:punct:]` 	Punctuation (and symbols).
 - [x] `[:space:]` 	All whitespace characters, including line breaks 
 - [x] `[:upper:]` 	Uppercase letters
-- [ ] `[:word:]` 	Word characters (letters, numbers and underscores)
+- [x] `[:word:]` 	Word characters (letters, numbers and underscores)
 - [x] `[:xdigit:]` 	Hexadecimal digits
 
 # Examples
