@@ -9,12 +9,13 @@ import (
 
 // State is lex inputs, output and temp state
 type State struct {
-	pattern      []rune
-	patternPos   uint
-	patternBuff  []rune
-	patternRange [2]rune
-	lastCharset  []rune
-	output       []rune
+	pattern          []rune
+	patternPos       uint
+	patternBuff      []rune
+	patternBuffStart uint
+	patternRange     [2]rune
+	lastCharset      []rune
+	output           []rune
 }
 
 func (s *State) addOutput(c rune) {
@@ -103,6 +104,29 @@ func lexRangeDash(s *State) (LexType, error) {
 	return lexRange, nil
 }
 
+func lexRangeColon(s *State) (LexType, error) {
+	if s.end() {
+		return lexNil, fmt.Errorf("'[' not closed")
+	}
+	n := uint(len(s.patternBuff))
+	// "[:digit:]"  -->  c.patternBuffStart == 0
+	// "[abc:digit:]"  -->  c.patternBuffStart == 3
+	c := s.pattern[s.patternPos]
+	s.patternPos++
+	switch c {
+	case ':':
+		name := string(s.patternBuff[s.patternBuffStart:n])
+		charset, ok := charsets[name]
+		if !ok {
+			return lexNil, fmt.Errorf("invalid charset %#v", name)
+		}
+		s.patternBuff = append(s.patternBuff[:s.patternBuffStart], []rune(charset)...)
+		return lexRange, nil
+	}
+	s.patternBuff = append(s.patternBuff, c)
+	return lexRangeColon, nil
+}
+
 func lexRange(s *State) (LexType, error) {
 	if s.end() {
 		return lexNil, fmt.Errorf("'[' not closed")
@@ -118,6 +142,9 @@ func lexRange(s *State) (LexType, error) {
 		return lexIdent, fmt.Errorf("'$' inside [...]")
 	case '\\':
 		return lexRangeBackslash, nil
+	case ':':
+		s.patternBuffStart = uint(len(s.patternBuff))
+		return lexRangeColon, nil
 	case '-':
 		return lexRangeDash, nil
 	case ']':
