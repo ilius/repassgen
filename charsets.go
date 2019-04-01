@@ -31,6 +31,8 @@ var charsets = map[string][]rune{
 
 	// Control characters
 	"cntrl": append(byteRange(0x00, 0x1F), '\x7F'),
+
+	"graph": byteRange(0x21, 0x7E),
 }
 
 func byteRange(start byte, end byte) []rune {

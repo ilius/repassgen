@@ -16,9 +16,9 @@ You can also run `go install` which will copy the `repassgen` executable file to
 - [x] `[:alpha:]` 	Alphabetic characters
 - [ ] `[:ascii:]` 	ASCII characters
 - [x] `[:blank:]` 	Space and tab
-- [ ] `[:cntrl:]` 	Control characters
+- [x] `[:cntrl:]` 	Control characters
 - [x] `[:digit:]` 	Digits
-- [ ] `[:graph:]` 	Visible characters
+- [x] `[:graph:]` 	Visible characters
 - [x] `[:lower:]` 	Lowercase letters
 - [x] `[:print:]` 	Visible characters and spaces (anything except control characters)
 - [x] `[:punct:]` 	Punctuation (and symbols).
