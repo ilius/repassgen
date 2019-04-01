@@ -2,13 +2,19 @@ package main
 
 var charsets = map[string][]rune{
 	// POSIX character classes, https://www.regular-expressions.info/posixbrackets.html
-	"alpha":  []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"),
-	"alnum":  []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
-	"lower":  []rune("abcdefghijklmnopqrstuvwxyz"),
-	"upper":  []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+	"alpha": []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+	"alnum": []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
+
+	// Word characters (letters, numbers and underscores), [A-Za-z0-9_]
+	"word": []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"),
+
+	"lower": []rune("abcdefghijklmnopqrstuvwxyz"),
+	"upper": []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+
 	"digit":  []rune("0123456789"),
 	"xdigit": []rune("0123456789abcdefABCDEF"),
-	"punct":  []rune("[!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]"),
+
+	"punct": []rune("[!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]"),
 
 	// Crockford's Base32
 	"b32": []rune("0123456789abcdefghjkmnpqrstvwxyz"),
@@ -34,9 +40,6 @@ var charsets = map[string][]rune{
 
 	// Visible characters (anything except spaces and control characters)
 	"graph": byteRange(0x21, 0x7E),
-
-	// Word characters (letters, numbers and underscores), [A-Za-z0-9_]
-	"word": []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"),
 
 	"ascii": byteRange(0x00, 0x7F),
 }

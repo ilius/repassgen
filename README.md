@@ -14,18 +14,18 @@ You can also run `go install` which will copy the `repassgen` executable file to
 - [x] Range Repetition: `{M-N}`
 - [x] `[:alnum:]` 	Alphanumeric characters
 - [x] `[:alpha:]` 	Alphabetic characters
-- [x] `[:ascii:]` 	ASCII characters
-- [x] `[:blank:]` 	Space and tab
-- [x] `[:cntrl:]` 	Control characters
-- [x] `[:digit:]` 	Digits
-- [x] `[:graph:]` 	Visible characters
+- [x] `[:word:]` 	Word characters (letters, numbers and underscores)
+- [x] `[:upper:]` 	Uppercase letters
 - [x] `[:lower:]` 	Lowercase letters
+- [x] `[:graph:]` 	Visible characters
 - [x] `[:print:]` 	Visible characters and spaces (anything except control characters)
+- [x] `[:digit:]` 	Digits
+- [x] `[:xdigit:]` 	Hexadecimal digits
 - [x] `[:punct:]` 	Punctuation (and symbols).
 - [x] `[:space:]` 	All whitespace characters, including line breaks 
-- [x] `[:upper:]` 	Uppercase letters
-- [x] `[:word:]` 	Word characters (letters, numbers and underscores)
-- [x] `[:xdigit:]` 	Hexadecimal digits
+- [x] `[:blank:]` 	Space and tab
+- [x] `[:cntrl:]` 	Control characters
+- [x] `[:ascii:]` 	ASCII characters
 
 # Examples
 - Alphanumeric password with length 12
