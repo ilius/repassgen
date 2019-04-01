@@ -8,7 +8,7 @@ var charsets = map[string]string{
 	"upper":  "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	"digit":  "0123456789",
 	"xdigit": "0123456789abcdefABCDEF",
-	"punct":  "?!.,:;",
+	"punct":  "[!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]",
 
 	// Crockford's Base32
 	"b32": "0123456789abcdefghjkmnpqrstvwxyz",
