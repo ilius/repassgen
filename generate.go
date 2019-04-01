@@ -17,7 +17,7 @@ func Generate(pattern string) []rune {
 			if err == io.EOF {
 				break
 			}
-			panic(fmt.Errorf("invalid syntax near character %d: %v", s.patternPos, err))
+			panic(fmt.Errorf("invalid syntax near index %d: %v", s.patternPos-1, err))
 		}
 	}
 	return s.output

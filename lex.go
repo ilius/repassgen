@@ -69,7 +69,7 @@ func lexRangeDash(s *State) (LexType, error) {
 
 func lexRangeColon(s *State) (LexType, error) {
 	if s.end() {
-		return lexNil, fmt.Errorf("'[' not closed")
+		return lexNil, fmt.Errorf("':' not closed")
 	}
 	n := uint(len(s.patternBuff))
 	// "[:digit:]"  -->  c.patternBuffStart == 0
@@ -85,6 +85,8 @@ func lexRangeColon(s *State) (LexType, error) {
 		}
 		s.patternBuff = append(s.patternBuff[:s.patternBuffStart], charset...)
 		return lexRange, nil
+	case ']':
+		return lexNil, fmt.Errorf("':' not closed")
 	}
 	s.patternBuff = append(s.patternBuff, c)
 	return lexRangeColon, nil
