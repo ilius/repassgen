@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"io"
+	"math/rand"
 	"strconv"
+	"strings"
 )
 
 // LexType is the type for lex functions
@@ -134,24 +136,65 @@ func lexCount(s *State) (LexType, error) {
 		return lexNil, fmt.Errorf("nested '{'")
 	case '$':
 		return lexNil, fmt.Errorf("'$' inside {...}")
+	case '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+		s.patternBuff = append(s.patternBuff, c)
+		return lexCount, nil
 	case '}':
-		count, err := strconv.ParseInt(string(s.patternBuff), 10, 64)
-		if err != nil {
-			return lexNil, fmt.Errorf("non-numeric string inside {...}")
+		if len(s.patternBuff) == 0 {
+			return lexNil, fmt.Errorf("missing number inside {}")
+		}
+		countStr := string(s.patternBuff)
+		count := 0
+		if strings.Contains(countStr, "-") {
+			if countStr[0] == '-' {
+				return lexNil, fmt.Errorf("no number before '-'")
+			}
+			if countStr[len(countStr)-1] == '-' {
+				return lexNil, fmt.Errorf("no number after '-'")
+			}
+			parts := strings.Split(countStr, "-")
+			if len(parts) > 2 {
+				return lexNil, fmt.Errorf("multiple '-' inside {...}")
+			} else if len(parts) < 2 {
+				return lexNil, fmt.Errorf("unexpected error near '-' inside {...}")
+			}
+			minStr := parts[0]
+			maxStr := parts[1]
+			minCount, err := strconv.ParseInt(minStr, 10, 64)
+			if err != nil {
+				return lexNil, fmt.Errorf("invalid number %v inside {...}", minCount)
+			}
+			if minCount < 1 {
+				return lexNil, fmt.Errorf("invalid number %v inside {...}", minCount)
+			}
+			maxCount, err := strconv.ParseInt(maxStr, 10, 64)
+			if err != nil {
+				return lexNil, fmt.Errorf("invalid number %v inside {...}", maxCount)
+			}
+			if maxCount < minCount {
+				return lexNil, fmt.Errorf("invalid numbers %v > %v inside {...}", minCount, maxCount)
+			}
+			count = int(minCount) + rand.Intn(int(maxCount-minCount+1))
+		} else {
+			countI64, err := strconv.ParseInt(countStr, 10, 64)
+			if err != nil {
+				return lexNil, fmt.Errorf("invalid number '%v' inside {...}", countStr)
+			}
+			count = int(countI64)
+			if count < 1 {
+				return lexNil, fmt.Errorf("invalid number '%v' inside {...}", countStr)
+			}
 		}
 		if s.lastCharset == nil {
 			return lexNil, fmt.Errorf("nothing to repeat")
 		}
-		if count > 1 {
-			for i := int64(0); i < count-1; i++ {
-				s.addRandomOutput(s.lastCharset)
-			}
+		for i := 0; i < count-1; i++ {
+			s.addRandomOutput(s.lastCharset)
 		}
 		s.patternBuff = nil
 		return LexRoot, nil
 	}
-	s.patternBuff = append(s.patternBuff, c)
-	return lexCount, nil
+	return lexNil, fmt.Errorf("non-numeric character '%v' inside {...}", string(c))
 }
 
 func lexIdent(s *State) (LexType, error) {

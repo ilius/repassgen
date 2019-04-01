@@ -11,7 +11,7 @@ You can also run `go install` which will copy the `repassgen` executable file to
 
 # Feature Check List
 - [x] Simple Repetition: `{N}`
-- [ ] Range Repetition: `{M-N}`
+- [x] Range Repetition: `{M-N}`
 - [x] `[:alnum:]` 	Alphanumeric characters
 - [x] `[:alpha:]` 	Alphabetic characters
 - [x] `[:ascii:]` 	ASCII characters
@@ -39,6 +39,7 @@ You can also run `go install` which will copy the `repassgen` executable file to
     $ repassgen '[:alpha:]{12}'
     wiADcFkhpjsk
     ```
+
 - Lowercase alphabetic password with length 16
     ```sh
     $ repassgen '[:lower:]{16}'
@@ -117,3 +118,8 @@ You can also run `go install` which will copy the `repassgen` executable file to
     3996-9634-1459-0656
     ```
 
+- Alphabetic password with a length 12 and 16 characters
+    ```sh
+    $ repassgen '[:alpha:]{12-16}'
+    uamePKmuUUUcI
+    ```
