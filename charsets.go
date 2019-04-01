@@ -37,6 +37,8 @@ var charsets = map[string][]rune{
 
 	// Word characters (letters, numbers and underscores), [A-Za-z0-9_]
 	"word": []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"),
+
+	"ascii": byteRange(0x00, 0x7F),
 }
 
 func byteRange(start byte, end byte) []rune {
