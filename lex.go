@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
-	"math/rand"
+	math_rand "math/rand"
 	"strconv"
 	"strings"
 )
@@ -190,7 +190,7 @@ func lexCount(s *State) (LexType, error) {
 			if maxCount < minCount {
 				return lexNil, fmt.Errorf("invalid numbers %v > %v inside {...}", minCount, maxCount)
 			}
-			count = int(minCount) + rand.Intn(int(maxCount-minCount+1))
+			count = int(minCount) + math_rand.Intn(int(maxCount-minCount+1))
 		} else {
 			countI64, err := strconv.ParseInt(countStr, 10, 64)
 			if err != nil {

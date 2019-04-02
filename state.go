@@ -1,8 +1,9 @@
 package main
 
 import (
+	rand "crypto/rand"
 	"math"
-	"math/rand"
+	"math/big"
 )
 
 // State is lex inputs, output and temp state
@@ -36,7 +37,11 @@ func (s *State) addRandomOutput(charset []rune) {
 	if len(charset) == 0 {
 		return
 	}
-	i := rand.Intn(len(charset))
+	ibig, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
+	if err != nil {
+		panic(err)
+	}
+	i := int(ibig.Int64())
 	s.output = append(s.output, charset[i])
 	if s.calcPatternEntropy {
 		s.patternEntropy += math.Log2(float64(len(charset)))
