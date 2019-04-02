@@ -79,7 +79,7 @@ func lexRangeDash(s *State) (LexType, error) {
 		return lexNil, fmt.Errorf("no character before '-'")
 	}
 	c0 := s.patternBuff[n-1]
-	for b := int(c0); b <= int(c1); b++ {
+	for b := int(c0) + 1; b <= int(c1); b++ {
 		s.patternBuff = append(s.patternBuff, rune(b))
 	}
 	return lexRange, nil
