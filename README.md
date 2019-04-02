@@ -147,13 +147,13 @@ This will compile and then copy `repassgen` executable file to `$GOPATH/bin/` di
 - Gerenate random bytes, then run Base64 encode function
     ```sh
     $ repassgen '$base64([:byte:]{12})'
-    YxRAUFhbFxRwSBxM
+    bsOuN8KuRsOFw5jClkDDjMOrFA==
     ```
 
 - Gerenate random bytes, then run Crockford's Base32 encode function
     ```sh
     $ repassgen '$base32([:byte:]{12})'
-    e274czjwcstd8v2ynv4
+    c51e2kk1aafe3jngm3gxqrazpwqva
     ```
 
 - Use `-` or `[` or `]` inside `[...]`
