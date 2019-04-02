@@ -35,17 +35,33 @@ func LexRoot(s *State) (LexType, error) {
 	return LexRoot, nil
 }
 
+func backslashEscape(c rune) rune {
+	switch c {
+	case 't':
+		return '\t'
+	case 'r':
+		return '\r'
+	case 'n':
+		return '\n'
+	case 'v':
+		return '\v'
+	case 'f':
+		return '\f'
+	}
+	return c
+}
+
 func lexBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.patternPos++
-	s.addOutput(c)
+	s.addOutput(backslashEscape(c))
 	return LexRoot, nil
 }
 
 func lexRangeBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.patternPos++
-	s.patternBuff = append(s.patternBuff, c)
+	s.patternBuff = append(s.patternBuff, backslashEscape(c))
 	return lexRange, nil
 }
 

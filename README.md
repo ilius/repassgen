@@ -148,3 +148,21 @@ This will compile and then copy `repassgen` executable file to `$GOPATH/bin/` di
     $ repassgen '$base32([:ascii:]{12})'
     e274czjwcstd8v2ynv4
     ```
+
+- Use `-` or `[` or `]` inside `[...]`
+    ```sh
+    $ repassgen '[.\- ]{50}'
+    - .-.-- --.------- --.. -.---.-.. -- --..-..  .---
+    ```
+
+    ```sh
+    $ repassgen '[a-z\[\]\-]{20}'
+    nylhjcdq-qcaajvpcxuo
+    ```
+
+- Use whitespace characters like newline or tab (inside or outside `[...]`)
+    ```sh
+    $ repassgen '[a-z\t]{5}\t[a-z\t]{5}\n[a-z\t]{10}'
+    caelk	zccqm
+    zpbgjba	pm
+    ```
