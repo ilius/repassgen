@@ -8,10 +8,17 @@ It's written in Go and does not have any external dependency (besides Go standar
 # Build and install
 Run:
 ```sh
-go get
-go install
+go get github.com/ilius/repassgen
 ```
 This will compile and then copy `repassgen` executable file to `$GOPATH/bin/` directory.
+
+If you just want to compile without installing it
+```sh
+go get -d github.com/ilius/repassgen
+cd $GOPATH/src/github.com/ilius/repassgen
+go build
+```
+Then `repassgen` binary file will be created in current directory.
 
 
 # Features of regexp
