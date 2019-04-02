@@ -234,13 +234,16 @@ func lexIdentParen(s *State) (LexType, error) {
 		argPattern := string(s.patternBuff[s.patternBuffStart:n])
 		argOut := Generate(GenerateInput{
 			Pattern:            argPattern,
-			CalcPatternEntropy: s.patternEntropy > 0,
+			CalcPatternEntropy: s.calcPatternEntropy,
 		})
 		result, err := funcObj(argOut.Password)
 		if err != nil {
 			return lexNil, fmt.Errorf("%v returned error: %v", funcName, err)
 		}
 		s.addOutputNonRepeatable(result)
+		if s.calcPatternEntropy {
+			s.patternEntropy += argOut.PatternEntropy
+		}
 		s.patternBuff = nil
 		return LexRoot, nil
 	}
