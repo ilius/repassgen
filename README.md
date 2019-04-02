@@ -17,20 +17,23 @@ This will compile and then copy `repassgen` executable file to `$GOPATH/bin/` di
 # Feature Check List
 - [x] Simple Repetition: `{N}`
 - [x] Range Repetition: `{M-N}`
-- [x] `[:alnum:]` 	Alphanumeric characters
-- [x] `[:alpha:]` 	Alphabetic characters
-- [x] `[:word:]` 	Word characters (letters, numbers and underscores)
-- [x] `[:upper:]` 	Uppercase letters
-- [x] `[:lower:]` 	Lowercase letters
-- [x] `[:graph:]` 	Visible characters
-- [x] `[:print:]` 	Visible characters and spaces (anything except control characters)
-- [x] `[:digit:]` 	Digits
-- [x] `[:xdigit:]` 	Hexadecimal digits
-- [x] `[:punct:]` 	Punctuation (and symbols).
-- [x] `[:space:]` 	All whitespace characters, including line breaks 
-- [x] `[:blank:]` 	Space and tab
-- [x] `[:cntrl:]` 	Control characters
-- [x] `[:ascii:]` 	ASCII characters
+- [x] `[:alnum:]` Alphanumeric characters
+- [x] `[:alpha:]` Alphabetic characters
+- [x] `[:word:]` Word characters (letters, numbers and underscores)
+- [x] `[:upper:]` Uppercase letters
+- [x] `[:lower:]` Lowercase letters
+- [x] `[:graph:]` Visible characters
+- [x] `[:print:]` Visible characters and spaces (anything except control characters)
+- [x] `[:digit:]` Digits
+- [x] `[:xdigit:]` Hexadecimal digits
+- [x] `[:punct:]` Punctuation (and symbols).
+- [x] `[:space:]` All whitespace characters, including line breaks
+- [x] `[:blank:]` Space and tab
+- [x] `[:cntrl:]` Control characters
+- [x] `[:ascii:]` ASCII characters
+
+# Aditional Feature Check List (not part of regexp)
+- [x] `[:byte:]` Any random byte
 - [x] `$base64(...)` Base64 encode function
 - [x] `$base64url(...)` URL-safe Base64 encode function
 - [x] `$base32(...)` Crockford's Base32 encode function (lowercase)
@@ -139,13 +142,13 @@ This will compile and then copy `repassgen` executable file to `$GOPATH/bin/` di
 
 - Gerenate random bytes, then run Base64 encode function
     ```sh
-    $ repassgen '$base64([:ascii:]{12})'
+    $ repassgen '$base64([:byte:]{12})'
     YxRAUFhbFxRwSBxM
     ```
 
 - Gerenate random bytes, then run Crockford's Base32 encode function
     ```sh
-    $ repassgen '$base32([:ascii:]{12})'
+    $ repassgen '$base32([:byte:]{12})'
     e274czjwcstd8v2ynv4
     ```
 

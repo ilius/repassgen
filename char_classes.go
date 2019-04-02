@@ -41,10 +41,14 @@ var charClasses = map[string][]rune{
 	// Visible characters (anything except spaces and control characters)
 	"graph": byteRange(0x21, 0x7E),
 
+	// ASCII characters
 	"ascii": byteRange(0x00, 0x7F),
+
+	// Any byte
+	"byte": byteRange(0x00, 0xFF),
 }
 
-func byteRange(start byte, end byte) []rune {
+func byteRange(start uint, end uint) []rune {
 	a := make([]rune, 0, end-start+1)
 	for x := start; x <= end; x++ {
 		a = append(a, rune(x))
