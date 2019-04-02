@@ -14,9 +14,10 @@ go install
 This will compile and then copy `repassgen` executable file to `$GOPATH/bin/` directory.
 
 
-# Feature Check List
+# Features of regexp
 - [x] Simple Repetition: `{N}`
 - [x] Range Repetition: `{M-N}`
+- [x] Manual character range like `[a-z1-579]`
 - [x] `[:alnum:]` Alphanumeric characters
 - [x] `[:alpha:]` Alphabetic characters
 - [x] `[:word:]` Word characters (letters, numbers and underscores)
@@ -32,7 +33,10 @@ This will compile and then copy `repassgen` executable file to `$GOPATH/bin/` di
 - [x] `[:cntrl:]` Control characters
 - [x] `[:ascii:]` ASCII characters
 
-# Aditional Feature Check List (not part of regexp)
+# Aditional Features (not part of regexp)
+- [x] Combined multiple named/manual character classes, for example:
+    * `[:digit:a-m]`
+    * `[:digit::alpha:]` = `[:alnum:]`
 - [x] `[:byte:]` Any random byte
 - [x] `$base64(...)` Base64 encode function
 - [x] `$base64url(...)` URL-safe Base64 encode function
