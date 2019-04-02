@@ -232,8 +232,11 @@ func lexIdentParen(s *State) (LexType, error) {
 			return lexNil, fmt.Errorf("invalid function '%v'", funcName)
 		}
 		argPattern := string(s.patternBuff[s.patternBuffStart:n])
-		argValue := Generate(argPattern)
-		result, err := funcObj(argValue)
+		argOut := Generate(GenerateInput{
+			Pattern:            argPattern,
+			CalcPatternEntropy: s.patternEntropy > 0,
+		})
+		result, err := funcObj(argOut.Password)
 		if err != nil {
 			return lexNil, fmt.Errorf("%v returned error: %v", funcName, err)
 		}

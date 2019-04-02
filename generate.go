@@ -5,10 +5,22 @@ import (
 	"io"
 )
 
+// GenerateInput is struct given to Generate
+type GenerateInput struct {
+	Pattern            string
+	CalcPatternEntropy bool
+}
+
+// GenerateOutput is struct returned by Generate
+type GenerateOutput struct {
+	Password       []rune
+	PatternEntropy float64
+}
+
 // Generate generates random password based on given pattern
 // see README.md for examples of pattern
-func Generate(pattern string) []rune {
-	s := NewState(pattern)
+func Generate(in GenerateInput) GenerateOutput {
+	s := NewState(in.Pattern, in.CalcPatternEntropy)
 	lex := LexRoot
 	var err error
 	for {
@@ -20,5 +32,8 @@ func Generate(pattern string) []rune {
 			panic(fmt.Errorf("invalid syntax near index %d: %v", s.patternPos-1, err))
 		}
 	}
-	return s.output
+	return GenerateOutput{
+		Password:       s.output,
+		PatternEntropy: s.patternEntropy,
+	}
 }

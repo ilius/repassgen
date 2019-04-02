@@ -1,16 +1,24 @@
 package main
 
-import "math/rand"
+import (
+	"math"
+	"math/rand"
+)
 
 // State is lex inputs, output and temp state
 type State struct {
-	pattern          []rune
+	pattern []rune
+
+	calcPatternEntropy bool
+	// patternEntropy is zero unless -entropy flag is given
+	patternEntropy float64
+
 	patternPos       uint
 	patternBuff      []rune
 	patternBuffStart uint
-	patternRange     [2]rune
 	lastCharset      []rune
-	output           []rune
+
+	output []rune
 }
 
 func (s *State) addOutput(c rune) {
@@ -30,6 +38,9 @@ func (s *State) addRandomOutput(charset []rune) {
 	}
 	i := rand.Intn(len(charset))
 	s.output = append(s.output, charset[i])
+	if s.calcPatternEntropy {
+		s.patternEntropy += math.Log2(float64(len(charset)))
+	}
 }
 
 func (s *State) end() bool {
@@ -37,8 +48,10 @@ func (s *State) end() bool {
 }
 
 // NewState is factory function for State
-func NewState(pattern string) *State {
-	return &State{
-		pattern: []rune(pattern),
+func NewState(pattern string, calcPatternEntropy bool) *State {
+	s := &State{
+		pattern:            []rune(pattern),
+		calcPatternEntropy: calcPatternEntropy,
 	}
+	return s
 }
