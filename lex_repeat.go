@@ -7,7 +7,7 @@ import (
 )
 
 type repeatGenerator struct {
-	child Generator
+	child generatorIface
 	count int
 	level int
 }

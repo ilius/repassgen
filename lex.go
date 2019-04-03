@@ -4,7 +4,7 @@ import (
 	"io"
 )
 
-type Generator interface {
+type generatorIface interface {
 	Generate(s *State) error
 	Level() int
 }
