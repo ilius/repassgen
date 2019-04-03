@@ -1,10 +1,7 @@
 package main
 
 import (
-	rand "crypto/rand"
 	"fmt"
-	"math"
-	"math/big"
 )
 
 // State is lex inputs, output and temp state
@@ -18,35 +15,21 @@ type State struct {
 	patternPos       uint
 	patternBuff      []rune
 	patternBuffStart uint
-	lastCharset      []rune
+
+	lastGen Generator
 
 	output []rune
 }
 
-func (s *State) addOutput(c rune) {
-	s.lastCharset = []rune{c}
-	s.output = append(s.output, c)
+func (s *State) addOutput(c rune) error {
+	s.lastGen = &staticStringGenerator{str: []rune{c}}
+	return s.lastGen.Generate(s)
 }
 
-func (s *State) addOutputNonRepeatable(data []rune) {
-	s.lastCharset = nil
+func (s *State) addOutputNonRepeatable(data []rune) error {
+	s.lastGen = nil
 	s.output = append(s.output, data...)
-}
-
-func (s *State) addRandomOutput(charset []rune) {
-	s.lastCharset = charset
-	if len(charset) == 0 {
-		return
-	}
-	ibig, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
-	if err != nil {
-		panic(err)
-	}
-	i := int(ibig.Int64())
-	s.output = append(s.output, charset[i])
-	if s.calcPatternEntropy {
-		s.patternEntropy += math.Log2(float64(len(charset)))
-	}
+	return nil
 }
 
 func (s *State) end() bool {
