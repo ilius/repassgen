@@ -27,6 +27,7 @@ func LexRoot(s *State) (LexType, error) {
 		return lexRange, nil
 	case '{':
 		return lexCount, nil
+	// case '(': // TODO: repeating groups, like `([a-z][1-9]){5}``
 	case '$':
 		return lexIdent, nil
 	}
@@ -116,14 +117,14 @@ func lexRange(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.patternPos++
 	switch c {
+	case '\\':
+		return lexRangeBackslash, nil
 	case '[':
 		return lexRange, s.errorSyntax("nested '['")
 	case '{':
 		return lexCount, s.errorSyntax("'{' inside [...]")
 	case '$':
 		return lexIdent, s.errorSyntax("'$' inside [...]")
-	case '\\':
-		return lexRangeBackslash, nil
 	case ':':
 		s.patternBuffStart = uint(len(s.patternBuff))
 		return lexRangeColon, nil
@@ -263,10 +264,10 @@ func lexIdent(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.patternPos++
 	switch c {
-	case '[', '{', '$':
-		return lexRange, s.errorSyntax("expected a function call after $")
 	case '\\':
 		return lexRangeBackslash, nil
+	case '[', '{', '$':
+		return lexRange, s.errorSyntax("expected a function call after $")
 	case '(':
 		s.patternBuffStart = uint(len(s.patternBuff))
 		return lexIdentParen, nil
