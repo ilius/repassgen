@@ -138,7 +138,7 @@ Then `repassgen` binary file will be created in current directory.
     XcwDAagzMlwv
     ```
 
-- Include non-ramdom characters in the password (here: Test / , .)
+- Include non-random characters in the password (here: Test / , .)
     ```sh
     $ repassgen 'Test-[:alpha:]{4}/[:alpha:]{4},[:alpha:]{4}.[:alpha:]{4}'
     Test-Jcis/uLwq,SazR.CEFJ
