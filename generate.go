@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io"
 )
 
@@ -29,7 +28,7 @@ func Generate(in GenerateInput) GenerateOutput {
 			if err == io.EOF {
 				break
 			}
-			panic(fmt.Errorf("invalid syntax near index %d: %v", s.patternPos-1, err))
+			panic(err)
 		}
 	}
 	return GenerateOutput{

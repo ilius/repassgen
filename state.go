@@ -2,6 +2,7 @@ package main
 
 import (
 	rand "crypto/rand"
+	"fmt"
 	"math"
 	"math/big"
 )
@@ -50,6 +51,18 @@ func (s *State) addRandomOutput(charset []rune) {
 
 func (s *State) end() bool {
 	return s.patternPos >= uint(len(s.pattern))
+}
+
+func (s *State) errorSyntax(msg string, args ...interface{}) error {
+	return NewError(LexErrorSyntax, s.patternPos-1, fmt.Sprintf(msg, args...))
+}
+
+func (s *State) errorValue(msg string, args ...interface{}) error {
+	return NewError(LexErrorValue, s.patternPos-1, fmt.Sprintf(msg, args...))
+}
+
+func (s *State) errorUnknown(msg string, args ...interface{}) error {
+	return NewError(LexErrorUnknown, s.patternPos-1, fmt.Sprintf(msg, args...))
 }
 
 // NewState is factory function for State
