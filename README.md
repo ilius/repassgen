@@ -51,6 +51,11 @@ Then `repassgen` binary file will be created in current directory.
 - [x] `$BASE32(...)` Crockford's Base32 encode function (uppercase)
 - [x] `$hex(...)` Hex encode function (lowercase)
 - [x] `$HEX(...)` Hex encode function (uppercase)
+- [x] Show [entropy](https://en.wikipedia.org/wiki/Password_strength#Entropy_as_a_measure_of_password_strength) of pattern
+    * Use `repassgen -entropy 'PATTERN'` command
+    * Indicates strength of generated passwords, the higher the better
+    * We recommand at least 47 bits (equal to 8 alphanumeric: `[:alnum:]{8}`)
+    * Entropy of pattern is more important than entropy of password, if you re-use patterns
 
 
 
