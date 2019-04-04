@@ -21,7 +21,7 @@ type State struct {
 	output []rune
 }
 
-func (s *State) addOutput(c rune) error {
+func (s *State) addOutputOne(c rune) error {
 	s.lastGen = &staticStringGenerator{str: []rune{c}}
 	return s.lastGen.Generate(s)
 }
