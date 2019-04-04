@@ -1,9 +1,5 @@
 package main
 
-import (
-	"io"
-)
-
 // GenerateInput is struct given to Generate
 type GenerateInput struct {
 	Pattern            string
@@ -25,10 +21,10 @@ func Generate(in GenerateInput) GenerateOutput {
 	for {
 		lex, err = lex(s)
 		if err != nil {
-			if err == io.EOF {
-				break
-			}
 			panic(err)
+		}
+		if lex == nil {
+			break
 		}
 	}
 	return GenerateOutput{

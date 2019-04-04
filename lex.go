@@ -1,9 +1,5 @@
 package main
 
-import (
-	"io"
-)
-
 type generatorIface interface {
 	Generate(s *State) error
 	Level() int
@@ -12,18 +8,13 @@ type generatorIface interface {
 // LexType is the type for lex functions
 type LexType func(*State) (LexType, error)
 
-func lexNil(s *State) (LexType, error) {
-	s.patternPos++
-	return lexNil, nil
-}
-
 // LexRoot is the root lex implementation
 func LexRoot(s *State) (LexType, error) {
 	if s.patternBuff != nil {
-		return lexNil, s.errorUnknown("incomplete buffer: %s", string(s.patternBuff))
+		return nil, s.errorUnknown("incomplete buffer: %s", string(s.patternBuff))
 	}
 	if s.end() {
-		return lexNil, io.EOF
+		return nil, nil
 	}
 	c := s.pattern[s.patternPos]
 	s.patternPos++
@@ -40,7 +31,7 @@ func LexRoot(s *State) (LexType, error) {
 	}
 	err := s.addOutput(c)
 	if err != nil {
-		return lexNil, err
+		return nil, err
 	}
 	return LexRoot, nil
 }
@@ -66,14 +57,14 @@ func lexBackslash(s *State) (LexType, error) {
 	s.patternPos++
 	err := s.addOutput(backslashEscape(c))
 	if err != nil {
-		return lexNil, err
+		return nil, err
 	}
 	return LexRoot, nil
 }
 
 func lexIdent(s *State) (LexType, error) {
 	if s.end() {
-		return lexNil, s.errorSyntax("'(' not closed")
+		return nil, s.errorSyntax("'(' not closed")
 	}
 	c := s.pattern[s.patternPos]
 	s.patternPos++

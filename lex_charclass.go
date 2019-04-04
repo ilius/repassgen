@@ -34,7 +34,7 @@ func (g *charsetGroupGenerator) Level() int {
 
 func lexRange(s *State) (LexType, error) {
 	if s.end() {
-		return lexNil, s.errorSyntax("'[' not closed")
+		return nil, s.errorSyntax("'[' not closed")
 	}
 	c := s.pattern[s.patternPos]
 	s.patternPos++
@@ -42,11 +42,11 @@ func lexRange(s *State) (LexType, error) {
 	case '\\':
 		return lexRangeBackslash, nil
 	case '[':
-		return lexNil, s.errorSyntax("nested '['")
+		return nil, s.errorSyntax("nested '['")
 	case '{':
-		return lexNil, s.errorSyntax("'{' inside [...]")
+		return nil, s.errorSyntax("'{' inside [...]")
 	case '$':
-		return lexNil, s.errorSyntax("'$' inside [...]")
+		return nil, s.errorSyntax("'$' inside [...]")
 	case ':':
 		s.patternBuffStart = uint(len(s.patternBuff))
 		return lexRangeColon, nil
@@ -58,7 +58,7 @@ func lexRange(s *State) (LexType, error) {
 		}
 		err := s.lastGen.Generate(s)
 		if err != nil {
-			return lexNil, err
+			return nil, err
 		}
 		s.patternBuff = nil
 		return LexRoot, nil
@@ -69,7 +69,7 @@ func lexRange(s *State) (LexType, error) {
 
 func lexRangeColon(s *State) (LexType, error) {
 	if s.end() {
-		return lexNil, s.errorSyntax("':' not closed")
+		return nil, s.errorSyntax("':' not closed")
 	}
 	n := uint(len(s.patternBuff))
 	// "[:digit:]"  -->  c.patternBuffStart == 0
@@ -81,12 +81,12 @@ func lexRangeColon(s *State) (LexType, error) {
 		name := string(s.patternBuff[s.patternBuffStart:n])
 		charset, ok := charClasses[name]
 		if !ok {
-			return lexNil, s.errorValue("invalid character class %#v", name)
+			return nil, s.errorValue("invalid character class %#v", name)
 		}
 		s.patternBuff = append(s.patternBuff[:s.patternBuffStart], charset...)
 		return lexRange, nil
 	case ']':
-		return lexNil, s.errorSyntax("':' not closed")
+		return nil, s.errorSyntax("':' not closed")
 	}
 	s.patternBuff = append(s.patternBuff, c)
 	return lexRangeColon, nil
@@ -94,16 +94,16 @@ func lexRangeColon(s *State) (LexType, error) {
 
 func lexRangeDash(s *State) (LexType, error) {
 	if s.end() {
-		return lexNil, s.errorSyntax("'[' not closed")
+		return nil, s.errorSyntax("'[' not closed")
 	}
 	c1 := s.pattern[s.patternPos]
 	s.patternPos++
 	if s.end() {
-		return lexNil, s.errorSyntax("no character after '-'")
+		return nil, s.errorSyntax("no character after '-'")
 	}
 	n := len(s.patternBuff)
 	if n < 1 {
-		return lexNil, s.errorSyntax("no character before '-'")
+		return nil, s.errorSyntax("no character before '-'")
 	}
 	c0 := s.patternBuff[n-1]
 	for b := int(c0) + 1; b <= int(c1); b++ {

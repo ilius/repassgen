@@ -30,68 +30,68 @@ func (g *repeatGenerator) Level() int {
 
 func lexRepeat(s *State) (LexType, error) {
 	if s.end() {
-		return lexNil, s.errorSyntax("'{' not closed")
+		return nil, s.errorSyntax("'{' not closed")
 	}
 	c := s.pattern[s.patternPos]
 	s.patternPos++
 	switch c {
 	case '[':
-		return lexNil, s.errorSyntax("'[' inside {...}")
+		return nil, s.errorSyntax("'[' inside {...}")
 	case '{':
-		return lexNil, s.errorSyntax("nested '{'")
+		return nil, s.errorSyntax("nested '{'")
 	case '$':
-		return lexNil, s.errorSyntax("'$' inside {...}")
+		return nil, s.errorSyntax("'$' inside {...}")
 	case '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		s.patternBuff = append(s.patternBuff, c)
 		return lexRepeat, nil
 	case '}':
 		if len(s.patternBuff) == 0 {
-			return lexNil, s.errorSyntax("missing number inside {}")
+			return nil, s.errorSyntax("missing number inside {}")
 		}
 		countStr := string(s.patternBuff)
 		count := 0
 		if strings.Contains(countStr, "-") {
 			if countStr[0] == '-' {
-				return lexNil, s.errorSyntax("no number before '-'")
+				return nil, s.errorSyntax("no number before '-'")
 			}
 			if countStr[len(countStr)-1] == '-' {
-				return lexNil, s.errorSyntax("no number after '-'")
+				return nil, s.errorSyntax("no number after '-'")
 			}
 			parts := strings.Split(countStr, "-")
 			if len(parts) > 2 {
-				return lexNil, s.errorSyntax("multiple '-' inside {...}")
+				return nil, s.errorSyntax("multiple '-' inside {...}")
 			} else if len(parts) < 2 {
-				return lexNil, s.errorUnknown("unexpected error near '-' inside {...}")
+				return nil, s.errorUnknown("unexpected error near '-' inside {...}")
 			}
 			minStr := parts[0]
 			maxStr := parts[1]
 			minCount, err := strconv.ParseInt(minStr, 10, 64)
 			if err != nil {
-				return lexNil, s.errorValue("invalid number %v inside {...}", minCount)
+				return nil, s.errorValue("invalid number %v inside {...}", minCount)
 			}
 			if minCount < 1 {
-				return lexNil, s.errorValue("invalid number %v inside {...}", minCount)
+				return nil, s.errorValue("invalid number %v inside {...}", minCount)
 			}
 			maxCount, err := strconv.ParseInt(maxStr, 10, 64)
 			if err != nil {
-				return lexNil, s.errorValue("invalid number %v inside {...}", maxCount)
+				return nil, s.errorValue("invalid number %v inside {...}", maxCount)
 			}
 			if maxCount < minCount {
-				return lexNil, s.errorValue("invalid numbers %v > %v inside {...}", minCount, maxCount)
+				return nil, s.errorValue("invalid numbers %v > %v inside {...}", minCount, maxCount)
 			}
 			count = int(minCount) + math_rand.Intn(int(maxCount-minCount+1))
 		} else {
 			countI64, err := strconv.ParseInt(countStr, 10, 64)
 			if err != nil {
-				return lexNil, s.errorValue("invalid number '%v' inside {...}", countStr)
+				return nil, s.errorValue("invalid number '%v' inside {...}", countStr)
 			}
 			count = int(countI64)
 			if count < 1 {
-				return lexNil, s.errorValue("invalid number '%v' inside {...}", countStr)
+				return nil, s.errorValue("invalid number '%v' inside {...}", countStr)
 			}
 		}
 		if s.lastGen == nil {
-			return lexNil, s.errorSyntax("nothing to repeat")
+			return nil, s.errorSyntax("nothing to repeat")
 		}
 		gen := &repeatGenerator{
 			child: s.lastGen,
@@ -100,7 +100,7 @@ func lexRepeat(s *State) (LexType, error) {
 		}
 		err := gen.Generate(s)
 		if err != nil {
-			return lexNil, err
+			return nil, err
 		}
 		gen.count = count
 		// we set the gen.count to count-1 initially, because we don't want to
@@ -111,5 +111,5 @@ func lexRepeat(s *State) (LexType, error) {
 		s.patternBuff = nil
 		return LexRoot, nil
 	}
-	return lexNil, s.errorValue("non-numeric character '%v' inside {...}", string(c))
+	return nil, s.errorValue("non-numeric character '%v' inside {...}", string(c))
 }
