@@ -25,7 +25,8 @@ func LexRoot(s *State) (LexType, error) {
 		return lexRange, nil
 	case '{':
 		return lexRepeat, nil
-	// case '(': // TODO: repeating groups, like `([a-z][1-9]){5}``
+	case '(':
+		return lexGroup, nil
 	case '$':
 		return lexIdent, nil
 	}
