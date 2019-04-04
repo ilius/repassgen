@@ -17,10 +17,13 @@ func main() {
 	calcEnropy := entropyFlag != nil && *entropyFlag
 
 	pattern := flag.Arg(0)
-	out := Generate(GenerateInput{
+	out, err := Generate(GenerateInput{
 		Pattern:            pattern,
 		CalcPatternEntropy: calcEnropy,
 	})
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Println(string(out.Password))
 	if calcEnropy {

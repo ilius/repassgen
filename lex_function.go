@@ -11,10 +11,18 @@ func (g *functionCallGenerator) Generate(s *State) error {
 	if !ok {
 		return s.errorValue("invalid function '%v'", funcName)
 	}
-	argOut := Generate(GenerateInput{
+	argOut, err := Generate(GenerateInput{
 		Pattern:            g.argPattern,
 		CalcPatternEntropy: s.calcPatternEntropy,
 	})
+	if err != nil {
+		lexErr, ok := err.(*LexError)
+		if ok {
+			lexErr.MovePos(int(s.patternBuffStart + 1))
+			return lexErr
+		}
+		return s.errorUnknown(err.Error())
+	}
 	result, err := funcObj(argOut.Password)
 	if err != nil {
 		lexErr, ok := err.(*LexError)
