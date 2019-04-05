@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base32"
 	"encoding/base64"
 	"encoding/hex"
 	"strings"
@@ -22,6 +23,11 @@ var functions = map[string]func(in []rune) ([]rune, error){
 	},
 	"BASE32": func(in []rune) ([]rune, error) {
 		return []rune(crock32.Encode([]byte(string(in)))), nil
+	},
+
+	// standard Base32 encode function (uppercase, with no padding)
+	"base32std": func(in []rune) ([]rune, error) {
+		return []rune(base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString([]byte(string(in)))), nil
 	},
 
 	// Hex encode functions (lowercase and uppercase)

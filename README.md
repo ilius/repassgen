@@ -50,6 +50,7 @@ Then `repassgen` binary file will be created in current directory.
 - [x] `$base64url(...)` URL-safe Base64 encode function
 - [x] `$base32(...)` Crockford's Base32 encode function (lowercase)
 - [x] `$BASE32(...)` Crockford's Base32 encode function (uppercase)
+- [x] `$base32std(...)` Standard Base32 encode function (uppercase, with no padding)
 - [x] `$hex(...)` Hex encode function (lowercase)
 - [x] `$HEX(...)` Hex encode function (uppercase)
 - [x] Show [entropy](https://en.wikipedia.org/wiki/Password_strength#Entropy_as_a_measure_of_password_strength) of pattern
