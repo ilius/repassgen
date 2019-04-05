@@ -8,8 +8,6 @@ import (
 type State struct {
 	pattern []rune
 
-	calcPatternEntropy bool
-	// patternEntropy is zero unless -entropy flag is given
 	patternEntropy float64
 
 	patternPos       uint
@@ -49,10 +47,9 @@ func (s *State) errorUnknown(msg string, args ...interface{}) error {
 }
 
 // NewState is factory function for State
-func NewState(pattern string, calcPatternEntropy bool) *State {
+func NewState(pattern string) *State {
 	s := &State{
-		pattern:            []rune(pattern),
-		calcPatternEntropy: calcPatternEntropy,
+		pattern: []rune(pattern),
 	}
 	return s
 }

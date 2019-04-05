@@ -1,13 +1,15 @@
 package main
 
+import "fmt"
+
 type groupGenerator struct {
 	pattern string
+	entropy *float64
 }
 
 func (g *groupGenerator) Generate(s *State) error {
 	out, err := Generate(GenerateInput{
-		Pattern:            g.pattern,
-		CalcPatternEntropy: s.calcPatternEntropy,
+		Pattern: g.pattern,
 	})
 	if err != nil {
 		lexErr, ok := err.(*LexError)
@@ -21,14 +23,20 @@ func (g *groupGenerator) Generate(s *State) error {
 	if err != nil {
 		return err
 	}
-	if s.calcPatternEntropy {
-		s.patternEntropy += out.PatternEntropy
-	}
+	s.patternEntropy += out.PatternEntropy
+	g.entropy = &out.PatternEntropy
 	return nil
 }
 
 func (g *groupGenerator) Level() int {
 	return 0
+}
+
+func (g *groupGenerator) Entropy() (float64, error) {
+	if g.entropy != nil {
+		return *g.entropy, nil
+	}
+	return 0, fmt.Errorf("entropy is not calculated")
 }
 
 func lexGroup(s *State) (LexType, error) {

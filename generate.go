@@ -2,8 +2,7 @@ package main
 
 // GenerateInput is struct given to Generate
 type GenerateInput struct {
-	Pattern            string
-	CalcPatternEntropy bool
+	Pattern string
 }
 
 // GenerateOutput is struct returned by Generate
@@ -15,7 +14,7 @@ type GenerateOutput struct {
 // Generate generates random password based on given pattern
 // see README.md for examples of pattern
 func Generate(in GenerateInput) (*GenerateOutput, error) {
-	s := NewState(in.Pattern, in.CalcPatternEntropy)
+	s := NewState(in.Pattern)
 	lex := LexRoot
 	var err error
 	for {

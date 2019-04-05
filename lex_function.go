@@ -1,8 +1,11 @@
 package main
 
+import "fmt"
+
 type functionCallGenerator struct {
 	funcName   string
 	argPattern string
+	entropy    *float64
 }
 
 func (g *functionCallGenerator) Generate(s *State) error {
@@ -12,8 +15,7 @@ func (g *functionCallGenerator) Generate(s *State) error {
 		return s.errorValue("invalid function '%v'", funcName)
 	}
 	argOut, err := Generate(GenerateInput{
-		Pattern:            g.argPattern,
-		CalcPatternEntropy: s.calcPatternEntropy,
+		Pattern: g.argPattern,
 	})
 	if err != nil {
 		lexErr, ok := err.(*LexError)
@@ -37,14 +39,20 @@ func (g *functionCallGenerator) Generate(s *State) error {
 	if err != nil {
 		return err
 	}
-	if s.calcPatternEntropy {
-		s.patternEntropy += argOut.PatternEntropy
-	}
+	s.patternEntropy += argOut.PatternEntropy
+	g.entropy = &argOut.PatternEntropy
 	return nil
 }
 
 func (g *functionCallGenerator) Level() int {
 	return 0
+}
+
+func (g *functionCallGenerator) Entropy() (float64, error) {
+	if g.entropy != nil {
+		return *g.entropy, nil
+	}
+	return 0, fmt.Errorf("entropy is not calculated")
 }
 
 func lexIdentFuncCall(s *State) (LexType, error) {

@@ -28,6 +28,14 @@ func (g *repeatGenerator) Level() int {
 	return g.level
 }
 
+func (g *repeatGenerator) Entropy() (float64, error) {
+	childEntropy, err := g.child.Entropy()
+	if err != nil {
+		return 0, err
+	}
+	return childEntropy * float64(g.count), nil
+}
+
 func lexRepeat(s *State) (LexType, error) {
 	if s.end() {
 		return nil, s.errorSyntax("'{' not closed")
@@ -48,6 +56,10 @@ func lexRepeat(s *State) (LexType, error) {
 		if len(s.patternBuff) == 0 {
 			return nil, s.errorSyntax("missing number inside {}")
 		}
+		if s.lastGen == nil {
+			return nil, s.errorSyntax("nothing to repeat")
+		}
+		child := s.lastGen
 		countStr := string(s.patternBuff)
 		count := 0
 		if strings.Contains(countStr, ",") {
@@ -90,13 +102,10 @@ func lexRepeat(s *State) (LexType, error) {
 				return nil, s.errorValue("invalid number '%v' inside {...}", countStr)
 			}
 		}
-		if s.lastGen == nil {
-			return nil, s.errorSyntax("nothing to repeat")
-		}
 		gen := &repeatGenerator{
-			child: s.lastGen,
+			child: child,
 			count: count - 1,
-			level: s.lastGen.Level() + 1,
+			level: child.Level() + 1,
 		}
 		err := gen.Generate(s)
 		if err != nil {

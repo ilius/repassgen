@@ -8,6 +8,7 @@ import (
 
 type charsetGroupGenerator struct {
 	charsets [][]rune
+	entropy  *float64
 }
 
 func (g *charsetGroupGenerator) Generate(s *State) error {
@@ -21,15 +22,29 @@ func (g *charsetGroupGenerator) Generate(s *State) error {
 		}
 		i := int(ibig.Int64())
 		s.output = append(s.output, charset[i])
-		if s.calcPatternEntropy {
-			s.patternEntropy += math.Log2(float64(len(charset)))
-		}
 	}
+	entropy, err := g.Entropy()
+	if err != nil {
+		return err
+	}
+	s.patternEntropy += entropy
 	return nil
 }
 
 func (g *charsetGroupGenerator) Level() int {
 	return 0
+}
+
+func (g *charsetGroupGenerator) Entropy() (float64, error) {
+	if g.entropy != nil {
+		return *g.entropy, nil
+	}
+	entropy := 0.0
+	for _, charset := range g.charsets {
+		entropy += math.Log2(float64(len(charset)))
+	}
+	g.entropy = &entropy
+	return entropy, nil
 }
 
 func lexRange(s *State) (LexType, error) {

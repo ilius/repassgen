@@ -18,8 +18,7 @@ func main() {
 
 	pattern := flag.Arg(0)
 	out, err := Generate(GenerateInput{
-		Pattern:            pattern,
-		CalcPatternEntropy: calcEnropy,
+		Pattern: pattern,
 	})
 	if err != nil {
 		panic(err)
