@@ -3,8 +3,6 @@ This program generates **fully customizable random passwords**, with almost **an
 
 See [examples](#examples) for clarity.
 
-It's written in Go and does not have any external dependency (besides Go standard library)
-
 # Build and install
 Run:
 ```sh
