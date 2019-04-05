@@ -46,6 +46,11 @@ Then `repassgen` binary file will be created in current directory.
     * `[:digit:a-m]`
     * `[:digit::alpha:]` = `[:alnum:]`
 - [x] `[:byte:]` Any random byte
+- [x] `[:b32:]` Crockford's Base32 alphabet (lowercase)
+- [x] `[:B32:]` Crockford's Base32 alphabet (uppercase)
+- [x] `[:B32STD:]` Standard Base32 alphabet (uppercase)
+- [x] `[:b64:]` Standard Base64 alphabet
+- [x] `[:b64url:]` URL-safe Base64 alphabet
 - [x] `$base64(...)` Base64 encode function
 - [x] `$base64url(...)` URL-safe Base64 encode function
 - [x] `$base32(...)` Crockford's Base32 encode function (lowercase)
