@@ -22,9 +22,10 @@ Then `repassgen` binary file will be created in current directory.
 
 
 # Features of regexp
-- [x] Simple Repetition: `{N}`
-- [x] Range Repetition: `{M-N}`
-- [x] Manual character range like `[a-z1-579]`
+- [x] Simple repetition: `{N}`
+- [x] Range repetition: `{M-N}`
+- [x] Manual character range, like `[a-z1-579]`
+- [x] Repeatable groups with `(...){N}`, like  `([a-z]{2}[1-9]){3}`
 - [x] `[:alnum:]` Alphanumeric characters
 - [x] `[:alpha:]` Alphabetic characters
 - [x] `[:word:]` Word characters (letters, numbers and underscores)
