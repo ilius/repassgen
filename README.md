@@ -1,5 +1,5 @@
 # Summary
-This program generates **fully customizable random passwords**, with almost **any desired pattern or length**, using the same syntax as [Regular Expressions](https://www.regular-expressions.info/quickstart.html) for **character classes** (POSIX-style) and **Repetition**.
+This program generates **fully customizable random passwords**, with almost **any desired pattern or length**, using the same syntax as [Regular Expressions](https://www.regular-expressions.info/quickstart.html) for **character classes** (POSIX-style), **repetition** (`{N}` or `{M,N}`) and **capturing groups** (`(...)`).
 
 See [examples](#examples) for clarity.
 
