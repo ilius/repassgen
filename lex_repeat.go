@@ -41,7 +41,7 @@ func lexRepeat(s *State) (LexType, error) {
 		return nil, s.errorSyntax("nested '{'")
 	case '$':
 		return nil, s.errorSyntax("'$' inside {...}")
-	case '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+	case ',', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		s.patternBuff = append(s.patternBuff, c)
 		return lexRepeat, nil
 	case '}':
@@ -50,18 +50,18 @@ func lexRepeat(s *State) (LexType, error) {
 		}
 		countStr := string(s.patternBuff)
 		count := 0
-		if strings.Contains(countStr, "-") {
-			if countStr[0] == '-' {
-				return nil, s.errorSyntax("no number before '-'")
+		if strings.Contains(countStr, ",") {
+			if countStr[0] == ',' {
+				return nil, s.errorSyntax("no number before ','")
 			}
-			if countStr[len(countStr)-1] == '-' {
-				return nil, s.errorSyntax("no number after '-'")
+			if countStr[len(countStr)-1] == ',' {
+				return nil, s.errorSyntax("no number after ','")
 			}
-			parts := strings.Split(countStr, "-")
+			parts := strings.Split(countStr, ",")
 			if len(parts) > 2 {
-				return nil, s.errorSyntax("multiple '-' inside {...}")
+				return nil, s.errorSyntax("multiple ',' inside {...}")
 			} else if len(parts) < 2 {
-				return nil, s.errorUnknown("unexpected error near '-' inside {...}")
+				return nil, s.errorUnknown("unexpected error near ',' inside {...}")
 			}
 			minStr := parts[0]
 			maxStr := parts[1]

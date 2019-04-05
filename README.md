@@ -23,7 +23,7 @@ Then `repassgen` binary file will be created in current directory.
 
 # Features of regexp
 - [x] Simple repetition: `{N}`
-- [x] Range repetition: `{M-N}`
+- [x] Range repetition: `{M,N}`
 - [x] Manual character range, like `[a-z1-579]`
 - [x] Repeatable groups with `(...){N}`, like  `([a-z]{2}[1-9]){3}`
 - [x] `[:alnum:]` Alphanumeric characters
@@ -159,7 +159,7 @@ Then `repassgen` binary file will be created in current directory.
 
 - Alphabetic password with a length 12 and 16 characters
     ```sh
-    $ repassgen '[:alpha:]{12-16}'
+    $ repassgen '[:alpha:]{12,16}'
     uamePKmuUUUcI
     ```
 
