@@ -20,6 +20,9 @@ var charClasses = map[string][]rune{
 	"b32": []rune("0123456789abcdefghjkmnpqrstvwxyz"),
 	"B32": []rune("0123456789ABCDEFGHJKMNPQRSTVWXYZ"),
 
+	// Standard Base32
+	"B32STD": []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"),
+
 	// standard Base64
 	"b64": []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"),
 
