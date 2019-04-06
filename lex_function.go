@@ -64,7 +64,13 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.patternPos++
 	switch c {
+	case '(':
+		s.openParenth++
 	case ')':
+		s.openParenth--
+		if s.openParenth > 0 {
+			break
+		}
 		funcName := string(s.patternBuff[:s.patternBuffStart])
 		if funcName == "" {
 			return nil, s.errorSyntax("missing function name")

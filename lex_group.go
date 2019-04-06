@@ -45,12 +45,17 @@ func lexGroup(s *State) (LexType, error) {
 	}
 	c := s.pattern[s.patternPos]
 	s.patternPos++
-	n := uint(len(s.patternBuff))
 	switch c {
 	case '\\':
 		return lexGroupBackslash, nil
+	case '(':
+		s.openParenth++
 	case ')':
-		childPattern := string(s.patternBuff[s.patternBuffStart:n])
+		s.openParenth--
+		if s.openParenth > 0 {
+			break
+		}
+		childPattern := string(s.patternBuff[s.patternBuffStart:len(s.patternBuff)])
 		gen := &groupGenerator{pattern: childPattern}
 		err := gen.Generate(s)
 		if err != nil {

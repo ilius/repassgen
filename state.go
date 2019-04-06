@@ -14,6 +14,8 @@ type State struct {
 	patternBuff      []rune
 	patternBuffStart uint
 
+	openParenth uint
+
 	lastGen generatorIface
 
 	output []rune

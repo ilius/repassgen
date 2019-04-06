@@ -27,6 +27,7 @@ func LexRoot(s *State) (LexType, error) {
 	case '{':
 		return lexRepeat, nil
 	case '(':
+		s.openParenth++
 		return lexGroup, nil
 	case '$':
 		return lexIdent, nil
@@ -77,6 +78,7 @@ func lexIdent(s *State) (LexType, error) {
 		return lexRange, s.errorSyntax("expected a function call after $")
 	case '(':
 		s.patternBuffStart = uint(len(s.patternBuff))
+		s.openParenth++
 		return lexIdentFuncCall, nil
 	}
 	s.patternBuff = append(s.patternBuff, c)
