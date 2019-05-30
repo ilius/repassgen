@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"strings"
 
+	"github.com/ilius/bip39-coder/bip39"
 	"github.com/ilius/crock32"
 )
 
@@ -36,5 +37,10 @@ var encoderFunctions = map[string]func(in []rune) ([]rune, error){
 	},
 	"HEX": func(in []rune) ([]rune, error) {
 		return []rune(strings.ToUpper(hex.EncodeToString([]byte(string(in))))), nil
+	},
+
+	// BIP-39 encode function
+	"bip39encode": func(in []rune) ([]rune, error) {
+		return []rune(bip39.Encode([]byte(string(in)))), nil
 	},
 }
