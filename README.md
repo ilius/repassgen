@@ -61,6 +61,7 @@ Then `repassgen` binary file will be created in current directory.
     * Indicates strength of generated passwords, the higher the better
     * We recommand at least 47 bits (equal to 8 alphanumeric: `[:alnum:]{8}`)
     * Entropy of pattern is more important than entropy of password, if you re-use patterns
+- [x] `$bip39word(N)` Generate N words from BIP-39 English mnemonic words
 
 
 
@@ -189,4 +190,10 @@ Then `repassgen` binary file will be created in current directory.
     $ repassgen '[a-z\t]{5}\t[a-z\t]{5}\n[a-z\t]{10}'
     caelk	zccqm
     zpbgjba	pm
+    ```
+
+- Generate 12 random mnemonic words from BIP-39 English words
+    ```sh
+    $ repassgen '$bip39word(12)'
+    bachelor run match video bitter nuclear hungry gossip spoon lottery grab cabbage
     ```

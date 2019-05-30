@@ -2,15 +2,15 @@ package main
 
 import "fmt"
 
-type functionCallGenerator struct {
+type encoderFunctionCallGenerator struct {
 	funcName   string
 	argPattern string
 	entropy    *float64
 }
 
-func (g *functionCallGenerator) Generate(s *State) error {
+func (g *encoderFunctionCallGenerator) Generate(s *State) error {
 	funcName := g.funcName
-	funcObj, ok := functions[funcName]
+	funcObj, ok := encoderFunctions[funcName]
 	if !ok {
 		return s.errorValue("invalid function '%v'", funcName)
 	}
@@ -44,15 +44,29 @@ func (g *functionCallGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *functionCallGenerator) Level() int {
+func (g *encoderFunctionCallGenerator) Level() int {
 	return 0
 }
 
-func (g *functionCallGenerator) Entropy() (float64, error) {
+func (g *encoderFunctionCallGenerator) Entropy() (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil
 	}
 	return 0, fmt.Errorf("entropy is not calculated")
+}
+
+func getFuncGenerator(s *State, funcName string, arg string) (generatorIface, error) {
+	if _, ok := encoderFunctions[funcName]; ok {
+		return &encoderFunctionCallGenerator{
+			funcName:   funcName,
+			argPattern: arg,
+		}, nil
+	}
+	switch funcName {
+	case "bip39word":
+		return newBIP99WordGenerator(arg)
+	}
+	return nil, s.errorValue("invalid function '%v'", funcName)
 }
 
 func lexIdentFuncCall(s *State) (LexType, error) {
@@ -75,12 +89,12 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 		if funcName == "" {
 			return nil, s.errorSyntax("missing function name")
 		}
-		argPattern := string(s.patternBuff[s.patternBuffStart:n])
-		gen := &functionCallGenerator{
-			funcName:   funcName,
-			argPattern: argPattern,
+		arg := string(s.patternBuff[s.patternBuffStart:n])
+		gen, err := getFuncGenerator(s, funcName, arg)
+		if err != nil {
+			return nil, err
 		}
-		err := gen.Generate(s)
+		err = gen.Generate(s)
 		if err != nil {
 			return nil, err
 		}
