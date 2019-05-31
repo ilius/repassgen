@@ -1,0 +1,8 @@
+#!/bin/bash
+set -x
+
+GOOS=linux GOARCH=amd64 go build -o repassgen-linux-x86_64
+GOOS=linux GOARCH=386 go build -o repassgen-linux-x86
+
+GOOS=windows GOARCH=amd64 go build -o repassgen-windows-x86_64.exe
+GOOS=windows GOARCH=386 go build -o repassgen-windows-x86.exe
