@@ -61,6 +61,7 @@ Then `repassgen` binary file will be created in current directory.
     * Indicates strength of generated passwords, the higher the better
     * We recommand at least 47 bits (equal to 8 alphanumeric: `[:alnum:]{8}`)
     * Entropy of pattern is more important than entropy of password, if you re-use patterns
+- [x] `$escape(...)` Escape unicode characters, non-printable characters and double quote
 - [x] `$bip39word(N)` Generate N words from BIP-39 English mnemonic words
 - [x] `$bip39encode(...)` Encode (binary) data into some BIP-39 English mnemonic words
 

@@ -4,6 +4,7 @@ import (
 	"encoding/base32"
 	"encoding/base64"
 	"encoding/hex"
+	"strconv"
 	"strings"
 
 	"github.com/ilius/crock32"
@@ -36,6 +37,14 @@ var encoderFunctions = map[string]func(in []rune) ([]rune, error){
 	},
 	"HEX": func(in []rune) ([]rune, error) {
 		return []rune(strings.ToUpper(hex.EncodeToString([]byte(string(in))))), nil
+	},
+
+	// Escape unicode characters, non-printable characters and double quote
+	// The returned string uses Go escape sequences (\t, \n, \xFF, \u0100) for non-ASCII
+	// characters and non-printable characters
+	"escape": func(in []rune) ([]rune, error) {
+		q := strconv.QuoteToASCII(string(in))
+		return []rune(q[1 : len(q)-1]), nil
 	},
 
 	// BIP-39 encode function
