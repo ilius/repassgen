@@ -8,22 +8,22 @@ type encoderFunctionCallGenerator struct {
 	entropy    *float64
 }
 
-func (g *encoderFunctionCallGenerator) Generate(s *State) error {
-	funcName := g.funcName
-	funcObj, ok := encoderFunctions[funcName]
-	if !ok {
-		return s.errorValue("invalid function '%v'", funcName)
-	}
+func baseFunctionCallGenerator(
+	s *State,
+	funcName string,
+	funcObj func(in []rune) ([]rune, error),
+	argPattern string,
+) (*GenerateOutput, error) {
 	argOut, err := Generate(GenerateInput{
-		Pattern: g.argPattern,
+		Pattern: argPattern,
 	})
 	if err != nil {
 		lexErr, ok := err.(*LexError)
 		if ok {
 			lexErr.MovePos(int(s.patternBuffStart + 1))
-			return lexErr
+			return nil, lexErr
 		}
-		return s.errorUnknown(err.Error())
+		return nil, s.errorUnknown(err.Error())
 	}
 	result, err := funcObj(argOut.Password)
 	if err != nil {
@@ -31,15 +31,28 @@ func (g *encoderFunctionCallGenerator) Generate(s *State) error {
 		if ok {
 			lexErr.MovePos(int(s.patternBuffStart))
 			lexErr.PrependMsg("function " + funcName)
-			return lexErr
+			return nil, lexErr
 		}
-		return s.errorUnknown("%v returned error: %v", funcName, err)
+		return nil, s.errorUnknown("%v returned error: %v", funcName, err)
 	}
 	err = s.addOutputNonRepeatable(result)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	s.patternEntropy += argOut.PatternEntropy
+	return argOut, nil
+}
+
+func (g *encoderFunctionCallGenerator) Generate(s *State) error {
+	funcName := g.funcName
+	funcObj, ok := encoderFunctions[funcName]
+	if !ok {
+		return s.errorValue("invalid function '%v'", funcName)
+	}
+	argOut, err := baseFunctionCallGenerator(s, funcName, funcObj, g.argPattern)
+	if err != nil {
+		return err
+	}
 	g.entropy = &argOut.PatternEntropy
 	return nil
 }
