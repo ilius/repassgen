@@ -78,6 +78,8 @@ func getFuncGenerator(s *State, funcName string, arg string) (generatorIface, er
 	switch funcName {
 	case "bip39word":
 		return newBIP99WordGenerator(arg)
+	case "shuffle":
+		return newShuffleGenerator(arg)
 	}
 	return nil, s.errorValue("invalid function '%v'", funcName)
 }
