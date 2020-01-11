@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 )
 
 func main() {
@@ -26,9 +27,16 @@ func main() {
 
 	fmt.Println(string(out.Password))
 	if calcEnropy {
-		fmt.Printf(
-			"Entropy of pattern: %d bits\n",
-			int(out.PatternEntropy),
-		)
+		if os.Getenv("REPASSGEN_FLOAT_ENTROPY") == "true" {
+			fmt.Printf(
+				"Entropy of pattern: %.2f bits\n",
+				out.PatternEntropy,
+			)
+		} else {
+			fmt.Printf(
+				"Entropy of pattern: %d bits\n",
+				int(out.PatternEntropy),
+			)
+		}
 	}
 }
