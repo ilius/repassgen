@@ -50,11 +50,3 @@ var charClasses = map[string][]rune{
 	// Any byte
 	"byte": byteRange(0x00, 0xFF),
 }
-
-func byteRange(start uint, end uint) []rune {
-	a := make([]rune, 0, end-start+1)
-	for x := start; x <= end; x++ {
-		a = append(a, rune(x))
-	}
-	return a
-}
