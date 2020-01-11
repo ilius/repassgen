@@ -28,6 +28,15 @@ func (g *shuffleGenerator) Generate(s *State) error {
 	return nil
 }
 
+func (g *shuffleGenerator) CharProb() map[rune]float64 {
+	// TODO: charProb
+	return nil
+}
+
+func (g *shuffleGenerator) Level() int {
+	return 0
+}
+
 func (g *shuffleGenerator) Entropy(s *State) (float64, error) {
 	// FIXME: how to calculate entropy?
 	if g.argPatternEntropy != nil {

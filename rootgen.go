@@ -41,3 +41,10 @@ func (g *RootGenerator) Entropy(s *State) (float64, error) {
 	}
 	return 0, s.errorUnknown("entropy is not calculated")
 }
+
+func (g *RootGenerator) CharProb() map[rune]float64 {
+	// TODO: charProb: i think this is the first thing to do
+	// because it's going to be used in functions
+	// encoderFunctionCallGenerator, shuffleGenerator
+	return nil
+}

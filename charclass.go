@@ -31,6 +31,24 @@ func (g *charClassGenerator) Generate(s *State) error {
 	return nil
 }
 
+func (g *charClassGenerator) CharProb() map[rune]float64 {
+	m := map[rune]float64{}
+	for _, charset := range g.charClasses {
+		if len(charset) == 0 {
+			continue
+		}
+		prob := 1.0 / float64(len(charset))
+		for _, r := range charset {
+			m[r] = prob
+		}
+	}
+	return m
+}
+
+func (g *charClassGenerator) Level() int {
+	return 0
+}
+
 func (g *charClassGenerator) Entropy(s *State) (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil

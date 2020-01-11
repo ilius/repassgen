@@ -17,6 +17,19 @@ func (g *repeatGenerator) Generate(s *State) error {
 	return nil
 }
 
+func (g *repeatGenerator) CharProb() map[rune]float64 {
+	count := g.count
+	m := g.child.CharProb()
+	for r, p := range m {
+		m[r] = p * float64(count)
+	}
+	return m
+}
+
+func (g *repeatGenerator) Level() int {
+	return 0
+}
+
 func (g *repeatGenerator) Entropy(s *State) (float64, error) {
 	childEntropy, err := g.child.Entropy(s)
 	if err != nil {
