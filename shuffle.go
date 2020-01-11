@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func shuffle(in []rune) ([]rune, error) {
 	r := NewRandSource()
