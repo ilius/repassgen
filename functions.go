@@ -4,6 +4,7 @@ import (
 	"encoding/base32"
 	"encoding/base64"
 	"encoding/hex"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -55,4 +56,52 @@ var encoderFunctions = map[string]func(in []rune) ([]rune, error){
 
 	// BIP-39 encode function
 	"bip39encode": bip39encode,
+}
+
+type encoderFunctionCallGenerator struct {
+	funcName   string
+	argPattern string
+	entropy    *float64
+}
+
+func (g *encoderFunctionCallGenerator) Generate(s *State) error {
+	funcName := g.funcName
+	funcObj, ok := encoderFunctions[funcName]
+	if !ok {
+		return s.errorValue("invalid function '%v'", funcName)
+	}
+	argOut, err := baseFunctionCallGenerator(s, funcName, funcObj, g.argPattern)
+	if err != nil {
+		return err
+	}
+	g.entropy = &argOut.PatternEntropy
+	s.patternEntropy += argOut.PatternEntropy
+	return nil
+}
+
+func (g *encoderFunctionCallGenerator) Level() int {
+	return 0
+}
+
+func (g *encoderFunctionCallGenerator) Entropy() (float64, error) {
+	if g.entropy != nil {
+		return *g.entropy, nil
+	}
+	return 0, fmt.Errorf("entropy is not calculated")
+}
+
+func getFuncGenerator(s *State, funcName string, arg string) (generatorIface, error) {
+	if _, ok := encoderFunctions[funcName]; ok {
+		return &encoderFunctionCallGenerator{
+			funcName:   funcName,
+			argPattern: arg,
+		}, nil
+	}
+	switch funcName {
+	case "bip39word":
+		return newBIP99WordGenerator(arg)
+	case "shuffle":
+		return newShuffleGenerator(arg)
+	}
+	return nil, s.errorValue("invalid function '%v'", funcName)
 }
