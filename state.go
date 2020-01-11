@@ -4,11 +4,16 @@ import (
 	"fmt"
 )
 
+type SharedState struct {
+	patternEntropy float64
+	output         []rune
+}
+
 // State is lex inputs, output and temp state
 type State struct {
-	pattern []rune
+	*SharedState
 
-	patternEntropy float64
+	pattern []rune
 
 	patternPos       uint
 	patternBuff      []rune
@@ -17,8 +22,6 @@ type State struct {
 	openParenth uint
 
 	lastGen generatorIface
-
-	output []rune
 }
 
 func (s *State) addOutputOne(c rune) error {
@@ -51,7 +54,8 @@ func (s *State) errorUnknown(msg string, args ...interface{}) error {
 // NewState is factory function for State
 func NewState(pattern string) *State {
 	s := &State{
-		pattern: []rune(pattern),
+		SharedState: &SharedState{},
+		pattern:     []rune(pattern),
 	}
 	return s
 }
