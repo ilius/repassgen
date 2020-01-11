@@ -21,6 +21,7 @@ func (g *shuffleGenerator) Generate(s *State) error {
 		return err
 	}
 	g.argPatternEntropy = &argOut.PatternEntropy
+	s.patternEntropy += argOut.PatternEntropy
 	return nil
 }
 
