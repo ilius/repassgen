@@ -12,7 +12,7 @@ func LexRoot(s *State) (LexType, error) {
 		return nil, nil
 	}
 	c := s.pattern[s.patternPos]
-	s.patternPos++
+	s.move(1)
 	switch c {
 	case '\\':
 		return lexBackslash, nil
@@ -51,7 +51,7 @@ func backslashEscape(c rune) rune {
 
 func lexBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
-	s.patternPos++
+	s.move(1)
 	err := s.addOutputOne(backslashEscape(c))
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func lexIdent(s *State) (LexType, error) {
 		return nil, s.errorSyntax("'(' not closed")
 	}
 	c := s.pattern[s.patternPos]
-	s.patternPos++
+	s.move(1)
 	switch c {
 	case '\\':
 		return lexRangeBackslash, nil

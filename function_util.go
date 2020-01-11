@@ -12,7 +12,6 @@ func baseFunctionCallGenerator(
 	if err != nil {
 		lexErr, ok := err.(*LexError)
 		if ok {
-			lexErr.MovePos(int(s.patternBuffStart + 1))
 			return lexErr
 		}
 		return s.errorUnknown(err.Error())
@@ -21,7 +20,6 @@ func baseFunctionCallGenerator(
 	if err != nil {
 		lexErr, ok := err.(*LexError)
 		if ok {
-			lexErr.MovePos(int(s.patternBuffStart))
 			lexErr.PrependMsg("function " + funcName)
 			return lexErr
 		}

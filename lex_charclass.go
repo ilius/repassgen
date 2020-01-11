@@ -5,7 +5,7 @@ func lexRange(s *State) (LexType, error) {
 		return nil, s.errorSyntax("'[' not closed")
 	}
 	c := s.pattern[s.patternPos]
-	s.patternPos++
+	s.move(1)
 	switch c {
 	case '\\':
 		return lexRangeBackslash, nil
@@ -45,7 +45,7 @@ func lexRangeColon(s *State) (LexType, error) {
 	// "[:digit:]"  -->  c.patternBuffStart == 0
 	// "[abc:digit:]"  -->  c.patternBuffStart == 3
 	c := s.pattern[s.patternPos]
-	s.patternPos++
+	s.move(1)
 	switch c {
 	case ':':
 		name := string(s.patternBuff[s.patternBuffStart:n])
@@ -67,7 +67,7 @@ func lexRangeDash(s *State) (LexType, error) {
 		return nil, s.errorSyntax("'[' not closed")
 	}
 	c1 := s.pattern[s.patternPos]
-	s.patternPos++
+	s.move(1)
 	if s.end() {
 		return nil, s.errorSyntax("no character after '-'")
 	}
@@ -84,7 +84,7 @@ func lexRangeDash(s *State) (LexType, error) {
 
 func lexRangeBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
-	s.patternPos++
+	s.move(1)
 	s.patternBuff = append(s.patternBuff, backslashEscape(c))
 	return lexRange, nil
 }

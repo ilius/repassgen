@@ -11,7 +11,7 @@ func lexRepeat(s *State) (LexType, error) {
 		return nil, s.errorSyntax("'{' not closed")
 	}
 	c := s.pattern[s.patternPos]
-	s.patternPos++
+	s.move(1)
 	switch c {
 	case '[':
 		return nil, s.errorSyntax("'[' inside {...}")

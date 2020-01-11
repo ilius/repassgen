@@ -5,6 +5,8 @@ import (
 )
 
 type SharedState struct {
+	absPos uint
+
 	patternEntropy float64
 	output         []rune
 }
@@ -24,6 +26,11 @@ type State struct {
 	lastGen generatorIface
 }
 
+func (s *State) move(chars uint) {
+	s.patternPos += chars
+	s.absPos += chars
+}
+
 func (s *State) addOutputOne(c rune) error {
 	s.lastGen = &staticStringGenerator{str: []rune{c}}
 	return s.lastGen.Generate(s)
@@ -40,15 +47,15 @@ func (s *State) end() bool {
 }
 
 func (s *State) errorSyntax(msg string, args ...interface{}) error {
-	return NewError(LexErrorSyntax, s.patternPos-1, fmt.Sprintf(msg, args...))
+	return NewError(LexErrorSyntax, s.absPos-1, fmt.Sprintf(msg, args...))
 }
 
 func (s *State) errorValue(msg string, args ...interface{}) error {
-	return NewError(LexErrorValue, s.patternPos-1, fmt.Sprintf(msg, args...))
+	return NewError(LexErrorValue, s.absPos-1, fmt.Sprintf(msg, args...))
 }
 
 func (s *State) errorUnknown(msg string, args ...interface{}) error {
-	return NewError(LexErrorUnknown, s.patternPos-1, fmt.Sprintf(msg, args...))
+	return NewError(LexErrorUnknown, s.absPos-1, fmt.Sprintf(msg, args...))
 }
 
 // NewState is factory function for State

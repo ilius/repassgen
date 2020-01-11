@@ -5,7 +5,7 @@ func lexGroup(s *State) (LexType, error) {
 		return nil, s.errorSyntax("'(' not closed")
 	}
 	c := s.pattern[s.patternPos]
-	s.patternPos++
+	s.move(1)
 	switch c {
 	case '\\':
 		return lexGroupBackslash, nil
@@ -16,6 +16,7 @@ func lexGroup(s *State) (LexType, error) {
 		if s.openParenth > 0 {
 			break
 		}
+		s.absPos -= uint(len(s.patternBuff)) + 1
 		childPattern := string(s.patternBuff[s.patternBuffStart:len(s.patternBuff)])
 		gen := newGroupGenerator(childPattern)
 		err := gen.Generate(s)
@@ -32,7 +33,7 @@ func lexGroup(s *State) (LexType, error) {
 
 func lexGroupBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
-	s.patternPos++
+	s.move(1)
 	if c == ')' {
 		s.patternBuff = append(s.patternBuff, c)
 	} else {
