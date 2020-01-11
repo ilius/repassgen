@@ -8,9 +8,8 @@ type groupGenerator struct {
 }
 
 func (g *groupGenerator) Generate(s *State) error {
-	ss := &SharedState{}
 	err := generate(
-		ss,
+		s.SharedState,
 		GenerateInput{
 			Pattern: g.pattern,
 		},
@@ -23,12 +22,11 @@ func (g *groupGenerator) Generate(s *State) error {
 		}
 		return s.errorUnknown(err.Error())
 	}
-	err = s.addOutputNonRepeatable(ss.output)
+	s.lastGen = nil
 	if err != nil {
 		return err
 	}
-	s.patternEntropy += ss.patternEntropy
-	g.entropy = &ss.patternEntropy
+	g.entropy = &s.patternEntropy
 	return nil
 }
 
