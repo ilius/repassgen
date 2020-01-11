@@ -22,6 +22,7 @@ type State struct {
 	patternBuffStart uint
 
 	openParenth uint
+	openBracket uint
 
 	lastGen generatorIface
 }

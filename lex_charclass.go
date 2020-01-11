@@ -21,6 +21,7 @@ func lexRange(s *State) (LexType, error) {
 	case '-':
 		return lexRangeDash, nil
 	case ']':
+		s.openBracket--
 		charset := s.patternBuff
 		charset = removeDuplicateRunes(charset)
 		s.lastGen = &charsetGroupGenerator{

@@ -10,8 +10,18 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 	s.move(1)
 	switch c {
 	case '(':
+		if s.openBracket > 0 {
+			break
+		}
 		s.openParenth++
+	case '[':
+		s.openBracket++
+	case ']':
+		s.openBracket--
 	case ')':
+		if s.openBracket > 0 {
+			break
+		}
 		s.openParenth--
 		if s.openParenth > 0 {
 			break
