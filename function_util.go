@@ -6,9 +6,13 @@ func baseFunctionCallGenerator(
 	funcObj func(in []rune) ([]rune, error),
 	argPattern string,
 ) (*GenerateOutput, error) {
-	argOut, err := Generate(GenerateInput{
-		Pattern: argPattern,
-	})
+	ss := &SharedState{}
+	err := generate(
+		ss,
+		GenerateInput{
+			Pattern: argPattern,
+		},
+	)
 	if err != nil {
 		lexErr, ok := err.(*LexError)
 		if ok {
@@ -17,7 +21,7 @@ func baseFunctionCallGenerator(
 		}
 		return nil, s.errorUnknown(err.Error())
 	}
-	result, err := funcObj(argOut.Password)
+	result, err := funcObj(ss.output)
 	if err != nil {
 		lexErr, ok := err.(*LexError)
 		if ok {
@@ -31,5 +35,8 @@ func baseFunctionCallGenerator(
 	if err != nil {
 		return nil, err
 	}
-	return argOut, nil
+	return &GenerateOutput{
+		Password:       ss.output,
+		PatternEntropy: ss.patternEntropy,
+	}, nil
 }

@@ -52,9 +52,9 @@ func (s *State) errorUnknown(msg string, args ...interface{}) error {
 }
 
 // NewState is factory function for State
-func NewState(pattern string) *State {
+func NewState(ss *SharedState, pattern string) *State {
 	s := &State{
-		SharedState: &SharedState{},
+		SharedState: ss,
 		pattern:     []rune(pattern),
 	}
 	return s
