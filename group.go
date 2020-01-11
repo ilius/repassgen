@@ -17,7 +17,7 @@ func (g *groupGenerator) Generate(s *State) error {
 	if err != nil {
 		lexErr, ok := err.(*LexError)
 		if ok {
-			lexErr.MovePos(int(s.patternBuffStart))
+			lexErr.MovePos(1)
 			return lexErr
 		}
 		return s.errorUnknown(err.Error())
