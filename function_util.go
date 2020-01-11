@@ -5,10 +5,9 @@ func baseFunctionCallGenerator(
 	funcName string,
 	funcObj func(in []rune) ([]rune, error),
 	argPattern string,
-) (*GenerateOutput, error) {
-	ss := &SharedState{}
+) error {
 	err := generate(
-		ss,
+		s.SharedState,
 		GenerateInput{
 			Pattern: argPattern,
 		},
@@ -17,26 +16,23 @@ func baseFunctionCallGenerator(
 		lexErr, ok := err.(*LexError)
 		if ok {
 			lexErr.MovePos(int(s.patternBuffStart + 1))
-			return nil, lexErr
+			return lexErr
 		}
-		return nil, s.errorUnknown(err.Error())
+		return s.errorUnknown(err.Error())
 	}
-	result, err := funcObj(ss.output)
+	result, err := funcObj(s.output)
 	if err != nil {
 		lexErr, ok := err.(*LexError)
 		if ok {
 			lexErr.MovePos(int(s.patternBuffStart))
 			lexErr.PrependMsg("function " + funcName)
-			return nil, lexErr
+			return lexErr
 		}
-		return nil, s.errorUnknown("%v returned error: %v", funcName, err)
+		return s.errorUnknown("%v returned error: %v", funcName, err)
 	}
 	err = s.addOutputNonRepeatable(result)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &GenerateOutput{
-		Password:       ss.output,
-		PatternEntropy: ss.patternEntropy,
-	}, nil
+	return nil
 }

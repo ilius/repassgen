@@ -70,12 +70,11 @@ func (g *encoderFunctionCallGenerator) Generate(s *State) error {
 	if !ok {
 		return s.errorValue("invalid function '%v'", funcName)
 	}
-	argOut, err := baseFunctionCallGenerator(s, funcName, funcObj, g.argPattern)
+	err := baseFunctionCallGenerator(s, funcName, funcObj, g.argPattern)
 	if err != nil {
 		return err
 	}
-	g.entropy = &argOut.PatternEntropy
-	s.patternEntropy += argOut.PatternEntropy
+	g.entropy = &s.patternEntropy
 	return nil
 }
 

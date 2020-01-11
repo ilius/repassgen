@@ -16,12 +16,11 @@ type shuffleGenerator struct {
 }
 
 func (g *shuffleGenerator) Generate(s *State) error {
-	argOut, err := baseFunctionCallGenerator(s, "shuffle", shuffle, g.argPattern)
+	err := baseFunctionCallGenerator(s, "shuffle", shuffle, g.argPattern)
 	if err != nil {
 		return err
 	}
-	g.argPatternEntropy = &argOut.PatternEntropy
-	s.patternEntropy += argOut.PatternEntropy
+	g.argPatternEntropy = &s.patternEntropy
 	return nil
 }
 
