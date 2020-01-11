@@ -6,12 +6,9 @@ func baseFunctionCallGenerator(
 	funcObj func(in []rune) ([]rune, error),
 	argPattern string,
 ) error {
-	err := generate(
-		s.SharedState,
-		GenerateInput{
-			Pattern: argPattern,
-		},
-	)
+	argState := NewState(s.SharedState, argPattern)
+	g := NewRootGenerator()
+	err := g.Generate(argState)
 	if err != nil {
 		lexErr, ok := err.(*LexError)
 		if ok {

@@ -15,7 +15,9 @@ type GenerateOutput struct {
 // see README.md for examples of pattern
 func Generate(in GenerateInput) (*GenerateOutput, error) {
 	ss := &SharedState{}
-	err := generate(ss, in)
+	s := NewState(ss, in.Pattern)
+	g := NewRootGenerator()
+	err := g.Generate(s)
 	if err != nil {
 		return nil, err
 	}
@@ -23,20 +25,4 @@ func Generate(in GenerateInput) (*GenerateOutput, error) {
 		Password:       ss.output,
 		PatternEntropy: ss.patternEntropy,
 	}, nil
-}
-
-func generate(ss *SharedState, in GenerateInput) error {
-	s := NewState(ss, in.Pattern)
-	lex := LexRoot
-	var err error
-	for {
-		lex, err = lex(s)
-		if err != nil {
-			return err
-		}
-		if lex == nil {
-			break
-		}
-	}
-	return nil
 }

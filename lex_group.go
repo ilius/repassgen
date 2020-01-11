@@ -17,7 +17,7 @@ func lexGroup(s *State) (LexType, error) {
 			break
 		}
 		childPattern := string(s.patternBuff[s.patternBuffStart:len(s.patternBuff)])
-		gen := &groupGenerator{pattern: childPattern}
+		gen := newGroupGenerator(childPattern)
 		err := gen.Generate(s)
 		if err != nil {
 			return nil, err
