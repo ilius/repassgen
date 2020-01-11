@@ -31,6 +31,5 @@ func baseFunctionCallGenerator(
 	if err != nil {
 		return nil, err
 	}
-	s.patternEntropy += argOut.PatternEntropy
 	return argOut, nil
 }

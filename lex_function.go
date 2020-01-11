@@ -19,6 +19,7 @@ func (g *encoderFunctionCallGenerator) Generate(s *State) error {
 		return err
 	}
 	g.entropy = &argOut.PatternEntropy
+	s.patternEntropy += argOut.PatternEntropy
 	return nil
 }
 
