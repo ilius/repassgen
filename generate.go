@@ -22,7 +22,7 @@ func Generate(in GenerateInput) (*GenerateOutput, error) {
 		return nil, err
 	}
 	return &GenerateOutput{
-		Password:       ss.output,
-		PatternEntropy: ss.patternEntropy,
+		Password:       s.output,
+		PatternEntropy: s.patternEntropy,
 	}, nil
 }

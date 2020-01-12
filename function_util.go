@@ -16,7 +16,7 @@ func baseFunctionCallGenerator(
 		}
 		return s.errorUnknown(err.Error())
 	}
-	result, err := funcObj(s.output)
+	result, err := funcObj(argState.output)
 	if err != nil {
 		lexErr, ok := err.(*LexError)
 		if ok {

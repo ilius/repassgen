@@ -8,7 +8,6 @@ type SharedState struct {
 	absPos uint
 
 	patternEntropy float64
-	output         []rune
 }
 
 // State is lex inputs, output and temp state
@@ -25,6 +24,8 @@ type State struct {
 	openBracket uint
 
 	lastGen generatorIface
+
+	output []rune
 }
 
 func (s *State) move(chars uint) {
