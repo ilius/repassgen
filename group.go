@@ -24,11 +24,7 @@ func (g *groupGenerator) Generate(s *State) error {
 		s := NewState(ss, g.pattern)
 		err := g.childGen.Generate(s)
 		if err != nil {
-			lexErr, ok := err.(*LexError)
-			if ok {
-				return lexErr
-			}
-			return s.errorUnknown(err.Error())
+			return err
 		}
 		output = s.output
 	}

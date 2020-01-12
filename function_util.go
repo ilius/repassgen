@@ -9,11 +9,7 @@ func baseFunctionCallGenerator(
 	g := NewRootGenerator()
 	err := g.Generate(argState)
 	if err != nil {
-		lexErr, ok := err.(*LexError)
-		if ok {
-			return lexErr
-		}
-		return s.errorUnknown(err.Error())
+		return err
 	}
 	result, err := funcObj(argState.output)
 	if err != nil {
