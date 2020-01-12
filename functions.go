@@ -70,7 +70,12 @@ func (g *encoderFunctionCallGenerator) Generate(s *State) error {
 	if !ok {
 		return s.errorValue("invalid function '%v'", funcName)
 	}
-	err := baseFunctionCallGenerator(s, funcName, funcObj, g.argPattern)
+	err := baseFunctionCallGenerator(
+		s,
+		NewState(s.SharedState, g.argPattern),
+		funcName,
+		funcObj,
+	)
 	if err != nil {
 		return err
 	}

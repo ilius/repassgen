@@ -18,7 +18,13 @@ type shuffleGenerator struct {
 }
 
 func (g *shuffleGenerator) Generate(s *State) error {
-	err := baseFunctionCallGenerator(s, "shuffle", shuffle, g.argPattern)
+	argState := NewState(s.SharedState, g.argPattern)
+	err := baseFunctionCallGenerator(
+		s,
+		argState,
+		"shuffle",
+		shuffle,
+	)
 	if err != nil {
 		return err
 	}
