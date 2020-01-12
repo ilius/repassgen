@@ -19,6 +19,7 @@ type groupGenerator struct {
 
 func (g *groupGenerator) Generate(s *State) error {
 	ss := s.SharedState
+	var output []rune
 	{
 		s := NewState(ss, g.pattern)
 		err := g.childGen.Generate(s)
@@ -29,7 +30,9 @@ func (g *groupGenerator) Generate(s *State) error {
 			}
 			return s.errorUnknown(err.Error())
 		}
+		output = s.output
 	}
+	s.output = append(s.output, output...)
 	s.lastGen = nil
 	g.entropy = &s.patternEntropy
 	return nil
