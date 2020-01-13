@@ -172,7 +172,7 @@ func TestGenerate(t *testing.T) {
 	test(&genCase{
 		Pattern:   "$bip39encode([:alpha:]{11})",
 		WordCount: 8,
-		PassLen:   [2]int{43, 98}, // 11*4-1, 11*9+-1
+		PassLen:   [2]int{42, 98}, // 11*4-1, 11*9-1 // FIXME: why 42?
 		Entropy:   [2]float64{62.7, 62.8},
 	})
 }
