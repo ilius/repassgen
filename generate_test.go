@@ -175,4 +175,36 @@ func TestGenerate(t *testing.T) {
 		PassLen:   [2]int{42, 98}, // 11*4-1, 11*9-1 // FIXME: why 42?
 		Entropy:   [2]float64{62.7, 62.8},
 	})
+	test(&genCase{
+		Pattern: "$foo(123)",
+		Error:   "value error near index 4: invalid function 'foo'",
+	})
+	test(&genCase{
+		Pattern: "test($foo(123))",
+		Error:   "value error near index 9: invalid function 'foo'",
+	})
+	test(&genCase{
+		Pattern: "test $foo",
+		Error:   "syntax error near index 8: '(' not closed",
+	})
+	test(&genCase{
+		Pattern: "test($foo)",
+		Error:   "syntax error near index 8: '(' not closed",
+	})
+	test(&genCase{
+		Pattern: "[a-z]{1-3}",
+		Error:   "value error near index 7: non-numeric character '-' inside {...}",
+	})
+	test(&genCase{
+		Pattern: "test([a-z]{1-3})",
+		Error:   "value error near index 12: non-numeric character '-' inside {...}",
+	})
+	test(&genCase{
+		Pattern: "test([a-z]{1a})",
+		Error:   "value error near index 12: non-numeric character 'a' inside {...}",
+	})
+	test(&genCase{
+		Pattern: "test([a-z]{})",
+		Error:   "syntax error near index 11: missing number inside {}",
+	})
 }
