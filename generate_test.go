@@ -104,49 +104,49 @@ func TestGenerate(t *testing.T) {
 	})
 	// base64 length: ((bytes + 2) / 3) * 4
 	test(&genCase{
-		Pattern: "$base64([:byte:]{10})",
-		PassLen: [2]int{16, 28},
-		Entropy: [2]float64{80, 80},
+		Pattern: "$base64([:alnum:]{10})",
+		PassLen: [2]int{16, 16},
+		Entropy: [2]float64{59.5, 59.6},
 	})
 	test(&genCase{
-		Pattern: "$base64([:byte:]{9})",
-		PassLen: [2]int{12, 24},
-		Entropy: [2]float64{72, 72},
+		Pattern: "$base64([:alnum:]{9})",
+		PassLen: [2]int{12, 12},
+		Entropy: [2]float64{53.5, 53.6},
 	})
 	test(&genCase{
-		Pattern: "$base64([:byte:]{5})",
-		PassLen: [2]int{8, 16},
-		Entropy: [2]float64{40, 40},
+		Pattern: "$base64([:alnum:]{5})",
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{29.7, 29.8},
 	})
 	test(&genCase{
-		Pattern: "$base64url([:byte:]{5})",
-		PassLen: [2]int{8, 16},
-		Entropy: [2]float64{40, 40},
+		Pattern: "$base64url([:alnum:]{5})",
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{29.7, 29.8},
 	})
 	test(&genCase{
-		Pattern: "$base32([:byte:]{5})",
-		PassLen: [2]int{8, 16},
-		Entropy: [2]float64{40, 40},
+		Pattern: "$base32([:alnum:]{5})",
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{29.7, 29.8},
 	})
 	test(&genCase{
-		Pattern: "$BASE32([:byte:]{5})",
-		PassLen: [2]int{8, 16},
-		Entropy: [2]float64{40, 40},
+		Pattern: "$BASE32([:alnum:]{5})",
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{29.7, 29.8},
 	})
 	test(&genCase{
-		Pattern: "$base32std([:byte:]{5})",
-		PassLen: [2]int{8, 16},
-		Entropy: [2]float64{40, 40},
+		Pattern: "$base32std([:alnum:]{5})",
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{29.7, 29.8},
 	})
 	test(&genCase{
-		Pattern: "$hex([:byte:]{8})",
-		PassLen: [2]int{16, 32},
-		Entropy: [2]float64{64, 64},
+		Pattern: "$hex([:alnum:]{8})",
+		PassLen: [2]int{16, 16},
+		Entropy: [2]float64{47.6, 47.7},
 	})
 	test(&genCase{
-		Pattern: "$HEX([:byte:]{8})",
-		PassLen: [2]int{16, 30},
-		Entropy: [2]float64{64, 64},
+		Pattern: "$HEX([:alnum:]{8})",
+		PassLen: [2]int{16, 16},
+		Entropy: [2]float64{47.6, 47.7},
 	})
 	test(&genCase{
 		Pattern:  `$escape(")`,
