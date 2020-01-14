@@ -75,6 +75,18 @@ func TestGenerate(t *testing.T) {
 		Entropy: [2]float64{59.6, 59.7},
 	})
 	test(&genCase{
+		Pattern:  `(\)){2}`,
+		PassLen:  [2]int{2, 2},
+		Password: strPtr("))"),
+		Entropy:  [2]float64{0, 0},
+	})
+	test(&genCase{
+		Pattern:  `(\\){2}`,
+		PassLen:  [2]int{2, 2},
+		Password: strPtr(`\\`),
+		Entropy:  [2]float64{0, 0},
+	})
+	test(&genCase{
 		Pattern: "([a-z]{5}[1-9]{2}-){2}",
 		PassLen: [2]int{16, 16},
 		Entropy: [2]float64{59.6, 59.7},
@@ -136,6 +148,12 @@ func TestGenerate(t *testing.T) {
 		PassLen:  [2]int{7, 7},
 		Entropy:  [2]float64{0, 0},
 		Password: strPtr("a\t\r\n\v\fb"),
+	})
+	test(&genCase{
+		Pattern:  `a\t\r\n\v\fb\c`,
+		PassLen:  [2]int{8, 8},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr("a\t\r\n\v\fbc"),
 	})
 	// each bip39 is at least 3 chars and max 8 chars
 	test(&genCase{
