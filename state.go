@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// SharedState is the shared part of State
 type SharedState struct {
 	absPos uint
 
