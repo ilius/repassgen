@@ -64,7 +64,7 @@ func newBIP99WordGenerator(arg string) (*bip99WordGenerator, error) {
 	}
 	argInt64, err := strconv.ParseInt(arg, 10, 64)
 	if err != nil {
-		return nil, fmt.Errorf("non-numeric argument %#v", arg)
+		return nil, fmt.Errorf("invalid number '%v'", arg)
 	}
 	return &bip99WordGenerator{
 		wordCount: int(argInt64),
