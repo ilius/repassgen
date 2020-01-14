@@ -34,9 +34,9 @@ func (s *State) move(chars uint) {
 	s.absPos += chars
 }
 
-func (s *State) addOutputOne(c rune) error {
+func (s *State) addOutputOne(c rune) {
 	s.lastGen = &staticStringGenerator{str: []rune{c}}
-	return s.lastGen.Generate(s)
+	s.lastGen.Generate(s)
 }
 
 func (s *State) addOutputNonRepeatable(data []rune) error {
