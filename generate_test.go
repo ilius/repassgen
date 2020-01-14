@@ -7,26 +7,6 @@ import (
 	"github.com/ilius/is"
 )
 
-func strPtr(s string) *string {
-	s2 := s
-	return &s2
-}
-
-type genCase struct {
-	Pattern string
-
-	Error string
-
-	PassLen [2]int     // {min, max}
-	Entropy [2]float64 // {min, max}
-
-	Password *string
-
-	WordCount int
-
-	// TODO: CharClassCount map[string]int
-}
-
 func TestGenerate(t *testing.T) {
 	test := func(tc *genCase) {
 		is := is.New(t).AddMsg("pattern=%#v", tc.Pattern)
@@ -48,17 +28,9 @@ func TestGenerate(t *testing.T) {
 				maxLen,
 			).True(minLen <= length && length <= maxLen)
 		}
-		{
-			entropy := out.PatternEntropy
-			minEnt := tc.Entropy[0]
-			maxEnt := tc.Entropy[1]
-			is.AddMsg(
-				"entropy=%v is not in range [%v, %v]",
-				entropy,
-				minEnt,
-				maxEnt,
-			).True(minEnt <= entropy && entropy <= maxEnt)
-		}
+
+		isFloatBetween(is, out.PatternEntropy, tc.Entropy[0], tc.Entropy[1])
+
 		if tc.Password != nil {
 			is.Equal(string(out.Password), *tc.Password)
 		}
