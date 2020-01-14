@@ -222,4 +222,9 @@ func TestGenerate(t *testing.T) {
 		Pattern: "test([a-z]{})",
 		Error:   "syntax error near index 11: missing number inside {}",
 	})
+	test(&genCase{
+		Pattern: "$shuffle([a-z]{5}[1-9]{2})",
+		PassLen: [2]int{7, 7},
+		Entropy: [2]float64{29.8, 29.9},
+	})
 }
