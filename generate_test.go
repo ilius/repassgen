@@ -83,6 +83,11 @@ func TestGenerate(t *testing.T) {
 		Entropy: [2]float64{37.6, 47.01},
 	})
 	test(&genCase{
+		Pattern: "[]",
+		PassLen: [2]int{0, 0},
+		Entropy: [2]float64{0, 0},
+	})
+	test(&genCase{
 		Pattern: "[a-z]{8}[1-9]{3}",
 		PassLen: [2]int{11, 11},
 		Entropy: [2]float64{47.1, 47.2},

@@ -41,6 +41,9 @@ func (g *charsetGroupGenerator) Entropy() (float64, error) {
 	}
 	entropy := 0.0
 	for _, charset := range g.charsets {
+		if len(charset) == 0 {
+			continue
+		}
 		entropy += math.Log2(float64(len(charset)))
 	}
 	g.entropy = &entropy
