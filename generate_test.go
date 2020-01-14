@@ -167,6 +167,16 @@ func TestGenerate(t *testing.T) {
 		PassLen:   [2]int{39, 89}, // 10*4-1, 10*9+-1
 		Entropy:   [2]float64{110, 110},
 	})
+	test(&genCase{
+		Pattern:   "$bip39word()",
+		WordCount: 1,
+		PassLen:   [2]int{3, 8},
+		Entropy:   [2]float64{11, 11},
+	})
+	test(&genCase{
+		Pattern: "$bip39word(x)",
+		Error:   "invalid number 'x'",
+	})
 	// 1 bip39 word   => 11 bits entropy
 	// 8 bip39 words  => 11 bytes entropy
 	test(&genCase{
