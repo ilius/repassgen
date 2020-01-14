@@ -37,11 +37,6 @@ func (e *LexError) Error() string {
 	)
 }
 
-// MovePos
-func (e *LexError) MovePos(offset int) {
-	e.pos = uint(int(e.pos) + offset)
-}
-
 // AppendMsg
 func (e *LexError) AppendMsg(msg string) {
 	e.msgs = append(e.msgs, msg)
