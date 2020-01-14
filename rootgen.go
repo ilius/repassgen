@@ -28,10 +28,6 @@ func (g *RootGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *RootGenerator) Level() int {
-	return 0
-}
-
 func (g *RootGenerator) Entropy() (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil

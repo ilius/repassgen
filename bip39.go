@@ -48,10 +48,6 @@ func (g *bip99WordGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *bip99WordGenerator) Level() int {
-	return 0
-}
-
 func (g *bip99WordGenerator) Entropy() (float64, error) {
 	return float64(g.wordCount) * math.Log2(float64(bip39.WordCount())), nil
 }

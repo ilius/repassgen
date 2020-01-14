@@ -75,7 +75,6 @@ func lexRepeat(s *State) (LexType, error) {
 		gen := &repeatGenerator{
 			child: child,
 			count: count - 1,
-			level: child.Level() + 1,
 		}
 		err := gen.Generate(s)
 		if err != nil {

@@ -9,10 +9,6 @@ func (g *staticStringGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *staticStringGenerator) Level() int {
-	return 0
-}
-
 func (g *staticStringGenerator) Entropy() (float64, error) {
 	return 0, nil
 }

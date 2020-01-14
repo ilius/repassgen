@@ -34,10 +34,6 @@ func (g *groupGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *groupGenerator) Level() int {
-	return 0
-}
-
 func (g *groupGenerator) Entropy() (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil

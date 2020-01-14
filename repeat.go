@@ -3,7 +3,6 @@ package main
 type repeatGenerator struct {
 	child generatorIface
 	count int
-	level int
 }
 
 func (g *repeatGenerator) Generate(s *State) error {
@@ -16,10 +15,6 @@ func (g *repeatGenerator) Generate(s *State) error {
 		}
 	}
 	return nil
-}
-
-func (g *repeatGenerator) Level() int {
-	return g.level
 }
 
 func (g *repeatGenerator) Entropy() (float64, error) {

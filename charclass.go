@@ -31,10 +31,6 @@ func (g *charsetGroupGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *charsetGroupGenerator) Level() int {
-	return 0
-}
-
 func (g *charsetGroupGenerator) Entropy() (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil
