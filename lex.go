@@ -64,9 +64,7 @@ func lexIdent(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.move(1)
 	switch c {
-	case '\\':
-		return lexRangeBackslash, nil
-	case '[', '{', '$':
+	case '\\', '[', '{', '$':
 		return lexRange, s.errorSyntax("expected a function call")
 	case '(':
 		s.patternBuffStart = uint(len(s.patternBuff))

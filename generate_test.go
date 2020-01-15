@@ -221,6 +221,10 @@ func TestGenerate(t *testing.T) {
 		Error:   "value error near index 4: invalid function 'foo'",
 	})
 	test(&genCase{
+		Pattern: `$foo\()`,
+		Error:   "syntax error near index 4: expected a function call",
+	})
+	test(&genCase{
 		Pattern: "test($foo(123))",
 		Error:   "value error near index 9: invalid function 'foo'",
 	})
