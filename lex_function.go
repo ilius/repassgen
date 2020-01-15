@@ -2,7 +2,10 @@ package main
 
 func lexIdentFuncCall(s *State) (LexType, error) {
 	if s.end() {
-		return nil, s.errorSyntax("'(' not closed")
+		if s.openParenth > 0 {
+			return nil, s.errorSyntax("'(' not closed")
+		}
+		return nil, s.errorSyntax("expected a function call")
 	}
 	n := uint(len(s.patternBuff))
 	// "$a()"  -->  c.patternBuffStart == 1

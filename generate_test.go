@@ -209,6 +209,14 @@ func TestGenerate(t *testing.T) {
 		Error:   "syntax error near index 9: '(' not closed",
 	})
 	test(&genCase{
+		Pattern: "$hex(([a-z]",
+		Error:   "syntax error near index 10: '(' not closed",
+	})
+	test(&genCase{
+		Pattern: "$foo",
+		Error:   "syntax error near index 3: expected a function call",
+	})
+	test(&genCase{
 		Pattern: "$foo(123)",
 		Error:   "value error near index 4: invalid function 'foo'",
 	})
@@ -218,11 +226,11 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: "test $foo",
-		Error:   "syntax error near index 8: '(' not closed",
+		Error:   "syntax error near index 8: expected a function call",
 	})
 	test(&genCase{
 		Pattern: "test($foo)",
-		Error:   "syntax error near index 8: '(' not closed",
+		Error:   "syntax error near index 8: expected a function call",
 	})
 	test(&genCase{
 		Pattern: "[a-z]{1-3}",

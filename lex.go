@@ -56,7 +56,10 @@ func lexBackslash(s *State) (LexType, error) {
 
 func lexIdent(s *State) (LexType, error) {
 	if s.end() {
-		return nil, s.errorSyntax("'(' not closed")
+		if s.openParenth > 0 {
+			return nil, s.errorSyntax("'(' not closed")
+		}
+		return nil, s.errorSyntax("expected a function call")
 	}
 	c := s.pattern[s.patternPos]
 	s.move(1)
@@ -64,7 +67,7 @@ func lexIdent(s *State) (LexType, error) {
 	case '\\':
 		return lexRangeBackslash, nil
 	case '[', '{', '$':
-		return lexRange, s.errorSyntax("expected a function call after $")
+		return lexRange, s.errorSyntax("expected a function call")
 	case '(':
 		s.patternBuffStart = uint(len(s.patternBuff))
 		s.openParenth++
