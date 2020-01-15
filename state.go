@@ -50,15 +50,15 @@ func (s *State) end() bool {
 }
 
 func (s *State) errorSyntax(msg string, args ...interface{}) error {
-	return NewError(LexErrorSyntax, s.absPos-1, fmt.Sprintf(msg, args...))
+	return NewError(ErrorSyntax, s.absPos-1, fmt.Sprintf(msg, args...))
 }
 
 func (s *State) errorValue(msg string, args ...interface{}) error {
-	return NewError(LexErrorValue, s.absPos-1, fmt.Sprintf(msg, args...))
+	return NewError(ErrorValue, s.absPos-1, fmt.Sprintf(msg, args...))
 }
 
 func (s *State) errorUnknown(msg string, args ...interface{}) error {
-	return NewError(LexErrorUnknown, s.absPos-1, fmt.Sprintf(msg, args...))
+	return NewError(ErrorUnknown, s.absPos-1, fmt.Sprintf(msg, args...))
 }
 
 // NewState is factory function for State

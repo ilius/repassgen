@@ -5,36 +5,36 @@ import (
 	"strings"
 )
 
-// LexErrorType is the type for lexical error types
-type LexErrorType string
+// ErrorType is the type for lexical error types
+type ErrorType string
 
 const (
-	// LexErrorSyntax is syntax error type
-	LexErrorSyntax LexErrorType = "syntax"
-	// LexErrorValue is value error type
-	LexErrorValue LexErrorType = "value"
-	// LexErrorUnknown is unknown error type
-	LexErrorUnknown LexErrorType = "unknown"
+	// ErrorSyntax is syntax error type
+	ErrorSyntax ErrorType = "syntax"
+	// ErrorValue is value error type
+	ErrorValue ErrorType = "value"
+	// ErrorUnknown is unknown error type
+	ErrorUnknown ErrorType = "unknown"
 )
 
-// NewError creates a new LexError
-func NewError(typ LexErrorType, pos uint, msg string) *LexError {
-	return &LexError{
+// NewError creates a new Error
+func NewError(typ ErrorType, pos uint, msg string) *Error {
+	return &Error{
 		typ:  typ,
 		pos:  pos,
 		msgs: []string{msg},
 	}
 }
 
-// LexError is lexical error struct
-type LexError struct {
-	typ  LexErrorType
+// Error is lexical error struct
+type Error struct {
+	typ  ErrorType
 	pos  uint
 	msgs []string
 }
 
 // Error returns error string
-func (e *LexError) Error() string {
+func (e *Error) Error() string {
 	return fmt.Sprintf(
 		"%s error near index %d: %s",
 		string(e.typ),
@@ -44,11 +44,11 @@ func (e *LexError) Error() string {
 }
 
 // AppendMsg add a message to the begining of current messages
-func (e *LexError) AppendMsg(msg string) {
+func (e *Error) AppendMsg(msg string) {
 	e.msgs = append(e.msgs, msg)
 }
 
 // PrependMsg add a message to the end of current messages
-func (e *LexError) PrependMsg(msg string) {
+func (e *Error) PrependMsg(msg string) {
 	e.msgs = append([]string{msg}, e.msgs...)
 }

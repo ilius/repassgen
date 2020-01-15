@@ -13,7 +13,7 @@ func baseFunctionCallGenerator(
 	}
 	result, err := funcObj(argState.output)
 	if err != nil {
-		lexErr, ok := err.(*LexError)
+		lexErr, ok := err.(*Error)
 		if ok {
 			lexErr.PrependMsg("function " + funcName)
 			return lexErr
