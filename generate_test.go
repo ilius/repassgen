@@ -148,6 +148,16 @@ func TestGenerate(t *testing.T) {
 		Entropy: [2]float64{47.6, 47.7},
 	})
 	test(&genCase{
+		Pattern: "$hex([a-c)(]{4})",
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{9.28, 9.29},
+	})
+	test(&genCase{
+		Pattern: "$hex(([a-e]{4}))",
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{9.28, 9.29},
+	})
+	test(&genCase{
 		Pattern:  `$escape(")`,
 		PassLen:  [2]int{2, 2},
 		Entropy:  [2]float64{0, 0},
@@ -189,6 +199,14 @@ func TestGenerate(t *testing.T) {
 		WordCount: 8,
 		PassLen:   [2]int{42, 98}, // 11*4-1, 11*9-1 // FIXME: why 42?
 		Entropy:   [2]float64{62.7, 62.8},
+	})
+	test(&genCase{
+		Pattern: "$()",
+		Error:   "syntax error near index 1: missing function name",
+	})
+	test(&genCase{
+		Pattern: "$hex([a-z]",
+		Error:   "syntax error near index 9: '(' not closed",
 	})
 	test(&genCase{
 		Pattern: "$foo(123)",
