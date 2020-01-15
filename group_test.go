@@ -12,6 +12,11 @@ func TestGroupGenerator(t *testing.T) {
 	g := newGroupGenerator(pattern)
 	s := NewState(&SharedState{}, pattern)
 	{
+		entropy, err := g.Entropy()
+		is.ErrMsg(err, "entropy is not calculated")
+		is.Equal(0.0, entropy)
+	}
+	{
 		err := g.Generate(s)
 		is.NotErr(err)
 	}
