@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+const badRepeatCount = "invalid natural number inside {...}"
+
 func lexRepeat(s *State) (LexType, error) {
 	if s.end() {
 		return nil, s.errorSyntax("'{' not closed")
@@ -22,6 +24,8 @@ func lexRepeat(s *State) (LexType, error) {
 	case ',', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		s.patternBuff = append(s.patternBuff, c)
 		return lexRepeat, nil
+	case '-':
+		return nil, s.errorSyntax("repetition range syntax is '{M,N}' not '{M-N}'")
 	case '}':
 		if len(s.patternBuff) == 0 {
 			return nil, s.errorSyntax("missing number inside {}")
@@ -53,17 +57,17 @@ func lexRepeat(s *State) (LexType, error) {
 		s.patternBuff = nil
 		return LexRoot, nil
 	}
-	return nil, s.errorValue("non-numeric character '%v' inside {...}", string(c))
+	return nil, s.errorSyntax(badRepeatCount)
 }
 
 func parseRepeatCount(s *State, countStr string) (int, error) {
 	if !strings.Contains(countStr, ",") {
 		countI64, err := strconv.ParseInt(countStr, 10, 64)
 		if err != nil {
-			return 0, s.errorValue("invalid number '%v' inside {...}", countStr)
+			return 0, s.errorSyntax(badRepeatCount)
 		}
 		if countI64 < 1 {
-			return 0, s.errorValue("invalid number '%v' inside {...}", countStr)
+			return 0, s.errorSyntax(badRepeatCount)
 		}
 		return int(countI64), nil
 	}
@@ -84,14 +88,14 @@ func parseRepeatCount(s *State, countStr string) (int, error) {
 	maxStr := parts[1]
 	minCount, err := strconv.ParseInt(minStr, 10, 64)
 	if err != nil {
-		return 0, s.errorValue("invalid number %v inside {...}", minCount)
+		return 0, s.errorSyntax(badRepeatCount)
 	}
 	if minCount < 1 {
-		return 0, s.errorValue("invalid number %v inside {...}", minCount)
+		return 0, s.errorSyntax(badRepeatCount)
 	}
 	maxCount, err := strconv.ParseInt(maxStr, 10, 64)
 	if err != nil {
-		return 0, s.errorValue("invalid number %v inside {...}", maxCount)
+		return 0, s.errorSyntax(badRepeatCount)
 	}
 	if maxCount < minCount {
 		return 0, s.errorValue("invalid numbers %v > %v inside {...}", minCount, maxCount)

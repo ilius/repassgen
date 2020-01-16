@@ -45,6 +45,38 @@ func TestGenerate(t *testing.T) {
 		Entropy: [2]float64{0, 0},
 	})
 	test(&genCase{
+		Pattern: "[a-z]{a}",
+		Error:   "syntax error near index 6: invalid natural number inside {...}",
+	})
+	test(&genCase{
+		Pattern: "[a-z]{2.5}",
+		Error:   "syntax error near index 7: invalid natural number inside {...}",
+	})
+	test(&genCase{
+		Pattern: "[a-z]{2.0}",
+		Error:   "syntax error near index 7: invalid natural number inside {...}",
+	})
+	test(&genCase{
+		Pattern: "[a-z]{1-3}",
+		Error:   "syntax error near index 7: repetition range syntax is '{M,N}' not '{M-N}'",
+	})
+	test(&genCase{
+		Pattern: "test([a-z]{1-3})",
+		Error:   "syntax error near index 12: repetition range syntax is '{M,N}' not '{M-N}'",
+	})
+	test(&genCase{
+		Pattern: "test([a-z]{1a})",
+		Error:   "syntax error near index 12: invalid natural number inside {...}",
+	})
+	test(&genCase{
+		Pattern: "test([a-z]{})",
+		Error:   "syntax error near index 11: missing number inside {}",
+	})
+	test(&genCase{
+		Pattern: "[a-z]{3,1}",
+		Error:   "value error near index 9: invalid numbers 3 > 1 inside {...}",
+	})
+	test(&genCase{
 		Pattern: "[abcd]{8}",
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{16, 16},
@@ -235,22 +267,6 @@ func TestGenerate(t *testing.T) {
 	test(&genCase{
 		Pattern: "test($foo)",
 		Error:   "syntax error near index 8: expected a function call",
-	})
-	test(&genCase{
-		Pattern: "[a-z]{1-3}",
-		Error:   "value error near index 7: non-numeric character '-' inside {...}",
-	})
-	test(&genCase{
-		Pattern: "test([a-z]{1-3})",
-		Error:   "value error near index 12: non-numeric character '-' inside {...}",
-	})
-	test(&genCase{
-		Pattern: "test([a-z]{1a})",
-		Error:   "value error near index 12: non-numeric character 'a' inside {...}",
-	})
-	test(&genCase{
-		Pattern: "test([a-z]{})",
-		Error:   "syntax error near index 11: missing number inside {}",
 	})
 	test(&genCase{
 		Pattern: "$shuffle([a-z]{5}[1-9]{2})",
