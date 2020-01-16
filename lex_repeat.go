@@ -30,55 +30,19 @@ func lexRepeat(s *State) (LexType, error) {
 			return nil, s.errorSyntax("nothing to repeat")
 		}
 		child := s.lastGen
-		countStr := string(s.patternBuff)
-		count := 0
-		if strings.Contains(countStr, ",") {
-			if countStr[0] == ',' {
-				return nil, s.errorSyntax("no number before ','")
-			}
-			if countStr[len(countStr)-1] == ',' {
-				return nil, s.errorSyntax("no number after ','")
-			}
-			parts := strings.Split(countStr, ",")
-			if len(parts) > 2 {
-				return nil, s.errorSyntax("multiple ',' inside {...}")
-			} else if len(parts) < 2 {
-				return nil, s.errorUnknown("unexpected error near ',' inside {...}")
-			}
-			minStr := parts[0]
-			maxStr := parts[1]
-			minCount, err := strconv.ParseInt(minStr, 10, 64)
-			if err != nil {
-				return nil, s.errorValue("invalid number %v inside {...}", minCount)
-			}
-			if minCount < 1 {
-				return nil, s.errorValue("invalid number %v inside {...}", minCount)
-			}
-			maxCount, err := strconv.ParseInt(maxStr, 10, 64)
-			if err != nil {
-				return nil, s.errorValue("invalid number %v inside {...}", maxCount)
-			}
-			if maxCount < minCount {
-				return nil, s.errorValue("invalid numbers %v > %v inside {...}", minCount, maxCount)
-			}
-			count = int(minCount) + math_rand.Intn(int(maxCount-minCount+1))
-		} else {
-			countI64, err := strconv.ParseInt(countStr, 10, 64)
-			if err != nil {
-				return nil, s.errorValue("invalid number '%v' inside {...}", countStr)
-			}
-			count = int(countI64)
-			if count < 1 {
-				return nil, s.errorValue("invalid number '%v' inside {...}", countStr)
-			}
+		count, err := parseRepeatCount(s, string(s.patternBuff))
+		if err != nil {
+			return nil, err
 		}
 		gen := &repeatGenerator{
 			child: child,
 			count: count - 1,
 		}
-		err := gen.Generate(s)
-		if err != nil {
-			return nil, err
+		{
+			err = gen.Generate(s)
+			if err != nil {
+				return nil, err
+			}
 		}
 		gen.count = count
 		// we set the gen.count to count-1 initially, because we don't want to
@@ -90,4 +54,47 @@ func lexRepeat(s *State) (LexType, error) {
 		return LexRoot, nil
 	}
 	return nil, s.errorValue("non-numeric character '%v' inside {...}", string(c))
+}
+
+func parseRepeatCount(s *State, countStr string) (int, error) {
+	if !strings.Contains(countStr, ",") {
+		countI64, err := strconv.ParseInt(countStr, 10, 64)
+		if err != nil {
+			return 0, s.errorValue("invalid number '%v' inside {...}", countStr)
+		}
+		if countI64 < 1 {
+			return 0, s.errorValue("invalid number '%v' inside {...}", countStr)
+		}
+		return int(countI64), nil
+	}
+	if countStr[0] == ',' {
+		return 0, s.errorSyntax("no number before ','")
+	}
+	if countStr[len(countStr)-1] == ',' {
+		return 0, s.errorSyntax("no number after ','")
+	}
+	parts := strings.Split(countStr, ",")
+	if len(parts) > 2 {
+		return 0, s.errorSyntax("multiple ',' inside {...}")
+	}
+	if len(parts) < 2 {
+		return 0, s.errorUnknown("unexpected error near ',' inside {...}")
+	}
+	minStr := parts[0]
+	maxStr := parts[1]
+	minCount, err := strconv.ParseInt(minStr, 10, 64)
+	if err != nil {
+		return 0, s.errorValue("invalid number %v inside {...}", minCount)
+	}
+	if minCount < 1 {
+		return 0, s.errorValue("invalid number %v inside {...}", minCount)
+	}
+	maxCount, err := strconv.ParseInt(maxStr, 10, 64)
+	if err != nil {
+		return 0, s.errorValue("invalid number %v inside {...}", maxCount)
+	}
+	if maxCount < minCount {
+		return 0, s.errorValue("invalid numbers %v > %v inside {...}", minCount, maxCount)
+	}
+	return int(minCount) + math_rand.Intn(int(maxCount-minCount+1)), nil
 }
