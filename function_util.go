@@ -12,9 +12,6 @@ func baseFunctionCallGenerator(
 		return err
 	}
 	result := funcObj(argState.output)
-	err = s.addOutputNonRepeatable(result)
-	if err != nil {
-		return err
-	}
+	s.addOutputNonRepeatable(result)
 	return nil
 }

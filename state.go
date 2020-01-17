@@ -39,10 +39,9 @@ func (s *State) addOutputOne(c rune) {
 	s.lastGen.Generate(s)
 }
 
-func (s *State) addOutputNonRepeatable(data []rune) error {
+func (s *State) addOutputNonRepeatable(data []rune) {
 	s.lastGen = nil
 	s.output = append(s.output, data...)
-	return nil
 }
 
 func (s *State) end() bool {

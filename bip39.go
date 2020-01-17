@@ -36,10 +36,7 @@ func (g *bip99WordGenerator) Generate(s *State) error {
 	}
 	result := []rune(strings.Join(words, " "))
 
-	err := s.addOutputNonRepeatable(result)
-	if err != nil {
-		return err
-	}
+	s.addOutputNonRepeatable(result)
 	entropy, err := g.Entropy()
 	if err != nil {
 		return err
