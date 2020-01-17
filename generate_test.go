@@ -65,6 +65,18 @@ func TestGenerate(t *testing.T) {
 		Error:   "syntax error near index 12: repetition range syntax is '{M,N}' not '{M-N}'",
 	})
 	test(&genCase{
+		Pattern: "test([a-z]{1,})",
+		Error:   "syntax error near index 13: no number after ','",
+	})
+	test(&genCase{
+		Pattern: "test([a-z]{,3})",
+		Error:   "syntax error near index 13: no number before ','",
+	})
+	test(&genCase{
+		Pattern: "test([a-z]{1,2,3})",
+		Error:   "syntax error near index 16: multiple ',' inside {...}",
+	})
+	test(&genCase{
 		Pattern: "[a-z]{{}",
 		Error:   "syntax error near index 6: nested '{'",
 	})
