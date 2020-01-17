@@ -6,13 +6,13 @@ import (
 	"os"
 )
 
-func main() {
-	entropyFlag := flag.Bool(
-		"entropy",
-		false,
-		"repassgen [-entropy] PATTERN",
-	)
+var entropyFlag = flag.Bool(
+	"entropy",
+	false,
+	"repassgen [-entropy] PATTERN",
+)
 
+func main() {
 	flag.Parse()
 
 	calcEnropy := entropyFlag != nil && *entropyFlag
