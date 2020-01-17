@@ -4,22 +4,14 @@ func baseFunctionCallGenerator(
 	s *State,
 	argState *State,
 	funcName string,
-	funcObj func(in []rune) ([]rune, error),
+	funcObj func(in []rune) []rune,
 ) error {
 	g := NewRootGenerator()
 	err := g.Generate(argState)
 	if err != nil {
 		return err
 	}
-	result, err := funcObj(argState.output)
-	if err != nil {
-		lexErr, ok := err.(*Error)
-		if ok {
-			lexErr.PrependMsg("function " + funcName)
-			return lexErr
-		}
-		return s.errorUnknown("%v returned error: %v", funcName, err)
-	}
+	result := funcObj(argState.output)
 	err = s.addOutputNonRepeatable(result)
 	if err != nil {
 		return err

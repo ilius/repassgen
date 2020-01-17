@@ -4,12 +4,12 @@ import (
 	"fmt"
 )
 
-func shuffle(in []rune) ([]rune, error) {
+func shuffle(in []rune) []rune {
 	r := NewRandSource()
 	r.Shuffle(len(in), func(i int, j int) {
 		in[i], in[j] = in[j], in[i]
 	})
-	return in, nil
+	return in
 }
 
 type shuffleGenerator struct {
