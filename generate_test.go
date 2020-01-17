@@ -101,6 +101,14 @@ func TestGenerate(t *testing.T) {
 		Error:   "value error near index 9: invalid numbers 3 > 1 inside {...}",
 	})
 	test(&genCase{
+		Pattern: "{3}",
+		Error:   "syntax error near index 2: nothing to repeat",
+	})
+	test(&genCase{
+		Pattern: "x{0}",
+		Error:   "syntax error near index 3: invalid natural number inside {...}",
+	})
+	test(&genCase{
 		Pattern: "[abcd]{8}",
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{16, 16},

@@ -61,7 +61,12 @@ func lexRepeat(s *State) (LexType, error) {
 }
 
 func parseRepeatCount(s *State, countStr string) (int, error) {
-	if !strings.Contains(countStr, ",") {
+	parts := strings.Split(countStr, ",")
+	// we know that len(parts) >= 1
+	if len(parts) > 2 {
+		return 0, s.errorSyntax("multiple ',' inside {...}")
+	}
+	if len(parts) == 1 {
 		countI64, err := strconv.ParseInt(countStr, 10, 64)
 		if err != nil {
 			return 0, s.errorSyntax(badRepeatCount)
@@ -71,18 +76,12 @@ func parseRepeatCount(s *State, countStr string) (int, error) {
 		}
 		return int(countI64), nil
 	}
+	// now we know len(parts) == 2
 	if countStr[0] == ',' {
 		return 0, s.errorSyntax("no number before ','")
 	}
 	if countStr[len(countStr)-1] == ',' {
 		return 0, s.errorSyntax("no number after ','")
-	}
-	parts := strings.Split(countStr, ",")
-	if len(parts) > 2 {
-		return 0, s.errorSyntax("multiple ',' inside {...}")
-	}
-	if len(parts) < 2 {
-		return 0, s.errorUnknown("unexpected error near ',' inside {...}")
 	}
 	minStr := parts[0]
 	maxStr := parts[1]
