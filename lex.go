@@ -65,7 +65,7 @@ func lexIdent(s *State) (LexType, error) {
 	s.move(1)
 	switch c {
 	case '\\', '[', '{', '$':
-		return lexRange, s.errorSyntax("expected a function call")
+		return nil, s.errorSyntax("expected a function call")
 	case '(':
 		s.patternBuffStart = uint(len(s.patternBuff))
 		s.openParenth++
