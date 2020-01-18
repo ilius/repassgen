@@ -99,7 +99,7 @@ func getFuncGenerator(s *State, funcName string, arg string) (generatorIface, er
 	}
 	switch funcName {
 	case "bip39word":
-		return newBIP99WordGenerator(arg)
+		return newBIP39WordGenerator(arg)
 	case "shuffle":
 		return newShuffleGenerator(arg)
 	}

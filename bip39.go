@@ -15,11 +15,11 @@ func bip39encode(in []rune) []rune {
 	return []rune(bip39.Encode([]byte(string(in))))
 }
 
-type bip99WordGenerator struct {
+type bip39WordGenerator struct {
 	wordCount int
 }
 
-func (g *bip99WordGenerator) Generate(s *State) error {
+func (g *bip39WordGenerator) Generate(s *State) error {
 	count := g.wordCount
 	words := make([]string, count)
 	for ai := 0; ai < count; ai++ {
@@ -45,13 +45,13 @@ func (g *bip99WordGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *bip99WordGenerator) Entropy() (float64, error) {
+func (g *bip39WordGenerator) Entropy() (float64, error) {
 	return float64(g.wordCount) * math.Log2(float64(bip39.WordCount())), nil
 }
 
-func newBIP99WordGenerator(arg string) (*bip99WordGenerator, error) {
+func newBIP39WordGenerator(arg string) (*bip39WordGenerator, error) {
 	if arg == "" {
-		return &bip99WordGenerator{
+		return &bip39WordGenerator{
 			wordCount: 1,
 		}, nil
 	}
@@ -59,7 +59,7 @@ func newBIP99WordGenerator(arg string) (*bip99WordGenerator, error) {
 	if err != nil {
 		return nil, fmt.Errorf("invalid number '%v'", arg)
 	}
-	return &bip99WordGenerator{
+	return &bip39WordGenerator{
 		wordCount: int(argInt64),
 	}, nil
 }
