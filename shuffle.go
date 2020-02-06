@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func shuffle(in []rune) []rune {
+func shuffle(in []byte) []byte {
 	r := NewRandSource()
 	r.Shuffle(len(in), func(i int, j int) {
 		in[i], in[j] = in[j], in[i]

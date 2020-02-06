@@ -7,7 +7,7 @@ type GenerateInput struct {
 
 // GenerateOutput is struct returned by Generate
 type GenerateOutput struct {
-	Password       []rune
+	Password       []byte
 	PatternEntropy float64
 }
 
@@ -22,7 +22,7 @@ func Generate(in GenerateInput) (*GenerateOutput, error) {
 		return nil, err
 	}
 	return &GenerateOutput{
-		Password:       s.output,
+		Password:       s.output.Bytes(),
 		PatternEntropy: s.patternEntropy,
 	}, nil
 }

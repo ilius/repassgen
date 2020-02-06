@@ -1,42 +1,42 @@
 package main
 
-var charClasses = map[string][]rune{
+var charClasses = map[string][]byte{
 	// POSIX character classes, https://www.regular-expressions.info/posixbrackets.html
-	"alpha": []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"),
-	"alnum": []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
+	"alpha": []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+	"alnum": []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
 
 	// Word characters (letters, numbers and underscores), [A-Za-z0-9_]
-	"word": []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"),
+	"word": []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"),
 
-	"lower": []rune("abcdefghijklmnopqrstuvwxyz"),
-	"upper": []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+	"lower": []byte("abcdefghijklmnopqrstuvwxyz"),
+	"upper": []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
 
-	"digit":  []rune("0123456789"),
-	"xdigit": []rune("0123456789abcdefABCDEF"),
+	"digit":  []byte("0123456789"),
+	"xdigit": []byte("0123456789abcdefABCDEF"),
 
-	"punct": []rune("[!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]"),
+	"punct": []byte("[!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]"),
 
 	// Crockford's Base32
-	"b32": []rune("0123456789abcdefghjkmnpqrstvwxyz"),
-	"B32": []rune("0123456789ABCDEFGHJKMNPQRSTVWXYZ"),
+	"b32": []byte("0123456789abcdefghjkmnpqrstvwxyz"),
+	"B32": []byte("0123456789ABCDEFGHJKMNPQRSTVWXYZ"),
 
 	// Standard Base32
-	"B32STD": []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"),
+	"B32STD": []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"),
 
 	// standard Base64
-	"b64": []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"),
+	"b64": []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"),
 
 	// URL-compatible Base64
-	"b64url": []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"),
+	"b64url": []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"),
 
 	// Visible characters and spaces (anything except control characters)
 	"print": byteRange(0x20, 0x7E),
 
 	// All whitespace characters, including line breaks
-	"space": []rune(" \t\r\n\v\f"),
+	"space": []byte(" \t\r\n\v\f"),
 
 	// Space and tab
-	"blank": []rune(" \t"),
+	"blank": []byte(" \t"),
 
 	// Control characters
 	"cntrl": append(byteRange(0x00, 0x1F), '\x7F'),

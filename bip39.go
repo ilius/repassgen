@@ -11,8 +11,8 @@ import (
 	"github.com/ilius/bip39-coder/bip39"
 )
 
-func bip39encode(in []rune) []rune {
-	return []rune(bip39.Encode([]byte(string(in))))
+func bip39encode(in []byte) []byte {
+	return []byte(bip39.Encode(in))
 }
 
 type bip39WordGenerator struct {
@@ -34,7 +34,7 @@ func (g *bip39WordGenerator) Generate(s *State) error {
 		}
 		words[ai] = word
 	}
-	result := []rune(strings.Join(words, " "))
+	result := []byte(strings.Join(words, " "))
 
 	s.addOutputNonRepeatable(result)
 	entropy, err := g.Entropy()

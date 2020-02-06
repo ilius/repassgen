@@ -23,9 +23,9 @@ func lexRange(s *State) (LexType, error) {
 	case ']':
 		s.openBracket--
 		charset := s.patternBuff
-		charset = removeDuplicateRunes(charset)
+		charset = removeDuplicateBytes(charset)
 		s.lastGen = &charsetGroupGenerator{
-			charsets: [][]rune{charset},
+			charsets: [][]byte{charset},
 		}
 		err := s.lastGen.Generate(s)
 		if err != nil {
@@ -34,7 +34,7 @@ func lexRange(s *State) (LexType, error) {
 		s.patternBuff = nil
 		return LexRoot, nil
 	}
-	s.patternBuff = append(s.patternBuff, c)
+	s.addPatternBuffRune(c)
 	return lexRange, nil
 }
 
@@ -59,7 +59,7 @@ func lexRangeColon(s *State) (LexType, error) {
 	case ']':
 		return nil, s.errorSyntax("':' not closed")
 	}
-	s.patternBuff = append(s.patternBuff, c)
+	s.addPatternBuffRune(c)
 	return lexRangeColon, nil
 }
 
@@ -77,8 +77,8 @@ func lexRangeDash(s *State) (LexType, error) {
 		return nil, s.errorSyntax("no character before '-'")
 	}
 	c0 := s.patternBuff[n-1]
-	for b := int(c0) + 1; b <= int(c1); b++ {
-		s.patternBuff = append(s.patternBuff, rune(b))
+	for b := byte(c0) + 1; b <= byte(c1); b++ {
+		s.patternBuff = append(s.patternBuff, b)
 	}
 	return lexRange, nil
 }
@@ -86,6 +86,7 @@ func lexRangeDash(s *State) (LexType, error) {
 func lexRangeBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.move(1)
-	s.patternBuff = append(s.patternBuff, backslashEscape(c))
+	c = backslashEscape(c)
+	s.addPatternBuffRune(c)
 	return lexRange, nil
 }

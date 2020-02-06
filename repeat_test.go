@@ -39,7 +39,7 @@ func TestRepeatGeneratorByStatic(t *testing.T) {
 	pattern := fmt.Sprintf("%s{%d}", str, count)
 	// if len(str) > 1, pattern would be wrong, but it won't effect this test
 	g := &repeatGenerator{
-		child: &staticStringGenerator{str: []rune(str)},
+		child: &staticStringGenerator{str: []byte(str)},
 		count: count,
 	}
 	s := NewState(&SharedState{}, pattern)

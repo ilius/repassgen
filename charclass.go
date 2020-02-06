@@ -7,7 +7,7 @@ import (
 )
 
 type charsetGroupGenerator struct {
-	charsets [][]rune
+	charsets [][]byte
 	entropy  *float64
 }
 
@@ -21,7 +21,7 @@ func (g *charsetGroupGenerator) Generate(s *State) error {
 			panic(err)
 		}
 		i := int(ibig.Int64())
-		s.output = append(s.output, charset[i])
+		s.output.WriteByte(charset[i])
 	}
 	entropy, err := g.Entropy()
 	if err != nil {

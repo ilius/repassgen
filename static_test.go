@@ -9,12 +9,12 @@ import (
 func TestStaticStringGenerator(t *testing.T) {
 	is := is.New(t)
 	pattern := `abc\\d`
-	g := &staticStringGenerator{str: []rune(pattern)}
+	g := &staticStringGenerator{str: []byte(pattern)}
 	s := NewState(&SharedState{}, pattern)
 	{
 		err := g.Generate(s)
 		is.NotErr(err)
-		is.Equal(pattern, string(s.output))
+		is.Equal(pattern, s.output.String())
 	}
 	{
 		entropy, err := g.Entropy()

@@ -1,11 +1,11 @@
 package main
 
 type staticStringGenerator struct {
-	str []rune
+	str []byte
 }
 
 func (g *staticStringGenerator) Generate(s *State) error {
-	s.output = append(s.output, g.str...)
+	s.output.Write(g.str)
 	return nil
 }
 

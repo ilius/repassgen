@@ -71,6 +71,6 @@ func lexIdent(s *State) (LexType, error) {
 		s.openParenth++
 		return lexIdentFuncCall, nil
 	}
-	s.patternBuff = append(s.patternBuff, c)
+	s.addPatternBuffRune(c)
 	return lexIdent, nil
 }

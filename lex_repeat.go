@@ -22,7 +22,7 @@ func lexRepeat(s *State) (LexType, error) {
 	case '$':
 		return nil, s.errorSyntax("'$' inside {...}")
 	case ',', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-		s.patternBuff = append(s.patternBuff, c)
+		s.addPatternBuffRune(c)
 		return lexRepeat, nil
 	case '-':
 		return nil, s.errorSyntax("repetition range syntax is '{M,N}' not '{M-N}'")

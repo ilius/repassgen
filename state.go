@@ -1,6 +1,8 @@
 package main
 
 import (
+	"unicode/utf8"
+	"bytes"
 	"fmt"
 )
 
@@ -18,7 +20,7 @@ type State struct {
 	pattern []rune
 
 	patternPos       uint
-	patternBuff      []rune
+	patternBuff      []byte
 	patternBuffStart uint
 
 	openParenth uint
@@ -26,7 +28,7 @@ type State struct {
 
 	lastGen generatorIface
 
-	output []rune
+	output *bytes.Buffer
 }
 
 func (s *State) move(chars uint) {
@@ -34,14 +36,23 @@ func (s *State) move(chars uint) {
 	s.absPos += chars
 }
 
+func (s *State) addPatternBuffRune(c rune) {
+	// FIXME
+	n := utf8.RuneLen(c)
+	cb := make([]byte, n)
+	utf8.EncodeRune(cb, c)
+	s.patternBuff = append(s.patternBuff, cb...)
+}
+
 func (s *State) addOutputOne(c rune) {
-	s.lastGen = &staticStringGenerator{str: []rune{c}}
+	// FIXME
+	s.lastGen = &staticStringGenerator{str: []byte(string(c))}
 	s.lastGen.Generate(s)
 }
 
-func (s *State) addOutputNonRepeatable(data []rune) {
+func (s *State) addOutputNonRepeatable(data []byte) {
 	s.lastGen = nil
-	s.output = append(s.output, data...)
+	s.output.Write(data)
 }
 
 func (s *State) end() bool {
@@ -65,6 +76,7 @@ func NewState(ss *SharedState, pattern string) *State {
 	s := &State{
 		SharedState: ss,
 		pattern:     []rune(pattern),
+		output:      bytes.NewBuffer(nil),
 	}
 	return s
 }

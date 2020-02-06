@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/base32"
 	"encoding/base64"
 	"encoding/hex"
@@ -11,47 +12,56 @@ import (
 	"github.com/ilius/crock32"
 )
 
-var encoderFunctions = map[string]func(in []rune) []rune{
-	"base64": func(in []rune) []rune {
-		return []rune(base64.StdEncoding.EncodeToString([]byte(string(in))))
+var encoderFunctions = map[string]func(in []byte) []byte{
+	"base64": func(in []byte) []byte {
+		return []byte(base64.StdEncoding.EncodeToString(in))
+		//out := make([]byte, base64.StdEncoding.EncodedLen(len(in)))
+		//base64.StdEncoding.Encode(out, in)
+		//return out
 	},
-	"base64url": func(in []rune) []rune {
-		return []rune(base64.URLEncoding.EncodeToString([]byte(string(in))))
+	"base64url": func(in []byte) []byte {
+		return []byte(base64.URLEncoding.EncodeToString(in))
+		//out := make([]byte, base64.URLEncoding.EncodedLen(len(in)))
+		//base64.URLEncoding.Encode(out, in)
+		//return out
 	},
 
 	// Crockford's Base32 encode functions (lowercase and uppercase)
-	"base32": func(in []rune) []rune {
-		return []rune(strings.ToLower(crock32.Encode([]byte(string(in)))))
+	"base32": func(in []byte) []byte {
+		return bytes.ToLower([]byte(crock32.Encode(in)))
 	},
-	"BASE32": func(in []rune) []rune {
-		return []rune(crock32.Encode([]byte(string(in))))
+	"BASE32": func(in []byte) []byte {
+		return []byte(crock32.Encode(in))
 	},
 
 	// standard Base32 encode function (uppercase, with no padding)
-	"base32std": func(in []rune) []rune {
-		return []rune(
+	"base32std": func(in []byte) []byte {
+		// FIXME: directly to []byte
+		return []byte(
 			base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(
-				[]byte(string(in)),
+				in,
 			),
 		)
 	},
 
 	// Hex encode functions (lowercase and uppercase)
-	"hex": func(in []rune) []rune {
-		return []rune(hex.EncodeToString([]byte(string(in))))
+	"hex": func(in []byte) []byte {
+		// FIXME: directly to []byte
+		return []byte(hex.EncodeToString(in))
 	},
-	"HEX": func(in []rune) []rune {
-		return []rune(strings.ToUpper(
-			hex.EncodeToString([]byte(string(in))),
+	"HEX": func(in []byte) []byte {
+		// FIXME: directly to []byte
+		return []byte(strings.ToUpper(
+			hex.EncodeToString(in),
 		))
 	},
 
 	// Escape unicode characters, non-printable characters and double quote
 	// The returned string uses Go escape sequences (\t, \n, \xFF, \u0100)
 	// for non-ASCII characters and non-printable characters
-	"escape": func(in []rune) []rune {
+	"escape": func(in []byte) []byte {
 		q := strconv.QuoteToASCII(string(in))
-		return []rune(q[1 : len(q)-1])
+		return []byte(q[1 : len(q)-1])
 	},
 
 	// BIP-39 encode function
