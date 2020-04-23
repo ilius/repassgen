@@ -10,7 +10,7 @@ func TestGroupGenerator(t *testing.T) {
 	is := is.New(t)
 	pattern := "([a-z]{5}[1-9]{2}){2}"
 	g := newGroupGenerator(pattern)
-	s := NewState(&SharedState{}, pattern)
+	s := NewState(NewSharedState(), pattern)
 	{
 		entropy, err := g.Entropy()
 		is.ErrMsg(err, "entropy is not calculated")

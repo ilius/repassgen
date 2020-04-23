@@ -26,6 +26,8 @@ type State struct {
 
 	lastGen generatorIface
 
+	tree *Tree
+
 	output []rune
 }
 
@@ -58,6 +60,11 @@ func (s *State) errorValue(msg string, args ...interface{}) error {
 
 func (s *State) errorUnknown(msg string, args ...interface{}) error {
 	return NewError(ErrorUnknown, s.absPos-1, fmt.Sprintf(msg, args...))
+}
+
+// NewSharedState is factory function for SharedState
+func NewSharedState() *SharedState {
+	return &SharedState{}
 }
 
 // NewState is factory function for State

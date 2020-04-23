@@ -51,6 +51,7 @@ func lexBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.move(1)
 	s.addOutputOne(backslashEscape(c))
+	// s.tree.Cursor
 	return LexRoot, nil
 }
 

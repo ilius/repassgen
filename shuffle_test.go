@@ -14,7 +14,7 @@ func TestShuffleGenerator(t *testing.T) {
 	g := &shuffleGenerator{
 		argPattern: argPattern,
 	}
-	s := NewState(&SharedState{}, pattern)
+	s := NewState(NewSharedState(), pattern)
 	{
 		entropy, err := g.Entropy()
 		is.ErrMsg(err, "entropy is not calculated")
