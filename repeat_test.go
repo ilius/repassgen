@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ilius/is"
+	"github.com/ilius/is/v2"
 )
 
 func TestRepeatGeneratorByGroup(t *testing.T) {

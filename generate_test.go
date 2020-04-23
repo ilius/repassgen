@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ilius/is"
+	"github.com/ilius/is/v2"
 )
 
 func TestGenerate(t *testing.T) {
