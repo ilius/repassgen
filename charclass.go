@@ -7,12 +7,12 @@ import (
 )
 
 type charClassGenerator struct {
-	charsets [][]rune
-	entropy  *float64
+	charClasses [][]rune
+	entropy     *float64
 }
 
 func (g *charClassGenerator) Generate(s *State) error {
-	for _, charset := range g.charsets {
+	for _, charset := range g.charClasses {
 		if len(charset) == 0 {
 			continue
 		}
@@ -36,7 +36,7 @@ func (g *charClassGenerator) Entropy() (float64, error) {
 		return *g.entropy, nil
 	}
 	entropy := 0.0
-	for _, charset := range g.charsets {
+	for _, charset := range g.charClasses {
 		if len(charset) == 0 {
 			continue
 		}

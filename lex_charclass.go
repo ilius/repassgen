@@ -25,7 +25,7 @@ func lexRange(s *State) (LexType, error) {
 		charset := s.patternBuff
 		charset = removeDuplicateRunes(charset)
 		s.lastGen = &charClassGenerator{
-			charsets: [][]rune{charset},
+			charClasses: [][]rune{charset},
 		}
 		err := s.lastGen.Generate(s)
 		if err != nil {
