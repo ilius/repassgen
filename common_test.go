@@ -23,8 +23,9 @@ type genCase struct {
 
 	Error string
 
-	PassLen [2]int     // {min, max}
-	Entropy [2]float64 // {min, max}
+	PassLen  [2]int // {min, max}
+	Validate func(string) bool
+	Entropy  [2]float64 // {min, max}
 
 	Password *string
 

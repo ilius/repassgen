@@ -1,9 +1,14 @@
 package main
 
 import (
+	"bytes"
+	"encoding/base32"
+	"encoding/base64"
+	"encoding/hex"
 	"strings"
 	"testing"
 
+	"github.com/ilius/crock32"
 	"github.com/ilius/is/v2"
 )
 
@@ -28,14 +33,19 @@ func TestGenerate(t *testing.T) {
 				maxLen,
 			).True(minLen <= length && length <= maxLen)
 		}
+		pwStr := string(out.Password)
+		is = is.AddMsg("password=%#v", pwStr)
+		if tc.Validate != nil {
+			is.True(tc.Validate(pwStr))
+		}
 
 		isFloatBetween(is, out.PatternEntropy, tc.Entropy[0], tc.Entropy[1])
 
 		if tc.Password != nil {
-			is.Equal(string(out.Password), *tc.Password)
+			is.Equal(pwStr, *tc.Password)
 		}
 		if tc.WordCount != 0 {
-			actual := len(strings.Split(string(out.Password), " "))
+			actual := len(strings.Split(pwStr, " "))
 			is.Equal(actual, tc.WordCount)
 		}
 	}
@@ -112,21 +122,53 @@ func TestGenerate(t *testing.T) {
 		Pattern: "[abcd]{8}",
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{16, 16},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < 'a' || c > 'd' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "[abcccdab]{8}",
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{16, 16},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < 'a' || c > 'd' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "[a-z]{8}",
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{37.6, 37.7},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < 'a' || c > 'z' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "[a-z]{8,10}",
 		PassLen: [2]int{8, 10},
 		Entropy: [2]float64{37.6, 47.01},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < 'a' || c > 'z' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "[]",
@@ -137,16 +179,58 @@ func TestGenerate(t *testing.T) {
 		Pattern: "[a-z]{8}[1-9]{3}",
 		PassLen: [2]int{11, 11},
 		Entropy: [2]float64{47.1, 47.2},
+		Validate: func(p string) bool {
+			for _, c := range p[:8] {
+				if c < 'a' || c > 'z' {
+					return false
+				}
+			}
+			for _, c := range p[8:] {
+				if c < '1' || c > '9' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "([a-z]{8}[1-9]{3})",
 		PassLen: [2]int{11, 11},
 		Entropy: [2]float64{47.1, 47.2},
+		Validate: func(p string) bool {
+			for _, c := range p[:8] {
+				if c < 'a' || c > 'z' {
+					return false
+				}
+			}
+			for _, c := range p[8:] {
+				if c < '1' || c > '9' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "([a-z]{5}[1-9]{2}){2}",
 		PassLen: [2]int{14, 14},
 		Entropy: [2]float64{59.6, 59.7},
+		Validate: func(p string) bool {
+			for i := 0; i < 2; i++ {
+				k := 7 * i
+				for _, c := range p[k : k+5] {
+					if c < 'a' || c > 'z' {
+						return false
+					}
+				}
+				for _, c := range p[k+5 : k+7] {
+					if c < '1' || c > '9' {
+						return false
+					}
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern:  `(\)){2}`,
@@ -164,62 +248,279 @@ func TestGenerate(t *testing.T) {
 		Pattern: "([a-z]{5}[1-9]{2}-){2}",
 		PassLen: [2]int{16, 16},
 		Entropy: [2]float64{59.6, 59.7},
+		Validate: func(p string) bool {
+			for i := 0; i < 2; i++ {
+				k := 8 * i
+				for _, c := range p[k : k+5] {
+					if c < 'a' || c > 'z' {
+						return false
+					}
+				}
+				for _, c := range p[k+5 : k+7] {
+					if c < '1' || c > '9' {
+						return false
+					}
+				}
+				if p[k+7] != '-' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	// base64 length: ((bytes + 2) / 3) * 4
 	test(&genCase{
 		Pattern: "$base64([:alnum:]{10})",
 		PassLen: [2]int{16, 16},
 		Entropy: [2]float64{59.5, 59.6},
+		Validate: func(p string) bool {
+			pwBytes, err := base64.StdEncoding.DecodeString(p)
+			if err != nil {
+				panic(err)
+			}
+			if len(pwBytes) != 10 {
+				return false
+			}
+			for _, b := range bytes.ToLower(pwBytes) {
+				c := rune(b)
+				if c < '0' || (c > '9' && c < 'a') || c > 'z' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "$base64([:alnum:]{9})",
 		PassLen: [2]int{12, 12},
 		Entropy: [2]float64{53.5, 53.6},
+		Validate: func(p string) bool {
+			pwBytes, err := base64.StdEncoding.DecodeString(p)
+			if err != nil {
+				panic(err)
+			}
+			if len(pwBytes) != 9 {
+				return false
+			}
+			for _, b := range bytes.ToLower(pwBytes) {
+				c := rune(b)
+				if c < '0' || (c > '9' && c < 'a') || c > 'z' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "$base64([:alnum:]{5})",
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{29.7, 29.8},
+		Validate: func(p string) bool {
+			pwBytes, err := base64.StdEncoding.DecodeString(p)
+			if err != nil {
+				panic(err)
+			}
+			if len(pwBytes) != 5 {
+				return false
+			}
+			for _, b := range bytes.ToLower(pwBytes) {
+				c := rune(b)
+				if c < '0' || (c > '9' && c < 'a') || c > 'z' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "$base64url([:alnum:]{5})",
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{29.7, 29.8},
+		Validate: func(p string) bool {
+			pwBytes, err := base64.URLEncoding.DecodeString(p)
+			if err != nil {
+				panic(err)
+			}
+			if len(pwBytes) != 5 {
+				return false
+			}
+			for _, b := range bytes.ToLower(pwBytes) {
+				c := rune(b)
+				if c < '0' || (c > '9' && c < 'a') || c > 'z' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "$base32([:alnum:]{5})",
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{29.7, 29.8},
+		Validate: func(p string) bool {
+			if strings.ToLower(p) != p {
+				return false
+			}
+			pwBytes, err := crock32.Decode(p)
+			if err != nil {
+				panic(err)
+			}
+			if len(pwBytes) != 5 {
+				return false
+			}
+			for _, b := range bytes.ToLower(pwBytes) {
+				c := rune(b)
+				if c < '0' || (c > '9' && c < 'a') || c > 'z' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "$BASE32([:alnum:]{5})",
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{29.7, 29.8},
+		Validate: func(p string) bool {
+			if strings.ToUpper(p) != p {
+				return false
+			}
+			pwBytes, err := crock32.Decode(p)
+			if err != nil {
+				panic(err)
+			}
+			if len(pwBytes) != 5 {
+				return false
+			}
+			for _, b := range bytes.ToLower(pwBytes) {
+				c := rune(b)
+				if c < '0' || (c > '9' && c < 'a') || c > 'z' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "$base32std([:alnum:]{5})",
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{29.7, 29.8},
+		Validate: func(p string) bool {
+			if strings.ToUpper(p) != p {
+				return false
+			}
+			pwBytes, err := base32.StdEncoding.WithPadding(base32.NoPadding).DecodeString(p)
+			if err != nil {
+				panic(err)
+			}
+			if len(pwBytes) != 5 {
+				return false
+			}
+			for _, b := range bytes.ToLower(pwBytes) {
+				c := rune(b)
+				if c < '0' || (c > '9' && c < 'a') || c > 'z' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "$hex([:alnum:]{8})",
 		PassLen: [2]int{16, 16},
 		Entropy: [2]float64{47.6, 47.7},
+		Validate: func(p string) bool {
+			if strings.ToLower(p) != p {
+				return false
+			}
+			pwBytes, err := hex.DecodeString(p)
+			if err != nil {
+				panic(err)
+			}
+			if len(pwBytes) != 8 {
+				return false
+			}
+			for _, b := range bytes.ToLower(pwBytes) {
+				c := rune(b)
+				if c < '0' || (c > '9' && c < 'a') || c > 'z' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "$HEX([:alnum:]{8})",
 		PassLen: [2]int{16, 16},
 		Entropy: [2]float64{47.6, 47.7},
+		Validate: func(p string) bool {
+			if strings.ToUpper(p) != p {
+				return false
+			}
+			pwBytes, err := hex.DecodeString(p)
+			if err != nil {
+				panic(err)
+			}
+			if len(pwBytes) != 8 {
+				return false
+			}
+			for _, b := range bytes.ToLower(pwBytes) {
+				c := rune(b)
+				if c < '0' || (c > '9' && c < 'a') || c > 'z' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "$hex([a-c)(]{4})",
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{9.28, 9.29},
+		Validate: func(p string) bool {
+			if strings.ToLower(p) != p {
+				return false
+			}
+			pwBytes, err := hex.DecodeString(p)
+			if err != nil {
+				panic(err)
+			}
+			if len(pwBytes) != 4 {
+				return false
+			}
+			for _, b := range bytes.ToLower(pwBytes) {
+				switch rune(b) {
+				case 'a', 'b', 'c', ')', '(':
+				default:
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "$hex(([a-e]{4}))",
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{9.28, 9.29},
+		Validate: func(p string) bool {
+			if strings.ToLower(p) != p {
+				return false
+			}
+			pwBytes, err := hex.DecodeString(p)
+			if err != nil {
+				panic(err)
+			}
+			if len(pwBytes) != 4 {
+				return false
+			}
+			for _, b := range bytes.ToLower(pwBytes) {
+				c := rune(b)
+				if c < 'a' || c > 'e' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern:  `$escape(")`,
@@ -245,12 +546,20 @@ func TestGenerate(t *testing.T) {
 		WordCount: 10,
 		PassLen:   [2]int{39, 89}, // 10*4-1, 10*9+-1
 		Entropy:   [2]float64{110, 110},
+		Validate: func(p string) bool {
+			// TODO
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern:   "$bip39word()",
 		WordCount: 1,
 		PassLen:   [2]int{3, 8},
 		Entropy:   [2]float64{11, 11},
+		Validate: func(p string) bool {
+			// TODO
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "$bip39word(x)",
@@ -263,6 +572,10 @@ func TestGenerate(t *testing.T) {
 		WordCount: 8,
 		PassLen:   [2]int{38, 98}, // 11*4-1, 11*9-1 // FIXME: why 38?
 		Entropy:   [2]float64{62.7, 62.8},
+		Validate: func(p string) bool {
+			// TODO
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: "$()",
@@ -308,5 +621,17 @@ func TestGenerate(t *testing.T) {
 		Pattern: "$shuffle([a-z]{5}[1-9]{2})",
 		PassLen: [2]int{7, 7},
 		Entropy: [2]float64{29.8, 29.9},
+		Validate: func(p string) bool {
+			alpha := 0
+			num := 0
+			for _, c := range p {
+				if c >= 'a' && c <= 'z' {
+					alpha++
+				} else if c >= '0' && c <= '9' {
+					num++
+				}
+			}
+			return alpha == 5 && num == 2
+		},
 	})
 }
