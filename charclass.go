@@ -6,12 +6,12 @@ import (
 	"math/big"
 )
 
-type charsetGroupGenerator struct {
+type charClassGenerator struct {
 	charsets [][]rune
 	entropy  *float64
 }
 
-func (g *charsetGroupGenerator) Generate(s *State) error {
+func (g *charClassGenerator) Generate(s *State) error {
 	for _, charset := range g.charsets {
 		if len(charset) == 0 {
 			continue
@@ -31,7 +31,7 @@ func (g *charsetGroupGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *charsetGroupGenerator) Entropy() (float64, error) {
+func (g *charClassGenerator) Entropy() (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil
 	}
