@@ -64,6 +64,11 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 			s.lastGroupId = s2.lastGroupId
 			s.patternBuff = nil
 			s.lastGen = gen
+			s.tree.AppendChild(&Node{
+				Type: FUNC_CALL,
+				Args: []interface{}{funcName, buff},
+				Gen:  gen,
+			})
 			return LexRoot, nil
 		}
 		buff = append(buff, c)

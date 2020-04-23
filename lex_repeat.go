@@ -61,6 +61,10 @@ func lexRepeat(s *State) (LexType, error) {
 		// but we need to re-set g.count after gen.Generate(s), because the whole thing
 		// might be repeated again
 		s.lastGen = gen
+		s.tree.InsertParent(&Node{
+			Type: REPEAT,
+			Gen:  gen,
+		})
 		s.patternBuff = nil
 		return LexRoot, nil
 	}

@@ -16,6 +16,8 @@ type SharedState struct {
 
 	lastGroupId  uint64
 	groupsOutput map[uint64][]rune
+
+	tree *Tree
 }
 
 // State is lex inputs, output and temp state
@@ -46,8 +48,14 @@ func (s *State) moveBack(chars uint64) {
 }
 
 func (s *State) addOutputOne(c rune) {
-	s.lastGen = &staticStringGenerator{str: []rune{c}}
-	s.lastGen.Generate(s)
+	gen := &staticStringGenerator{str: []rune{c}}
+	s.lastGen = gen
+	gen.Generate(s)
+	s.tree.AppendChild(&Node{
+		Type: STATIC,
+		Args: []interface{}{c},
+		Gen:  gen,
+	})
 }
 
 func (s *State) addOutput(str []rune) {
@@ -120,6 +128,7 @@ func (s *State) errorUnknown(msg string, args ...interface{}) error {
 func NewSharedState() *SharedState {
 	return &SharedState{
 		groupsOutput: map[uint64][]rune{},
+		tree: NewTree(),
 	}
 }
 

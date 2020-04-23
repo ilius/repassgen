@@ -81,6 +81,11 @@ Loop:
 	s.openParenth--
 	s.lastGen = gen
 	s.patternBuff = nil
+	s.tree.AppendChild(&Node{
+		Type: GROUP,
+		Args: []interface{}{pattern},  // FIXME: what was childPattern?
+		Gen:  gen,
+	})
 	return LexRoot, nil
 }
 

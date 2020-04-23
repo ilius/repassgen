@@ -11,10 +11,15 @@ func processRange(s *State, charset []rune) (LexType, error) {
 	gen := &charClassGenerator{
 		charClasses: [][]rune{charset},
 	}
+	s.lastGen = gen
 	err := gen.Generate(s)
 	if err != nil {
 		return nil, err
 	}
+	s.tree.AppendChild(&Node{
+		Type: CHARCLASS,
+		Gen:  gen,
+	})
 	s.patternBuff = nil
 	s.lastGen = gen
 	return LexRoot, nil
