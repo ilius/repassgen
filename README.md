@@ -158,7 +158,7 @@ Then `repassgen` binary file will be created in current directory.
     3996-9634-1459-0656
     ```
 
-- Alphabetic password with a length 12 and 16 characters
+- Alphabetic password with a length between 12 and 16 characters
     ```sh
     $ repassgen '[:alpha:]{12,16}'
     uamePKmuUUUcI
