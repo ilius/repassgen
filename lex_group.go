@@ -24,6 +24,11 @@ func lexGroup(s *State) (LexType, error) {
 			return nil, err
 		}
 		s.lastGen = gen
+		s.tree.AppendChild(&Node{
+			Type: GROUP,
+			Args: []interface{}{childPattern},
+			Gen:  gen,
+		})
 		s.patternBuff = nil
 		return LexRoot, nil
 	}

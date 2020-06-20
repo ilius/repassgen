@@ -40,3 +40,27 @@ type Tree struct {
 	Root   *Node
 	Cursor *Cursor
 }
+
+func (t *Tree) GetCursor() *Node {
+	if t.Cursor == nil {
+		return t.Root
+	}
+	return t.Cursor.Get()
+}
+
+func (t *Tree) AppendChild(x *Node) {
+	if t.Cursor == nil {
+		t.Root.Children = append(t.Root.Children, x)
+		t.Cursor = &Cursor{Parent: t.Root, Index: len(t.Root.Children) - 1}
+		return
+	}
+	cur := t.Cursor.Get()
+	cur.Children = append(cur.Children, x)
+	t.Cursor.Index = len(cur.Children) - 1
+}
+
+func NewTree() *Tree {
+	return &Tree{
+		Root: &Node{},
+	}
+}

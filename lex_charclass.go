@@ -24,13 +24,18 @@ func lexRange(s *State) (LexType, error) {
 		s.openBracket--
 		charset := s.patternBuff
 		charset = removeDuplicateRunes(charset)
-		s.lastGen = &charClassGenerator{
+		gen := &charClassGenerator{
 			charClasses: [][]rune{charset},
 		}
-		err := s.lastGen.Generate(s)
+		s.lastGen = gen
+		err := gen.Generate(s)
 		if err != nil {
 			return nil, err
 		}
+		s.tree.AppendChild(&Node{
+			Type: CHARCLASS,
+			Gen:  gen,
+		})
 		s.patternBuff = nil
 		return LexRoot, nil
 	}

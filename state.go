@@ -9,6 +9,8 @@ type SharedState struct {
 	absPos uint
 
 	patternEntropy float64
+
+	tree *Tree
 }
 
 // State is lex inputs, output and temp state
@@ -26,8 +28,6 @@ type State struct {
 
 	lastGen generatorIface
 
-	tree *Tree
-
 	output []rune
 }
 
@@ -37,8 +37,14 @@ func (s *State) move(chars uint) {
 }
 
 func (s *State) addOutputOne(c rune) {
-	s.lastGen = &staticStringGenerator{str: []rune{c}}
-	s.lastGen.Generate(s)
+	gen := &staticStringGenerator{str: []rune{c}}
+	s.lastGen = gen
+	gen.Generate(s)
+	s.tree.AppendChild(&Node{
+		Type: STATIC,
+		Args: []interface{}{c},
+		Gen:  gen,
+	})
 }
 
 func (s *State) addOutputNonRepeatable(data []rune) {
@@ -64,7 +70,9 @@ func (s *State) errorUnknown(msg string, args ...interface{}) error {
 
 // NewSharedState is factory function for SharedState
 func NewSharedState() *SharedState {
-	return &SharedState{}
+	return &SharedState{
+		tree: NewTree(),
+	}
 }
 
 // NewState is factory function for State
