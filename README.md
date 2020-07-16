@@ -64,6 +64,7 @@ Then `repassgen` binary file will be created in current directory.
 - [x] `$escape(...)` Escape unicode characters, non-printable characters and double quote
 - [x] `$bip39word(N)` Generate N words from BIP-39 English mnemonic words
 - [x] `$bip39encode(...)` Encode (binary) data into some BIP-39 English mnemonic words
+- [x] `$date(2000,2020,-)` Generate a random date in the given year range
 
 
 
