@@ -42,8 +42,17 @@ func (g *dateGenerator) Entropy() (float64, error) {
 }
 
 func newDateGenerator(argsStr string) (*dateGenerator, error) {
-	args := strings.Split(argsStr, ",")
+	if len(argsStr) < 3 {
+		return nil, fmt.Errorf("date: too few characters as arguments")
+	}
+	argSep := ","
+	if argsStr[0] < '0' || argsStr[0] > '9' {
+		argSep = string(argsStr[0])
+		argsStr = argsStr[1:]
+	}
+	args := strings.Split(argsStr, argSep)
 	if len(args) < 2 {
+		fmt.Printf("args = %#v\n", args)
 		return nil, fmt.Errorf("date: at least 2 arguments are required")
 	}
 	startYear, err := strconv.Atoi(strings.TrimSpace(args[0]))
