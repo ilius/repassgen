@@ -20,3 +20,19 @@ func byteRange(start uint, end uint) []rune {
 	}
 	return a
 }
+
+func excludeCharsASCII(exclude []rune) []rune {
+	ex_set := map[rune]bool{}
+	for _, c := range exclude {
+		ex_set[c] = true
+	}
+	list := make([]rune, 0, 95)
+	for ci := 32; ci < 127; ci++ {
+		c := rune(ci)
+		if ex_set[c] {
+			continue
+		}
+		list = append(list, c)
+	}
+	return list
+}

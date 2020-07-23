@@ -268,6 +268,21 @@ func TestGenerate(t *testing.T) {
 			return true
 		},
 	})
+	test(&genCase{
+		Pattern: `[^ :punct:]{128}`,
+		PassLen: [2]int{128, 128},
+		Entropy: [2]float64{762.1, 762.2},
+	})
+	test(&genCase{
+		Pattern: `[^^]{10}`,
+		PassLen: [2]int{10, 10},
+		Entropy: [2]float64{65.5, 65.6},
+	})
+	test(&genCase{
+		Pattern: `[!-~]{10}`,
+		PassLen: [2]int{10, 10},
+		Entropy: [2]float64{65.5, 65.6},
+	})
 	// base64 length: ((bytes + 2) / 3) * 4
 	test(&genCase{
 		Pattern: "$base64([:alnum:]{10})",

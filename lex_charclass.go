@@ -1,5 +1,7 @@
 package main
 
+// FIXME: `[\^abc]` becomes `[^abc]` and excludes `abc`
+
 func lexRange(s *State) (LexType, error) {
 	if s.end() {
 		return nil, s.errorSyntax("'[' not closed")
@@ -23,7 +25,15 @@ func lexRange(s *State) (LexType, error) {
 	case ']':
 		s.openBracket--
 		charset := s.patternBuff
+		reverse := false
+		if len(charset) > 0 && charset[0] == '^' {
+			reverse = true
+			charset = charset[1:]
+		}
 		charset = removeDuplicateRunes(charset)
+		if reverse {
+			charset = excludeCharsASCII(charset)
+		}
 		s.lastGen = &charClassGenerator{
 			charClasses: [][]rune{charset},
 		}
