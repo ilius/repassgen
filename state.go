@@ -14,19 +14,17 @@ type SharedState struct {
 // State is lex inputs, output and temp state
 type State struct {
 	*SharedState
+	lastGen generatorIface
 
-	pattern []rune
+	pattern     []rune
+	patternBuff []rune
+	output      []rune
 
 	patternPos       uint
-	patternBuff      []rune
 	patternBuffStart uint
 
 	openParenth uint
 	openBracket uint
-
-	lastGen generatorIface
-
-	output []rune
 }
 
 func (s *State) move(chars uint) {

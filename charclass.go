@@ -7,8 +7,8 @@ import (
 )
 
 type charClassGenerator struct {
-	charClasses [][]rune
 	entropy     *float64
+	charClasses [][]rune
 }
 
 func (g *charClassGenerator) Generate(s *State) error {

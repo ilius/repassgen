@@ -59,9 +59,9 @@ var encoderFunctions = map[string]func(in []rune) []rune{
 }
 
 type encoderFunctionCallGenerator struct {
+	entropy    *float64
 	funcName   string
 	argPattern string
-	entropy    *float64
 }
 
 func (g *encoderFunctionCallGenerator) Generate(s *State) error {

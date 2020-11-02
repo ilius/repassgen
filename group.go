@@ -12,9 +12,9 @@ func newGroupGenerator(pattern string) *groupGenerator {
 }
 
 type groupGenerator struct {
-	pattern  string
-	entropy  *float64
 	childGen *RootGenerator
+	entropy  *float64
+	pattern  string
 }
 
 func (g *groupGenerator) Generate(s *State) error {

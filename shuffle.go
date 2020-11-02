@@ -13,8 +13,8 @@ func shuffle(in []rune) []rune {
 }
 
 type shuffleGenerator struct {
-	argPattern        string
 	argPatternEntropy *float64
+	argPattern        string
 }
 
 func (g *shuffleGenerator) Generate(s *State) error {

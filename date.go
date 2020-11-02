@@ -13,9 +13,9 @@ import (
 )
 
 type dateGenerator struct {
+	sep     string
 	startJd int
 	endJd   int
-	sep     string
 }
 
 func (g *dateGenerator) Generate(s *State) error {

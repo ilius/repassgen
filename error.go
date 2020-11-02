@@ -29,8 +29,8 @@ func NewError(typ ErrorType, pos uint, msg string) *Error {
 // Error is lexical error struct
 type Error struct {
 	typ  ErrorType
-	pos  uint
 	msgs []string
+	pos  uint
 }
 
 // Error returns error string
