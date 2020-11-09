@@ -24,6 +24,7 @@
 package main
 
 import (
+	"github.com/ilius/is/v2"
 	"testing"
 )
 
@@ -119,30 +120,29 @@ func TestDecodeUnicodeEscape(t *testing.T) {
 }
 
 type unescapeTest struct {
-	in       string // escaped string
-	out      string // expected unescaped string
-	canAlloc bool   // can unescape cause an allocation (depending on buffer size)? true iff 'in' contains escape sequence(s)
-	isErr    bool   // should this operation result in an error
+	in    string // escaped string
+	out   string // expected unescaped string
+	isErr bool   // should this operation result in an error
 }
 
 var unescapeTests = []unescapeTest{
-	{in: ``, out: ``, canAlloc: false},
-	{in: `a`, out: `a`, canAlloc: false},
-	{in: `abcde`, out: `abcde`, canAlloc: false},
+	{in: ``, out: ``},
+	{in: `a`, out: `a`},
+	{in: `abcde`, out: `abcde`},
 
-	{in: `ab\\de`, out: `ab\de`, canAlloc: true},
-	{in: `ab\"de`, out: `ab"de`, canAlloc: true},
-	{in: `ab \u00B0 de`, out: `ab ° de`, canAlloc: true},
-	{in: `ab \uFF11 de`, out: `ab １ de`, canAlloc: true},
-	{in: `\uFFFF`, out: "\uFFFF", canAlloc: true},
-	{in: `ab \uD83D\uDE03 de`, out: "ab \U0001F603 de", canAlloc: true},
-	{in: `\u0000\u0000\u0000\u0000\u0000`, out: "\u0000\u0000\u0000\u0000\u0000", canAlloc: true},
-	{in: `\u0000 \u0000 \u0000 \u0000 \u0000`, out: "\u0000 \u0000 \u0000 \u0000 \u0000", canAlloc: true},
-	{in: ` \u0000 \u0000 \u0000 \u0000 \u0000 `, out: " \u0000 \u0000 \u0000 \u0000 \u0000 ", canAlloc: true},
+	{in: `ab\\de`, out: `ab\\de`},
+	{in: `ab\"de`, out: `ab\"de`},
+	{in: `ab \u00B0 de`, out: `ab ° de`},
+	{in: `ab \uFF11 de`, out: `ab １ de`},
+	{in: `\uFFFF`, out: "\uFFFF"},
+	{in: `ab \uD83D\uDE03 de`, out: "ab \U0001F603 de"},
+	{in: `\u0000\u0000\u0000\u0000\u0000`, out: "\u0000\u0000\u0000\u0000\u0000"},
+	{in: `\u0000 \u0000 \u0000 \u0000 \u0000`, out: "\u0000 \u0000 \u0000 \u0000 \u0000"},
+	{in: ` \u0000 \u0000 \u0000 \u0000 \u0000 `, out: " \u0000 \u0000 \u0000 \u0000 \u0000 "},
 
 	{in: `\uD800`, isErr: true},
-	{in: `abcde\`, isErr: true},
-	{in: `abcde\x`, isErr: true},
+	{in: `abcde\`, out: `abcde\`},
+	{in: `abcde\x`, out: `abcde\x`},
 	{in: `abcde\u`, isErr: true},
 	{in: `abcde\u1`, isErr: true},
 	{in: `abcde\u12`, isErr: true},
@@ -170,19 +170,17 @@ func isSameMemory(a, b []rune) bool {
 
 func TestUnescapeUnicode(t *testing.T) {
 	for _, test := range unescapeTests {
+		is := is.New(t).AddMsg("input=%#v", test.in)
 		in := []rune(test.in)
 
 		out, err := unescapeUnicode(in)
-		isErr := (err != nil)
-
-		if isErr != test.isErr {
-			t.Errorf("unescapeUnicode(`%s` returned isErr mismatch: expected %t, obtained %t", test.in, test.isErr, isErr)
-			break
-		} else if isErr {
+		if test.isErr {
+			is.Err(err)
 			continue
-		} else if string(out) != string(test.out) {
-			t.Errorf("unescapeUnicode(`%s`) returned unescaped mismatch: expected `%s` (%v, len %d), obtained `%s` (%v, len %d)", test.in, test.out, []byte(test.out), len(test.out), string(out), out, len(out))
-			break
 		}
+		if !is.NotErr(err) {
+			continue
+		}
+		is.Equal(string(out), string(test.out))
 	}
 }

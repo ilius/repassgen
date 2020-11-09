@@ -17,15 +17,8 @@ func main() {
 
 	calcEnropy := entropyFlag != nil && *entropyFlag
 
-	pattern := flag.Arg(0)
-	escapedPattern, err := unescapeUnicode([]rune(pattern))
-	if err != nil {
-		panic(err)
-	}
-	pattern = string(escapedPattern)
-
 	out, err := Generate(GenerateInput{
-		Pattern: pattern,
+		Pattern: []rune(flag.Arg(0)),
 	})
 	if err != nil {
 		panic(err)

@@ -10,7 +10,7 @@ func TestStaticStringGenerator(t *testing.T) {
 	is := is.New(t)
 	pattern := `abc\\d`
 	g := &staticStringGenerator{str: []rune(pattern)}
-	s := NewState(&SharedState{}, pattern)
+	s := NewState(&SharedState{}, []rune(pattern))
 	{
 		err := g.Generate(s)
 		is.NotErr(err)

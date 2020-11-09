@@ -10,9 +10,9 @@ import (
 func TestShuffleGenerator(t *testing.T) {
 	is := is.New(t)
 	argPattern := "[a-z]{5}[1-9]{2}"
-	pattern := fmt.Sprintf("$shuffle(%s)", argPattern)
+	pattern := []rune(fmt.Sprintf("$shuffle(%s)", argPattern))
 	g := &shuffleGenerator{
-		argPattern: argPattern,
+		argPattern: []rune(argPattern),
 	}
 	s := NewState(&SharedState{}, pattern)
 	{

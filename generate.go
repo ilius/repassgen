@@ -2,7 +2,7 @@ package main
 
 // GenerateInput is struct given to Generate
 type GenerateInput struct {
-	Pattern string
+	Pattern []rune
 }
 
 // GenerateOutput is struct returned by Generate
@@ -15,11 +15,17 @@ type GenerateOutput struct {
 // see README.md for examples of pattern
 func Generate(in GenerateInput) (*GenerateOutput, error) {
 	ss := &SharedState{}
-	s := NewState(ss, in.Pattern)
-	g := NewRootGenerator()
-	err := g.Generate(s)
+	escapedPattern, err := unescapeUnicode(in.Pattern)
 	if err != nil {
 		return nil, err
+	}
+	s := NewState(ss, escapedPattern)
+	g := NewRootGenerator()
+	{
+		err := g.Generate(s)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &GenerateOutput{
 		Password:       s.output,

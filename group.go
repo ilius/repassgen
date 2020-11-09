@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func newGroupGenerator(pattern string) *groupGenerator {
+func newGroupGenerator(pattern []rune) *groupGenerator {
 	return &groupGenerator{
 		pattern:  pattern,
 		childGen: NewRootGenerator(),
@@ -14,7 +14,7 @@ func newGroupGenerator(pattern string) *groupGenerator {
 type groupGenerator struct {
 	childGen *RootGenerator
 	entropy  *float64
-	pattern  string
+	pattern  []rune
 }
 
 func (g *groupGenerator) Generate(s *State) error {

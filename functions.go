@@ -61,7 +61,7 @@ var encoderFunctions = map[string]func(in []rune) []rune{
 type encoderFunctionCallGenerator struct {
 	entropy    *float64
 	funcName   string
-	argPattern string
+	argPattern []rune
 }
 
 func (g *encoderFunctionCallGenerator) Generate(s *State) error {
@@ -72,7 +72,7 @@ func (g *encoderFunctionCallGenerator) Generate(s *State) error {
 	}
 	err := baseFunctionCallGenerator(
 		s,
-		NewState(s.SharedState, g.argPattern),
+		NewState(s.SharedState, []rune(g.argPattern)),
 		funcName,
 		funcObj,
 	)
@@ -90,7 +90,7 @@ func (g *encoderFunctionCallGenerator) Entropy() (float64, error) {
 	return 0, fmt.Errorf("entropy is not calculated")
 }
 
-func getFuncGenerator(s *State, funcName string, arg string) (generatorIface, error) {
+func getFuncGenerator(s *State, funcName string, arg []rune) (generatorIface, error) {
 	if _, ok := encoderFunctions[funcName]; ok {
 		return &encoderFunctionCallGenerator{
 			funcName:   funcName,
@@ -99,11 +99,11 @@ func getFuncGenerator(s *State, funcName string, arg string) (generatorIface, er
 	}
 	switch funcName {
 	case "bip39word":
-		return newBIP39WordGenerator(arg)
+		return newBIP39WordGenerator(string(arg))
 	case "shuffle":
 		return newShuffleGenerator(arg)
 	case "date":
-		return newDateGenerator(arg)
+		return newDateGenerator(string(arg))
 	}
 	return nil, s.errorValue("invalid function '%v'", funcName)
 }

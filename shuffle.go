@@ -14,7 +14,7 @@ func shuffle(in []rune) []rune {
 
 type shuffleGenerator struct {
 	argPatternEntropy *float64
-	argPattern        string
+	argPattern        []rune
 }
 
 func (g *shuffleGenerator) Generate(s *State) error {
@@ -40,7 +40,7 @@ func (g *shuffleGenerator) Entropy() (float64, error) {
 	return 0, fmt.Errorf("entropy is not calculated")
 }
 
-func newShuffleGenerator(arg string) (*shuffleGenerator, error) {
+func newShuffleGenerator(arg []rune) (*shuffleGenerator, error) {
 	return &shuffleGenerator{
 		argPattern: arg,
 	}, nil

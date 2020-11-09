@@ -8,7 +8,7 @@ import (
 
 func TestGroupGenerator(t *testing.T) {
 	is := is.New(t)
-	pattern := "([a-z]{5}[1-9]{2}){2}"
+	pattern := []rune("([a-z]{5}[1-9]{2}){2}")
 	g := newGroupGenerator(pattern)
 	s := NewState(&SharedState{}, pattern)
 	{

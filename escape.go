@@ -119,28 +119,25 @@ var backslashCharEscapeTable = [...]rune{
 // unescapeUnicodeSingle unescapes the single escape sequence starting at 'in' into 'out' and returns
 // how many characters were consumed from 'in' and emitted into 'out'.
 // If a valid escape sequence does not appear as a prefix of 'in', (-1, -1) to signal the error.
-func unescapeUnicodeSingle(in []rune) (int, rune) {
+func unescapeUnicodeSingle(in []rune) (int, rune, error) {
 	if len(in) < 2 || in[0] != '\\' {
 		// Invalid escape due to insufficient characters for any escape or no initial backslash
-		return -1, -1
+		return -1, 0, nil
 	}
 
 	// https://tools.ietf.org/html/rfc7159#section-7
 	switch e := in[1]; e {
-	case '"', '\\', '/', 'b', 'f', 'n', 'r', 't':
-		// Valid basic 2-character escapes (use lookup table)
-		return 2, backslashCharEscapeTable[e]
 	case 'u':
 		// Unicode escape
 		if r, inLen := decodeUnicodeEscape(in); inLen == -1 {
 			// Invalid Unicode escape
-			return -1, -1
+			return -1, 0, MalformedStringEscapeError
 		} else {
-			return inLen, r
+			return inLen, r, nil
 		}
 	}
 
-	return -1, -1
+	return -1, 0, nil
 }
 
 // unescape unescapes the string contained in 'in' and returns it as a slice.
@@ -158,9 +155,14 @@ func unescapeUnicode(in []rune) ([]rune, error) {
 
 	for len(in) > 0 {
 		// Unescape the next escaped character
-		inLen, r := unescapeUnicodeSingle(in)
+		inLen, r, err := unescapeUnicodeSingle(in)
+		if err != nil {
+			return nil, err
+		}
 		if inLen == -1 {
-			return nil, MalformedStringEscapeError
+			out = append(out, in[0])
+			in = in[1:]
+			continue
 		}
 		out = append(out, r)
 

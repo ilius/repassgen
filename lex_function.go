@@ -34,7 +34,7 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 		if funcName == "" {
 			return nil, s.errorSyntax("missing function name")
 		}
-		arg := string(s.patternBuff[s.patternBuffStart:n])
+		arg := s.patternBuff[s.patternBuffStart:n]
 		gen, err := getFuncGenerator(s, funcName, arg)
 		if err != nil {
 			return nil, err

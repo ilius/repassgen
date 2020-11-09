@@ -17,7 +17,7 @@ func lexGroup(s *State) (LexType, error) {
 			break
 		}
 		s.absPos -= uint(len(s.patternBuff)) + 1
-		childPattern := string(s.patternBuff[s.patternBuffStart:len(s.patternBuff)])
+		childPattern := s.patternBuff[s.patternBuffStart:len(s.patternBuff)]
 		gen := newGroupGenerator(childPattern)
 		err := gen.Generate(s)
 		if err != nil {
