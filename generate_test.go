@@ -649,4 +649,23 @@ func TestGenerate(t *testing.T) {
 			return alpha == 5 && num == 2
 		},
 	})
+	test(&genCase{
+		Pattern:  `\u00e0-\u00e6`,
+		PassLen:  [2]int{3, 3},
+		Password: strPtr(`à-æ`),
+		Entropy:  [2]float64{0, 0},
+	})
+	test(&genCase{
+		Pattern: `[\u00e0-\u00e6]{10}`,
+		PassLen: [2]int{10, 10},
+		Entropy: [2]float64{28, 29},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if !(c >= 'à' && c <= 'æ') {
+					return false
+				}
+			}
+			return true
+		},
+	})
 }
