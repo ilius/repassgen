@@ -46,6 +46,16 @@ var encoderFunctions = map[string]func(in []rune) []rune{
 		))
 	},
 
+	"space": func(in []rune) []rune {
+		out := make([]rune, 2*len(in)-1)
+		out[0] = in[0]
+		for i, c := range in[1:] {
+			out[2*i+1] = ' '
+			out[2*i+2] = c
+		}
+		return out
+	},
+
 	// Escape unicode characters, non-printable characters and double quote
 	// The returned string uses Go escape sequences (\t, \n, \xFF, \u0100)
 	// for non-ASCII characters and non-printable characters
