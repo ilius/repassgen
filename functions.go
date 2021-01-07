@@ -66,6 +66,11 @@ var encoderFunctions = map[string]func(in []rune) []rune{
 
 	// BIP-39 encode function
 	"bip39encode": bip39encode,
+
+	// Japanese Kana to Latin
+	"romaji": func(in []rune) []rune {
+		return []rune(KanaToRomaji(string(in)))
+	},
 }
 
 type encoderFunctionCallGenerator struct {
