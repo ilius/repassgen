@@ -668,4 +668,10 @@ func TestGenerate(t *testing.T) {
 			return true
 		},
 	})
+	test(&genCase{
+		Pattern:  `$space(abcd)`,
+		PassLen:  [2]int{7, 7},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`a b c d`),
+	})
 }
