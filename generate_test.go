@@ -674,4 +674,41 @@ func TestGenerate(t *testing.T) {
 		Entropy:  [2]float64{0, 0},
 		Password: strPtr(`a b c d`),
 	})
+	test(&genCase{
+		Pattern:  `$romaji()`,
+		PassLen:  [2]int{0, 0},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(``),
+	})
+
+	test(&genCase{
+		Pattern:  `$romaji(そうたい)`,
+		PassLen:  [2]int{6, 6},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`soutai`),
+	})
+	test(&genCase{
+		Pattern:  `$romaji(こうげきてき)`,
+		PassLen:  [2]int{11, 11},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`kougekiteki`),
+	})
+	test(&genCase{
+		Pattern:  `$romaji(レザーレット)`,
+		PassLen:  [2]int{10, 10},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`reza-retto`),
+	})
+	test(&genCase{
+		Pattern:  `$romaji(累減税)`,
+		PassLen:  [2]int{3, 3},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`累減税`),
+	})
+	test(&genCase{
+		Pattern:  `$romaji(test123)`,
+		PassLen:  [2]int{7, 7},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`test123`),
+	})
 }
