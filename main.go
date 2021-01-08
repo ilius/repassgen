@@ -13,8 +13,6 @@ var entropyFlag = flag.Bool(
 )
 
 func main() {
-	InitKana()
-
 	flag.Parse()
 
 	calcEnropy := entropyFlag != nil && *entropyFlag
