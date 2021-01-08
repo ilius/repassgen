@@ -669,6 +669,37 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
+		Pattern: `$date(2000,2020,-)`,
+		PassLen: [2]int{10, 10},
+		Entropy: [2]float64{12.8, 12.9},
+	})
+	test(&genCase{
+		Pattern: "$date(2000,2020)",
+		PassLen: [2]int{10, 10},
+		Entropy: [2]float64{12.8, 12.9},
+	})
+	test(&genCase{
+		Pattern: "$date(|2000|2020|,)",
+		PassLen: [2]int{10, 10},
+		Entropy: [2]float64{12.8, 12.9},
+	})
+	test(&genCase{
+		Pattern: "$date()",
+		Error:   "date: too few characters as arguments",
+	})
+	test(&genCase{
+		Pattern: "$date(2000)",
+		Error:   "date: at least 2 arguments are required",
+	})
+	test(&genCase{
+		Pattern: "$date(2000a,2000b)",
+		Error:   "invalid year 2000a",
+	})
+	test(&genCase{
+		Pattern: "$date(2000,2000b)",
+		Error:   "invalid year 2000b",
+	})
+	test(&genCase{
 		Pattern:  `$space(abcd)`,
 		PassLen:  [2]int{7, 7},
 		Entropy:  [2]float64{0, 0},
@@ -680,7 +711,6 @@ func TestGenerate(t *testing.T) {
 		Entropy:  [2]float64{0, 0},
 		Password: strPtr(``),
 	})
-
 	test(&genCase{
 		Pattern:  `$romaji(そうたい)`,
 		PassLen:  [2]int{6, 6},
