@@ -66,6 +66,9 @@ Then `repassgen` binary file will be created in current directory.
 - [x] `$bip39word(N)` Generate N words from BIP-39 English mnemonic words
 - [x] `$bip39encode(...)` Encode (binary) data into some BIP-39 English mnemonic words
 - [x] `$date(2000,2020,-)` Generate a random date in the given year range
+- [x] `$space(...)` Adds spaces between each two characters of string (generated from given pattern)
+- [x] `$expand(|...)` Adds `|` (for example) between each two characters (similar to `$space`)
+- [x] `$romaji(...)` Converts Japanese hiragana/katakana string to Latin
 
 
 
