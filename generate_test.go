@@ -269,6 +269,11 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
+		Pattern: "$?(a)$?(b)$?(c)$?(d)",
+		PassLen: [2]int{0, 4},
+		Entropy: [2]float64{4, 4},
+	})
+	test(&genCase{
 		Pattern: `[^ :punct:]{128}`,
 		PassLen: [2]int{128, 128},
 		Entropy: [2]float64{762.1, 762.2},

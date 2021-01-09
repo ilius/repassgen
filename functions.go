@@ -132,6 +132,8 @@ func getFuncGenerator(s *State, funcName string, arg []rune) (generatorIface, er
 		return newShuffleGenerator(arg)
 	case "date":
 		return newDateGenerator(string(arg))
+	case "?":
+		return newOnceOrNoneGenerator(arg)
 	}
 	return nil, s.errorValue("invalid function '%v'", funcName)
 }
