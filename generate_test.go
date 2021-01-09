@@ -700,10 +700,28 @@ func TestGenerate(t *testing.T) {
 		Error:   "invalid year 2000b",
 	})
 	test(&genCase{
+		Pattern:  `$space()`,
+		PassLen:  [2]int{0, 0},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(``),
+	})
+	test(&genCase{
 		Pattern:  `$space(abcd)`,
 		PassLen:  [2]int{7, 7},
 		Entropy:  [2]float64{0, 0},
 		Password: strPtr(`a b c d`),
+	})
+	test(&genCase{
+		Pattern:  `$expand()`,
+		PassLen:  [2]int{0, 0},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(``),
+	})
+	test(&genCase{
+		Pattern:  `$expand(|abcd)`,
+		PassLen:  [2]int{7, 7},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`a|b|c|d`),
 	})
 	test(&genCase{
 		Pattern:  `$romaji()`,

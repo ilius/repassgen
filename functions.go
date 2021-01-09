@@ -11,6 +11,19 @@ import (
 	"github.com/ilius/crock32"
 )
 
+func expand1(sep rune, in []rune) []rune {
+	if len(in) < 1 {
+		return nil
+	}
+	out := make([]rune, 2*len(in)-1)
+	out[0] = in[0]
+	for i, c := range in[1:] {
+		out[2*i+1] = sep
+		out[2*i+2] = c
+	}
+	return out
+}
+
 var encoderFunctions = map[string]func(in []rune) []rune{
 	"base64": func(in []rune) []rune {
 		return []rune(base64.StdEncoding.EncodeToString([]byte(string(in))))
@@ -47,13 +60,13 @@ var encoderFunctions = map[string]func(in []rune) []rune{
 	},
 
 	"space": func(in []rune) []rune {
-		out := make([]rune, 2*len(in)-1)
-		out[0] = in[0]
-		for i, c := range in[1:] {
-			out[2*i+1] = ' '
-			out[2*i+2] = c
+		return expand1(' ', in)
+	},
+	"expand": func(in []rune) []rune {
+		if len(in) < 1 {
+			return nil
 		}
-		return out
+		return expand1(in[0], in[1:])
 	},
 
 	// Escape unicode characters, non-printable characters and double quote
