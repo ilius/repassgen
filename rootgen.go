@@ -16,6 +16,15 @@ type RootGenerator struct {
 
 // Generate generates a password
 func (g *RootGenerator) Generate(s *State) error {
+	err := g.lexLoop(s)
+	if err != nil {
+		return err
+	}
+	g.entropy = &s.patternEntropy
+	return nil
+}
+
+func (g *RootGenerator) lexLoop(s *State) error {
 	lex := LexRoot
 	var err error
 	for {
@@ -24,11 +33,9 @@ func (g *RootGenerator) Generate(s *State) error {
 			return err
 		}
 		if lex == nil {
-			break
+			return nil
 		}
 	}
-	g.entropy = &s.patternEntropy
-	return nil
 }
 
 // Entropy returns the entropy after .Generate() is called
