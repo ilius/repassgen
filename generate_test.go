@@ -618,6 +618,14 @@ func TestGenerate(t *testing.T) {
 		Error:   "syntax error near index 3: expected a function call",
 	})
 	test(&genCase{
+		Pattern: "($foo",
+		Error:   "syntax error near index 4: '(' not closed",
+	})
+	test(&genCase{
+		Pattern: "$foo(",
+		Error:   "syntax error near index 4: '(' not closed",
+	})
+	test(&genCase{
 		Pattern: "$foo(123)",
 		Error:   "value error near index 4: invalid function 'foo'",
 	})
@@ -659,6 +667,10 @@ func TestGenerate(t *testing.T) {
 		PassLen:  [2]int{3, 3},
 		Password: strPtr(`à-æ`),
 		Entropy:  [2]float64{0, 0},
+	})
+	test(&genCase{
+		Pattern: `\u00mn`,
+		Error:   `Encountered an invalid escape sequence in a string`,
 	})
 	test(&genCase{
 		Pattern: `[\u00e0-\u00e6]{10}`,

@@ -56,9 +56,6 @@ func lexBackslash(s *State) (LexType, error) {
 
 func lexIdent(s *State) (LexType, error) {
 	if s.end() {
-		if s.openParenth > 0 {
-			return nil, s.errorSyntax("'(' not closed")
-		}
 		return nil, s.errorSyntax("expected a function call")
 	}
 	c := s.pattern[s.patternPos]

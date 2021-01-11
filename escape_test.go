@@ -24,8 +24,9 @@
 package main
 
 import (
-	"github.com/ilius/is/v2"
 	"testing"
+
+	"github.com/ilius/is/v2"
 )
 
 func TestH2I(t *testing.T) {
