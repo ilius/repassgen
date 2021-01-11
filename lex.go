@@ -23,9 +23,14 @@ func LexRoot(s *State) (LexType, error) {
 		return lexRepeat, nil
 	case '(':
 		s.openParenth++
+		s.startGroup()
 		return lexGroup, nil
 	case '$':
+		s.startGroup()
 		return lexIdent, nil
+	case '|':
+		s.alterPos = append(s.alterPos, s.patternPos-1)
+		return LexRoot, nil
 	}
 	s.addOutputOne(c)
 	return LexRoot, nil

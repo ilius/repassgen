@@ -27,10 +27,11 @@ func TestGenerate(t *testing.T) {
 			minLen := tc.PassLen[0]
 			maxLen := tc.PassLen[1]
 			is.AddMsg(
-				"length=%v is not in range [%v, %v]",
+				"length=%v is not in range [%v, %v], password=%#v",
 				length,
 				minLen,
 				maxLen,
+				string(out.Password),
 			).True(minLen <= length && length <= maxLen)
 		}
 		pwStr := string(out.Password)
@@ -287,6 +288,32 @@ func TestGenerate(t *testing.T) {
 		Pattern: `[!-~]{10}`,
 		PassLen: [2]int{10, 10},
 		Entropy: [2]float64{65.5, 65.6},
+	})
+	test(&genCase{
+		Pattern: "a|b|c|d",
+		PassLen: [2]int{1, 1},
+		Entropy: [2]float64{2, 2},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < 'a' || c > 'd' {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: "(a|b|c|d){5}",
+		PassLen: [2]int{5, 5},
+		Entropy: [2]float64{4, 4},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < 'a' || c > 'd' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	// base64 length: ((bytes + 2) / 3) * 4
 	test(&genCase{
@@ -749,10 +776,16 @@ func TestGenerate(t *testing.T) {
 		Password: strPtr(``),
 	})
 	test(&genCase{
-		Pattern:  `$expand(|abcd)`,
+		Pattern:  `$expand(\|abcd)`,
 		PassLen:  [2]int{7, 7},
 		Entropy:  [2]float64{0, 0},
 		Password: strPtr(`a|b|c|d`),
+	})
+	test(&genCase{
+		Pattern:  `$expand(/abcd)`,
+		PassLen:  [2]int{7, 7},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`a/b/c/d`),
 	})
 	test(&genCase{
 		Pattern:  `$romaji()`,

@@ -20,8 +20,12 @@ type State struct {
 	patternBuff []rune
 	output      []rune
 
+	alterPos []uint
+
 	patternPos       uint
 	patternBuffStart uint
+
+	outputGroupPos []uint
 
 	openParenth uint
 	openBracket uint
@@ -45,6 +49,14 @@ func (s *State) addOutputNonRepeatable(data []rune) {
 func (s *State) end() bool {
 	return s.patternPos >= uint(len(s.pattern))
 }
+
+func (s *State) startGroup() {
+	s.outputGroupPos = append(s.outputGroupPos, uint(len(s.output)))
+}
+
+//func (s *State) endGroup() {
+//	s.outputGroupPos = s.outputGroupPos[:len(s.outputGroupPos)-1]
+//}
 
 func (s *State) errorSyntax(msg string, args ...interface{}) error {
 	return NewError(ErrorSyntax, s.absPos-1, fmt.Sprintf(msg, args...))

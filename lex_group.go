@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 func lexGroup(s *State) (LexType, error) {
 	if s.end() {
 		return nil, s.errorSyntax("'(' not closed")
@@ -11,14 +13,25 @@ func lexGroup(s *State) (LexType, error) {
 		return lexGroupBackslash, nil
 	case '(':
 		s.openParenth++
+		s.startGroup()
+	case '|':
+		s.alterPos = append(s.alterPos, s.patternPos-1)
 	case ')':
 		s.openParenth--
 		if s.openParenth > 0 {
 			break
 		}
 		s.absPos -= uint(len(s.patternBuff)) + 1
-		childPattern := s.patternBuff[s.patternBuffStart:len(s.patternBuff)]
-		gen := newGroupGenerator(childPattern)
+		childPattern := s.patternBuff[s.patternBuffStart:]
+		fmt.Printf("childPattern = %#v\n", string(childPattern))
+
+		var gen generatorIface
+		if len(s.alterPos) > 0 {
+			gen = newAlterationGenerator(childPattern, s.alterPos)
+		} else {
+			gen = newGroupGenerator(childPattern)
+		}
+
 		err := gen.Generate(s)
 		if err != nil {
 			return nil, err
@@ -34,9 +47,10 @@ func lexGroup(s *State) (LexType, error) {
 func lexGroupBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.move(1)
-	if c == ')' {
+	switch c {
+	case '(', ')', '|':
 		s.patternBuff = append(s.patternBuff, c)
-	} else {
+	default:
 		s.patternBuff = append(s.patternBuff, '\\', c)
 	}
 	return lexGroup, nil
