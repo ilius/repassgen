@@ -23,4 +23,10 @@ func TestError(t *testing.T) {
 		err.PrependMsg("msg 3")
 		is.ErrMsg(err, "syntax error near index 5: msg 3: dummy error: msg 2")
 	}
+	{
+		err := NewError(ErrorUnknown, 5, "dummy error")
+		err.AppendMsg("msg 2")
+		err.PrependMsg("msg 3")
+		is.ErrMsg(err, "unknown error near index 5: msg 3: dummy error: msg 2")
+	}
 }
