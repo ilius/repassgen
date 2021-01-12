@@ -16,7 +16,7 @@ func TestShuffleGenerator(t *testing.T) {
 	}
 	s := NewState(&SharedState{}, pattern)
 	{
-		entropy, err := g.Entropy()
+		entropy, err := g.Entropy(s)
 		is.ErrMsg(err, "entropy is not calculated")
 		is.Equal(0, entropy)
 	}
@@ -25,7 +25,7 @@ func TestShuffleGenerator(t *testing.T) {
 		is.NotErr(err)
 	}
 	{
-		entropy, err := g.Entropy()
+		entropy, err := g.Entropy(s)
 		is.NotErr(err)
 		isFloatBetween(is, entropy, 29.8, 29.9)
 	}

@@ -17,8 +17,8 @@ func (g *repeatGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *repeatGenerator) Entropy() (float64, error) {
-	childEntropy, err := g.child.Entropy()
+func (g *repeatGenerator) Entropy(s *State) (float64, error) {
+	childEntropy, err := g.child.Entropy(s)
 	if err != nil {
 		return 0, err
 	}

@@ -23,7 +23,7 @@ func (g *charClassGenerator) Generate(s *State) error {
 		i := int(ibig.Int64())
 		s.output = append(s.output, charset[i])
 	}
-	entropy, err := g.Entropy()
+	entropy, err := g.Entropy(s)
 	if err != nil {
 		return err
 	}
@@ -31,7 +31,7 @@ func (g *charClassGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *charClassGenerator) Entropy() (float64, error) {
+func (g *charClassGenerator) Entropy(s *State) (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil
 	}

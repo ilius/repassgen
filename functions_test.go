@@ -22,7 +22,7 @@ func TestEncoderFunctionCallGenerator(t *testing.T) {
 		}
 		err := gen.Generate(s)
 		is.ErrMsg(err, `value error near index 5: invalid function 'foo'`)
-		entropy, entropyErr := gen.Entropy()
+		entropy, entropyErr := gen.Entropy(s)
 		is.Equal(entropy, 0)
 		is.ErrMsg(entropyErr, `entropy is not calculated`)
 	}
@@ -43,7 +43,7 @@ func TestEncoderFunctionCallGenerator(t *testing.T) {
 		}
 		err := gen.Generate(s)
 		is.NotErr(err)
-		entropy, entropyErr := gen.Entropy()
+		entropy, entropyErr := gen.Entropy(s)
 		is.NotErr(entropyErr)
 		isFloatBetween(is, entropy, 9.4, 9.5)
 	}

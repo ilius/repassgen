@@ -17,7 +17,7 @@ func TestRepeatGeneratorByGroup(t *testing.T) {
 	}
 	s := NewState(&SharedState{}, pattern)
 	{
-		entropy, err := g.Entropy()
+		entropy, err := g.Entropy(s)
 		is.ErrMsg(err, "entropy is not calculated")
 		is.Equal(0, entropy)
 	}
@@ -26,7 +26,7 @@ func TestRepeatGeneratorByGroup(t *testing.T) {
 		is.NotErr(err)
 	}
 	{
-		entropy, err := g.Entropy()
+		entropy, err := g.Entropy(s)
 		is.NotErr(err)
 		isFloatBetween(is, entropy, 25.3, 25.4)
 	}
@@ -48,7 +48,7 @@ func TestRepeatGeneratorByStatic(t *testing.T) {
 		is.NotErr(err)
 	}
 	{
-		entropy, err := g.Entropy()
+		entropy, err := g.Entropy(s)
 		is.NotErr(err)
 		is.Equal(0, entropy)
 	}

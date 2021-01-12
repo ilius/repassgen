@@ -12,7 +12,7 @@ func TestGroupGenerator(t *testing.T) {
 	g := newGroupGenerator(pattern)
 	s := NewState(&SharedState{}, pattern)
 	{
-		entropy, err := g.Entropy()
+		entropy, err := g.Entropy(s)
 		is.ErrMsg(err, "entropy is not calculated")
 		is.Equal(0.0, entropy)
 	}
@@ -21,7 +21,7 @@ func TestGroupGenerator(t *testing.T) {
 		is.NotErr(err)
 	}
 	{
-		entropy, err := g.Entropy()
+		entropy, err := g.Entropy(s)
 		is.NotErr(err)
 		isFloatBetween(is, entropy, 59.6, 59.7)
 	}

@@ -111,7 +111,7 @@ func (g *encoderFunctionCallGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *encoderFunctionCallGenerator) Entropy() (float64, error) {
+func (g *encoderFunctionCallGenerator) Entropy(s *State) (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil
 	}

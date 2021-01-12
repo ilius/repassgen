@@ -37,7 +37,7 @@ func (g *bip39WordGenerator) Generate(s *State) error {
 	result := []rune(strings.Join(words, " "))
 
 	s.addOutputNonRepeatable(result)
-	entropy, err := g.Entropy()
+	entropy, err := g.Entropy(s)
 	if err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func (g *bip39WordGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *bip39WordGenerator) Entropy() (float64, error) {
+func (g *bip39WordGenerator) Entropy(s *State) (float64, error) {
 	return float64(g.wordCount) * math.Log2(float64(bip39.WordCount())), nil
 }
 

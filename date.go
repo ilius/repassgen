@@ -29,7 +29,7 @@ func (g *dateGenerator) Generate(s *State) error {
 	date := gregorian.JdTo(jd)
 	dateStr := date.StringWithSep(g.sep)
 	s.addOutputNonRepeatable([]rune(dateStr))
-	entropy, err := g.Entropy()
+	entropy, err := g.Entropy(s)
 	if err != nil {
 		return err
 	}
@@ -37,7 +37,7 @@ func (g *dateGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *dateGenerator) Entropy() (float64, error) {
+func (g *dateGenerator) Entropy(s *State) (float64, error) {
 	return math.Log2(float64(g.endJd - g.startJd)), nil
 }
 

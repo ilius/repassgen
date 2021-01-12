@@ -39,7 +39,7 @@ func (g *RootGenerator) lexLoop(s *State) error {
 }
 
 // Entropy returns the entropy after .Generate() is called
-func (g *RootGenerator) Entropy() (float64, error) {
+func (g *RootGenerator) Entropy(s *State) (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil
 	}

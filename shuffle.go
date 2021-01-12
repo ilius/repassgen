@@ -32,7 +32,7 @@ func (g *shuffleGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *shuffleGenerator) Entropy() (float64, error) {
+func (g *shuffleGenerator) Entropy(s *State) (float64, error) {
 	// FIXME: how to calculate entropy?
 	if g.argPatternEntropy != nil {
 		return *g.argPatternEntropy, nil
