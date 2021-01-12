@@ -11,6 +11,8 @@ type ErrorType string
 const (
 	// ErrorSyntax is syntax error type
 	ErrorSyntax ErrorType = "syntax"
+	// ErrorArg is argument error type
+	ErrorArg ErrorType = "argument"
 	// ErrorValue is value error type
 	ErrorValue ErrorType = "value"
 	// ErrorUnknown is unknown error type

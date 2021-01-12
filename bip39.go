@@ -2,7 +2,6 @@ package main
 
 import (
 	rand "crypto/rand"
-	"fmt"
 	"math"
 	"math/big"
 	"strconv"
@@ -49,7 +48,7 @@ func (g *bip39WordGenerator) Entropy(s *State) (float64, error) {
 	return float64(g.wordCount) * math.Log2(float64(bip39.WordCount())), nil
 }
 
-func newBIP39WordGenerator(arg string) (*bip39WordGenerator, error) {
+func newBIP39WordGenerator(s *State, arg string) (*bip39WordGenerator, error) {
 	if arg == "" {
 		return &bip39WordGenerator{
 			wordCount: 1,
@@ -57,7 +56,7 @@ func newBIP39WordGenerator(arg string) (*bip39WordGenerator, error) {
 	}
 	argInt64, err := strconv.ParseInt(arg, 10, 64)
 	if err != nil {
-		return nil, fmt.Errorf("invalid number '%v'", arg)
+		return nil, s.errorValue("invalid number '%v'", arg)
 	}
 	return &bip39WordGenerator{
 		wordCount: int(argInt64),

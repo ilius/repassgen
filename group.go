@@ -1,9 +1,5 @@
 package main
 
-import (
-	"fmt"
-)
-
 func newGroupGenerator(pattern []rune) *groupGenerator {
 	return &groupGenerator{
 		pattern:  pattern,
@@ -38,5 +34,5 @@ func (g *groupGenerator) Entropy(s *State) (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil
 	}
-	return 0, fmt.Errorf("entropy is not calculated")
+	return 0, s.errorUnknown("entropy is not calculated")
 }

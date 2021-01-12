@@ -583,7 +583,7 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: "$bip39word(x)",
-		Error:   "invalid number 'x'",
+		Error:   "value error near index 10: invalid number 'x'",
 	})
 	// 1 bip39 word   => 11 bits entropy
 	// 8 bip39 words  => 11 bytes entropy
@@ -702,19 +702,19 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: "$date()",
-		Error:   "date: too few characters as arguments",
+		Error:   "argument error near index 5: date: too few characters as arguments",
 	})
 	test(&genCase{
 		Pattern: "$date(2000)",
-		Error:   "date: at least 2 arguments are required",
+		Error:   "argument error near index 5: date: at least 2 arguments are required",
 	})
 	test(&genCase{
 		Pattern: "$date(2000a,2000b)",
-		Error:   "invalid year 2000a",
+		Error:   "value error near index 5: invalid year 2000a",
 	})
 	test(&genCase{
 		Pattern: "$date(2000,2000b)",
-		Error:   "invalid year 2000b",
+		Error:   "value error near index 5: invalid year 2000b",
 	})
 	test(&genCase{
 		Pattern:  `$space()`,

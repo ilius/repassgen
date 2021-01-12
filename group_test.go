@@ -10,10 +10,10 @@ func TestGroupGenerator(t *testing.T) {
 	is := is.New(t)
 	pattern := []rune("([a-z]{5}[1-9]{2}){2}")
 	g := newGroupGenerator(pattern)
-	s := NewState(&SharedState{}, pattern)
+	s := newTestState(pattern)
 	{
 		entropy, err := g.Entropy(s)
-		is.ErrMsg(err, "entropy is not calculated")
+		is.ErrMsg(err, "unknown error near index 20: entropy is not calculated")
 		is.Equal(0.0, entropy)
 	}
 	{

@@ -9,6 +9,21 @@ func strPtr(s string) *string {
 	return &s2
 }
 
+func newTestState(patternArg interface{}) *State {
+	var pattern []rune
+	switch patternTyped := patternArg.(type) {
+	case string:
+		pattern = []rune(patternTyped)
+	case []rune:
+		pattern = patternTyped
+	default:
+		panic("invalid patternArg")
+	}
+	s := NewState(&SharedState{}, pattern)
+	s.absPos = uint(len(pattern))
+	return s
+}
+
 func isFloatBetween(is *is.Is, actual float64, min float64, max float64) {
 	is.AddMsg(
 		"%v is not in range [%v, %v]",

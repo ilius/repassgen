@@ -15,10 +15,10 @@ func TestRepeatGeneratorByGroup(t *testing.T) {
 		child: newGroupGenerator([]rune("[a-c]")),
 		count: count,
 	}
-	s := NewState(&SharedState{}, pattern)
+	s := newTestState(pattern)
 	{
 		entropy, err := g.Entropy(s)
-		is.ErrMsg(err, "entropy is not calculated")
+		is.ErrMsg(err, "unknown error near index 7: entropy is not calculated")
 		is.Equal(0, entropy)
 	}
 	{

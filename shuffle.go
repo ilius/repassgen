@@ -1,9 +1,5 @@
 package main
 
-import (
-	"fmt"
-)
-
 func shuffle(in []rune) []rune {
 	r := NewRandSource()
 	r.Shuffle(len(in), func(i int, j int) {
@@ -37,7 +33,7 @@ func (g *shuffleGenerator) Entropy(s *State) (float64, error) {
 	if g.argPatternEntropy != nil {
 		return *g.argPatternEntropy, nil
 	}
-	return 0, fmt.Errorf("entropy is not calculated")
+	return 0, s.errorUnknown("entropy is not calculated")
 }
 
 func newShuffleGenerator(arg []rune) (*shuffleGenerator, error) {

@@ -1,9 +1,5 @@
 package main
 
-import (
-	"fmt"
-)
-
 // NewRootGenerator creates a new RootGenerator
 func NewRootGenerator() *RootGenerator {
 	return &RootGenerator{}
@@ -43,5 +39,5 @@ func (g *RootGenerator) Entropy(s *State) (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil
 	}
-	return 0, fmt.Errorf("entropy is not calculated")
+	return 0, s.errorUnknown("entropy is not calculated")
 }

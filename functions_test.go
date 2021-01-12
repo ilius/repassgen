@@ -6,16 +6,10 @@ import (
 	"github.com/ilius/is/v2"
 )
 
-func newState(pattern string) *State {
-	s := NewState(&SharedState{}, []rune(pattern))
-	s.absPos = uint(len(pattern))
-	return s
-}
-
 func TestEncoderFunctionCallGenerator(t *testing.T) {
 	is := is.New(t)
 	{
-		s := newState("$foo()")
+		s := newTestState("$foo()")
 		gen := &encoderFunctionCallGenerator{
 			funcName:   "foo",
 			argPattern: []rune("$foo()"),
@@ -24,10 +18,10 @@ func TestEncoderFunctionCallGenerator(t *testing.T) {
 		is.ErrMsg(err, `value error near index 5: invalid function 'foo'`)
 		entropy, entropyErr := gen.Entropy(s)
 		is.Equal(entropy, 0)
-		is.ErrMsg(entropyErr, `entropy is not calculated`)
+		is.ErrMsg(entropyErr, `unknown error near index 5: entropy is not calculated`)
 	}
 	{
-		s := newState("$hex([:x:])")
+		s := newTestState("$hex([:x:])")
 		gen := &encoderFunctionCallGenerator{
 			funcName:   "hex",
 			argPattern: []rune("$hex([:x:])"),
@@ -36,7 +30,7 @@ func TestEncoderFunctionCallGenerator(t *testing.T) {
 		is.ErrMsg(err, `value error near index 19: invalid character class "x"`)
 	}
 	{
-		s := newState("$hex([a-z]{2})")
+		s := newTestState("$hex([a-z]{2})")
 		gen := &encoderFunctionCallGenerator{
 			funcName:   "hex",
 			argPattern: []rune("$hex([a-z]{2})"),

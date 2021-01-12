@@ -50,6 +50,10 @@ func (s *State) errorSyntax(msg string, args ...interface{}) error {
 	return NewError(ErrorSyntax, s.absPos-1, fmt.Sprintf(msg, args...))
 }
 
+func (s *State) errorArg(msg string, args ...interface{}) error {
+	return NewError(ErrorArg, s.absPos-1, fmt.Sprintf(msg, args...))
+}
+
 func (s *State) errorValue(msg string, args ...interface{}) error {
 	return NewError(ErrorValue, s.absPos-1, fmt.Sprintf(msg, args...))
 }

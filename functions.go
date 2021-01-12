@@ -4,7 +4,6 @@ import (
 	"encoding/base32"
 	"encoding/base64"
 	"encoding/hex"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -115,7 +114,7 @@ func (g *encoderFunctionCallGenerator) Entropy(s *State) (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil
 	}
-	return 0, fmt.Errorf("entropy is not calculated")
+	return 0, s.errorUnknown("entropy is not calculated")
 }
 
 func getFuncGenerator(s *State, funcName string, arg []rune) (generatorIface, error) {
@@ -127,11 +126,11 @@ func getFuncGenerator(s *State, funcName string, arg []rune) (generatorIface, er
 	}
 	switch funcName {
 	case "bip39word":
-		return newBIP39WordGenerator(string(arg))
+		return newBIP39WordGenerator(s, string(arg))
 	case "shuffle":
 		return newShuffleGenerator(arg)
 	case "date":
-		return newDateGenerator(string(arg))
+		return newDateGenerator(s, string(arg))
 	case "?":
 		return newOnceOrNoneGenerator(arg)
 	}

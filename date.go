@@ -2,7 +2,6 @@ package main
 
 import (
 	rand "crypto/rand"
-	"fmt"
 	"math"
 	"math/big"
 	"strconv"
@@ -41,9 +40,9 @@ func (g *dateGenerator) Entropy(s *State) (float64, error) {
 	return math.Log2(float64(g.endJd - g.startJd)), nil
 }
 
-func newDateGenerator(argsStr string) (*dateGenerator, error) {
+func newDateGenerator(s *State, argsStr string) (*dateGenerator, error) {
 	if len(argsStr) < 3 {
-		return nil, fmt.Errorf("date: too few characters as arguments")
+		return nil, s.errorArg("date: too few characters as arguments")
 	}
 	argSep := ","
 	if argsStr[0] < '0' || argsStr[0] > '9' {
@@ -52,16 +51,15 @@ func newDateGenerator(argsStr string) (*dateGenerator, error) {
 	}
 	args := strings.Split(argsStr, argSep)
 	if len(args) < 2 {
-		fmt.Printf("args = %#v\n", args)
-		return nil, fmt.Errorf("date: at least 2 arguments are required")
+		return nil, s.errorArg("date: at least 2 arguments are required")
 	}
 	startYear, err := strconv.Atoi(strings.TrimSpace(args[0]))
 	if err != nil {
-		return nil, fmt.Errorf("invalid year %s", args[0])
+		return nil, s.errorValue("invalid year %s", args[0])
 	}
 	endYear, err := strconv.Atoi(strings.TrimSpace(args[1]))
 	if err != nil {
-		return nil, fmt.Errorf("invalid year %s", args[1])
+		return nil, s.errorValue("invalid year %s", args[1])
 	}
 	sep := "-"
 	if len(args) > 2 {
