@@ -3,7 +3,6 @@ package main
 import (
 	rand "crypto/rand"
 	"math/big"
-	math_rand "math/rand"
 )
 
 type onceOrNoneGenerator struct {
@@ -12,10 +11,6 @@ type onceOrNoneGenerator struct {
 }
 
 func randBool() bool {
-	return math_rand.Intn(10)%2 == 1
-}
-
-func randBoolSafe() bool {
 	randBig, err := rand.Int(rand.Reader, big.NewInt(10))
 	if err != nil {
 		panic(err)
@@ -35,7 +30,7 @@ func (g *onceOrNoneGenerator) Generate(s *State) error {
 		}
 		output = s.output
 	}
-	if randBoolSafe() {
+	if randBool() {
 		s.output = append(s.output, output...)
 	}
 	s.lastGen = nil
