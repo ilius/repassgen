@@ -669,8 +669,22 @@ func TestGenerate(t *testing.T) {
 		Entropy:  [2]float64{0, 0},
 	})
 	test(&genCase{
+		Pattern:  `test1 \u00e1 test2 \u00e2 test3`,
+		PassLen:  [2]int{21, 21},
+		Password: strPtr(`test1 á test2 â test3`),
+		Entropy:  [2]float64{0, 0},
+	})
+	test(&genCase{
 		Pattern: `\u00mn`,
-		Error:   `Encountered an invalid escape sequence in a string`,
+		Error:   `invalid escape sequence near index 0`,
+	})
+	test(&genCase{
+		Pattern: `test1 \u00mn test2`,
+		Error:   `invalid escape sequence near index 6`,
+	})
+	test(&genCase{
+		Pattern: `(test1 \u00mn test2){2}`,
+		Error:   `invalid escape sequence near index 7`,
 	})
 	test(&genCase{
 		Pattern: `[\u00e0-\u00e6]{10}`,

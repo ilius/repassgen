@@ -24,14 +24,12 @@
 package main
 
 import (
-	"errors"
+	"fmt"
 	"strings"
 	"unicode/utf8"
 )
 
 // JSON Unicode stuff: see https://tools.ietf.org/html/rfc7159#section-7
-
-var MalformedStringEscapeError = errors.New("Encountered an invalid escape sequence in a string")
 
 const supplementalPlanesOffset = 0x10000
 const highSurrogateOffset = 0xD800
@@ -119,19 +117,19 @@ var backslashCharEscapeTable = [...]rune{
 // unescapeUnicodeSingle unescapes the single escape sequence starting at 'in' into 'out' and returns
 // how many characters were consumed from 'in' and emitted into 'out'.
 // If a valid escape sequence does not appear as a prefix of 'in', (-1, -1) to signal the error.
-func unescapeUnicodeSingle(in []rune) (int, rune, error) {
-	if len(in) < 2 || in[0] != '\\' {
+func unescapeUnicodeSingle(in []rune, start int) (int, rune, error) {
+	if len(in)-start < 2 || in[start] != '\\' {
 		// Invalid escape due to insufficient characters for any escape or no initial backslash
 		return -1, 0, nil
 	}
 
 	// https://tools.ietf.org/html/rfc7159#section-7
-	switch e := in[1]; e {
+	switch e := in[start+1]; e {
 	case 'u':
 		// Unicode escape
-		if r, inLen := decodeUnicodeEscape(in); inLen == -1 {
+		if r, inLen := decodeUnicodeEscape(in[start:]); inLen == -1 {
 			// Invalid Unicode escape
-			return -1, 0, MalformedStringEscapeError
+			return -1, 0, fmt.Errorf("invalid escape sequence near index %d", start)
 		} else {
 			return inLen, r, nil
 		}
@@ -151,31 +149,31 @@ func unescapeUnicode(in []rune) ([]rune, error) {
 
 	// Copy the first sequence of unescaped bytes to the output and obtain a buffer pointer (subslice)
 	out = in[:firstBackslash]
-	in = in[firstBackslash:]
+	start := firstBackslash
 
-	for len(in) > 0 {
+	for start < len(in) {
 		// Unescape the next escaped character
-		inLen, r, err := unescapeUnicodeSingle(in)
+		inLen, r, err := unescapeUnicodeSingle(in, start)
 		if err != nil {
 			return nil, err
 		}
 		if inLen == -1 {
-			out = append(out, in[0])
-			in = in[1:]
+			out = append(out, in[start])
+			start += 1
 			continue
 		}
 		out = append(out, r)
 
-		in = in[inLen:]
+		start += inLen
 
 		// Copy everything up until the next backslash
-		nextBackslash := strings.IndexRune(string(in), '\\')
+		nextBackslash := strings.IndexRune(string(in[start:]), '\\')
 		if nextBackslash == -1 {
-			out = append(out, in...)
+			out = append(out, in[start:]...)
 			break
 		} else {
-			out = append(out, in[:nextBackslash]...)
-			in = in[nextBackslash:]
+			out = append(out, in[start:start+nextBackslash]...)
+			start += nextBackslash
 		}
 	}
 
