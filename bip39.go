@@ -30,7 +30,7 @@ func (g *bip39WordGenerator) Generate(s *State) error {
 		index := int(ibig.Int64())
 		word, ok := bip39.GetWord(index)
 		if !ok {
-			return fmt.Errorf("internal error, index=%v > 2048", index)
+			return s.errorUnknown("internal error, index=%v > 2048", index)
 		}
 		words[ai] = word
 	}
