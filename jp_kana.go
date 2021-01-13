@@ -34,9 +34,7 @@ var (
 	hiraganaRe = regexp.MustCompile(`ん([あいうえおなにぬねの])`)
 	katakanaRe = regexp.MustCompile(`ン([アイウエオナニヌネノ])`)
 
-	kanaToRomajiTrie     *Trie
-	romajiToHiraganaTrie *Trie
-	romajiToKatakanaTrie *Trie
+	kanaToRomajiTrie *Trie
 )
 
 // Initialize builds the Hiragana + Katakana trie.
@@ -44,11 +42,9 @@ var (
 // they both use the same trie without conflict. Nice bonus!
 func InitKana() {
 	kanaToRomajiTrie = newTrie()
-	romajiToHiraganaTrie = newTrie()
-	romajiToKatakanaTrie = newTrie()
 
 	tables := []string{HiraganaTable, KatakanaTable}
-	for t, table := range tables {
+	for _, table := range tables {
 		rows := strings.Split(table, "\n")
 		colNames := strings.Split(string(rows[0]), "\t")[1:]
 		for _, row := range rows[1:] {
@@ -61,11 +57,6 @@ func InitKana() {
 					if singleKana != "" {
 						// add to tries
 						kanaToRomajiTrie.insert(singleKana, value)
-						if t == 0 {
-							romajiToHiraganaTrie.insert(value, singleKana)
-						} else if t == 1 {
-							romajiToKatakanaTrie.insert(value, singleKana)
-						}
 					}
 				}
 			}
