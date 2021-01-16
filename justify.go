@@ -21,7 +21,7 @@ func subGenerate(s *State, pattern []rune) ([]rune, error) {
 	return output, nil
 }
 
-func ljust(in []rune, width int, fillChar rune) []rune {
+func rjust(in []rune, width int, fillChar rune) []rune {
 	if len(in) >= width {
 		return in
 	}
@@ -34,7 +34,7 @@ func ljust(in []rune, width int, fillChar rune) []rune {
 	return out
 }
 
-func rjust(in []rune, width int, fillChar rune) []rune {
+func ljust(in []rune, width int, fillChar rune) []rune {
 	if len(in) >= width {
 		return in
 	}
@@ -125,17 +125,6 @@ func parseJustifyArgs(s *State, argsStr string, funcName string) (*JustifyArgs, 
 	}, nil
 }
 
-func newLjustGenerator(s *State, argsStr string) (*justifyGenerator, error) {
-	args, err := parseJustifyArgs(s, argsStr, "ljust")
-	if err != nil {
-		return nil, err
-	}
-	return &justifyGenerator{
-		args:        args,
-		justifyFunc: ljust,
-	}, nil
-}
-
 func newRjustGenerator(s *State, argsStr string) (*justifyGenerator, error) {
 	args, err := parseJustifyArgs(s, argsStr, "rjust")
 	if err != nil {
@@ -144,6 +133,17 @@ func newRjustGenerator(s *State, argsStr string) (*justifyGenerator, error) {
 	return &justifyGenerator{
 		args:        args,
 		justifyFunc: rjust,
+	}, nil
+}
+
+func newLjustGenerator(s *State, argsStr string) (*justifyGenerator, error) {
+	args, err := parseJustifyArgs(s, argsStr, "ljust")
+	if err != nil {
+		return nil, err
+	}
+	return &justifyGenerator{
+		args:        args,
+		justifyFunc: ljust,
 	}, nil
 }
 

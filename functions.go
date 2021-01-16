@@ -133,10 +133,10 @@ func getFuncGenerator(s *State, funcName string, arg []rune) (generatorIface, er
 		return newDateGenerator(s, string(arg))
 	case "?":
 		return newOnceOrNoneGenerator(arg)
-	case "ljust":
-		return newLjustGenerator(s, string(arg))
 	case "rjust":
 		return newRjustGenerator(s, string(arg))
+	case "ljust":
+		return newLjustGenerator(s, string(arg))
 	case "center":
 		return newCenterGenerator(s, string(arg))
 	}
