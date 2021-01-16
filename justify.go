@@ -5,22 +5,6 @@ import (
 	"strings"
 )
 
-func subGenerate(s *State, pattern []rune) ([]rune, error) {
-	childGen := NewRootGenerator()
-	ss := s.SharedState
-	var output []rune
-	{
-		s := NewState(ss, pattern)
-		err := childGen.Generate(s)
-		if err != nil {
-			return nil, err
-		}
-		output = s.output
-	}
-	s.lastGen = nil
-	return output, nil
-}
-
 func rjust(in []rune, width int, fillChar rune) []rune {
 	if len(in) >= width {
 		return in

@@ -32,3 +32,19 @@ func Generate(in GenerateInput) (*GenerateOutput, error) {
 		PatternEntropy: s.patternEntropy,
 	}, nil
 }
+
+func subGenerate(s *State, pattern []rune) ([]rune, error) {
+	childGen := NewRootGenerator()
+	ss := s.SharedState
+	var output []rune
+	{
+		s := NewState(ss, pattern)
+		err := childGen.Generate(s)
+		if err != nil {
+			return nil, err
+		}
+		output = s.output
+	}
+	s.lastGen = nil
+	return output, nil
+}

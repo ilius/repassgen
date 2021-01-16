@@ -2,30 +2,21 @@ package main
 
 func newGroupGenerator(pattern []rune) *groupGenerator {
 	return &groupGenerator{
-		pattern:  pattern,
-		childGen: NewRootGenerator(),
+		pattern: pattern,
 	}
 }
 
 type groupGenerator struct {
-	childGen *RootGenerator
-	entropy  *float64
-	pattern  []rune
+	entropy *float64
+	pattern []rune
 }
 
 func (g *groupGenerator) Generate(s *State) error {
-	ss := s.SharedState
-	var output []rune
-	{
-		s := NewState(ss, g.pattern)
-		err := g.childGen.Generate(s)
-		if err != nil {
-			return err
-		}
-		output = s.output
+	output, err := subGenerate(s, g.pattern)
+	if err != nil {
+		return err
 	}
 	s.output = append(s.output, output...)
-	s.lastGen = nil
 	g.entropy = &s.patternEntropy
 	return nil
 }
