@@ -130,7 +130,7 @@ Then `repassgen` binary file will be created in current directory.
 
 - Password with length 16, using only Crockford's Base32 characters (uppercase)
     ```sh
-    $ repassgen '[:b32:]{16}'
+    $ repassgen '[:B32:]{16}'
     HJ48VSR4Y0DHQ9EV
     ```
 
