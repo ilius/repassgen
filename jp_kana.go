@@ -40,7 +40,7 @@ var (
 // Initialize builds the Hiragana + Katakana trie.
 // Because there is no overlap between the hiragana and katakana sets,
 // they both use the same trie without conflict. Nice bonus!
-func InitKana() {
+func InitRomaji() {
 	kanaToRomajiTrie = newTrie()
 
 	tables := []string{HiraganaTable, KatakanaTable}

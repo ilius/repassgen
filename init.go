@@ -13,5 +13,5 @@ func init() {
 		panic("cannot seed math/rand package with cryptographically secure random number generator")
 	}
 	math_rand.Seed(int64(binary.LittleEndian.Uint64(b[:])))
-	InitKana()
+	InitRomaji()
 }
