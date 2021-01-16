@@ -96,9 +96,10 @@ func parseJustifyArgs(s *State, argsStr string, funcName string) (*JustifyArgs, 
 	if len(argsStr) < 3 {
 		return nil, s.errorArg("%s: too few characters as arguments", funcName)
 	}
-	argSep := ","
-	// FIXME: split by considering []{}()
-	args := strings.Split(argsStr, argSep)
+	args, err := splitArgsStr(argsStr)
+	if err != nil {
+		return nil, err
+	}
 	if len(args) < 2 {
 		return nil, s.errorArg("%s: at least 2 arguments are required", funcName)
 	}

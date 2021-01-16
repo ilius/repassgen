@@ -808,4 +808,73 @@ func TestGenerate(t *testing.T) {
 		Entropy:  [2]float64{0, 0},
 		Password: strPtr(`test123`),
 	})
+	test(&genCase{
+		Pattern:  `$rjust(abc,7)`,
+		PassLen:  [2]int{7, 7},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`    abc`),
+	})
+	test(&genCase{
+		Pattern:  `$rjust(abc,2)`,
+		PassLen:  [2]int{3, 3},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`abc`),
+	})
+	test(&genCase{
+		Pattern:  `$rjust(abc,7,0)`,
+		PassLen:  [2]int{7, 7},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`0000abc`),
+	})
+	test(&genCase{
+		Pattern: `$rjust([a-z]{5},7,0)`,
+		PassLen: [2]int{7, 7},
+		Entropy: [2]float64{23.5, 23.6},
+	})
+	test(&genCase{
+		Pattern:  `$rjust((abc,),7,0)`,
+		PassLen:  [2]int{7, 7},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`000abc,`),
+	})
+	test(&genCase{
+		Pattern: `$rjust(abc)`,
+		Error:   `argument error near index 6: rjust: at least 2 arguments are required`,
+	})
+	test(&genCase{
+		Pattern: `$rjust(abc,a)`,
+		Error:   `value error near index 6: invalid width a`,
+	})
+	test(&genCase{
+		Pattern: `$rjust(abc,0)`,
+		Error:   `value error near index 6: invalid width 0`,
+	})
+	test(&genCase{
+		Pattern: `$rjust(abc,1,ab)`,
+		Error:   `value error near index 6: invalid fillChar="ab", must have length 1`,
+	})
+	test(&genCase{
+		Pattern:  `$ljust((abc,),7,0)`,
+		PassLen:  [2]int{7, 7},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`abc,000`),
+	})
+	test(&genCase{
+		Pattern:  `$ljust((abc,),7)`,
+		PassLen:  [2]int{7, 7},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`abc,   `),
+	})
+	test(&genCase{
+		Pattern:  `$center((abc,),7)`,
+		PassLen:  [2]int{7, 7},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(` abc,  `),
+	})
+	test(&genCase{
+		Pattern:  `$center((abc,),8)`,
+		PassLen:  [2]int{8, 8},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`  abc,  `),
+	})
 }
