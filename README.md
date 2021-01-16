@@ -200,13 +200,13 @@ Then `repassgen` binary file will be created in current directory.
     zpbgjba	pm
     ```
 
-- Generate 12 random mnemonic words from BIP-39 English words
+- Generate 12 random mnemonic words from [BIP-39](https://en.bitcoin.it/wiki/BIP_0039) English words
     ```sh
     $ repassgen '$bip39word(12)'
     bachelor run match video bitter nuclear hungry gossip spoon lottery grab cabbage
     ```
 
-- Generate 16 random bytes, then encode it to BIP-39 English mnemonic words
+- Generate 16 random bytes, then encode it to [BIP-39](https://en.bitcoin.it/wiki/BIP_0039) English mnemonic words
     ```sh
     $ repassgen '$bip39encode([:byte:]{16})'
     hybrid grow tide eight blouse cost math secret fire pair throw circle praise tonight bid senior injury glide tide denial account
