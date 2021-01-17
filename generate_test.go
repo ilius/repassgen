@@ -844,6 +844,40 @@ func TestGenerate(t *testing.T) {
 		Password: strPtr(`000abc,`),
 	})
 	test(&genCase{
+		Pattern: `$rjust([abc]{3},7,0)`,
+		PassLen: [2]int{7, 7},
+		Entropy: [2]float64{4.7, 4.8},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c >= 'a' && c <= 'c' {
+					return true
+				}
+				if c == '0' {
+					return true
+				}
+				return false
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `$rjust([)(}]{3},7,0)`,
+		PassLen: [2]int{7, 7},
+		Entropy: [2]float64{4.7, 4.8},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c == ')' || c == '(' || c == '}' {
+					return true
+				}
+				if c == '0' {
+					return true
+				}
+				return false
+			}
+			return true
+		},
+	})
+	test(&genCase{
 		Pattern: `$rjust(abc)`,
 		Error:   `argument error near index 6: rjust: at least 2 arguments are required`,
 	})
