@@ -44,12 +44,10 @@ func newDateGenerator(s *State, argsStr string) (*dateGenerator, error) {
 	if len(argsStr) < 3 {
 		return nil, s.errorArg("date: too few characters as arguments")
 	}
-	argSep := ","
-	if argsStr[0] < '0' || argsStr[0] > '9' {
-		argSep = string(argsStr[0])
-		argsStr = argsStr[1:]
+	args, err := splitArgsStr(argsStr)
+	if err != nil {
+		return nil, err
 	}
-	args := strings.Split(argsStr, argSep)
 	if len(args) < 2 {
 		return nil, s.errorArg("date: at least 2 arguments are required")
 	}

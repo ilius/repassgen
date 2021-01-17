@@ -710,7 +710,7 @@ func TestGenerate(t *testing.T) {
 		Entropy: [2]float64{12.8, 12.9},
 	})
 	test(&genCase{
-		Pattern: "$date(|2000|2020|,)",
+		Pattern: "$date(2000,2020,\\,)",
 		PassLen: [2]int{10, 10},
 		Entropy: [2]float64{12.8, 12.9},
 	})
