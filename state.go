@@ -24,7 +24,7 @@ type State struct {
 	patternBuffStart uint
 
 	openParenth uint
-	openBracket uint
+	openBracket bool
 }
 
 func (s *State) move(chars uint) {

@@ -13,16 +13,19 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 	s.move(1)
 	switch c {
 	case '(':
-		if s.openBracket > 0 {
+		if s.openBracket {
 			break
 		}
 		s.openParenth++
 	case '[':
-		s.openBracket++
+		if s.openBracket {
+			return nil, s.errorSyntax("nested '['")
+		}
+		s.openBracket = true
 	case ']':
-		s.openBracket--
+		s.openBracket = false
 	case ')':
-		if s.openBracket > 0 {
+		if s.openBracket {
 			break
 		}
 		s.openParenth--

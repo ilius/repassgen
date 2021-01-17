@@ -23,7 +23,7 @@ func lexRange(s *State) (LexType, error) {
 	case '-':
 		return lexRangeDash, nil
 	case ']':
-		s.openBracket--
+		s.openBracket = false
 		charset := s.patternBuff
 		reverse := false
 		if len(charset) > 0 && charset[0] == '^' {

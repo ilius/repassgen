@@ -17,7 +17,10 @@ func LexRoot(s *State) (LexType, error) {
 	case '\\':
 		return lexBackslash, nil
 	case '[':
-		s.openBracket++
+		if s.openBracket {
+			return nil, s.errorSyntax("nested '['")
+		}
+		s.openBracket = true
 		return lexRange, nil
 	case '{':
 		return lexRepeat, nil
