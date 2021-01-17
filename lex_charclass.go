@@ -13,10 +13,6 @@ func lexRange(s *State) (LexType, error) {
 		return lexRangeBackslash, nil
 	case '[':
 		return nil, s.errorSyntax("nested '['")
-	case '{':
-		return nil, s.errorSyntax("'{' inside [...]")
-	case '$':
-		return nil, s.errorSyntax("'$' inside [...]")
 	case ':':
 		s.patternBuffStart = uint(len(s.patternBuff))
 		return lexRangeColon, nil

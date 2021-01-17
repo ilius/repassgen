@@ -119,12 +119,44 @@ func TestGenerate(t *testing.T) {
 		Error:   "syntax error near index 3: invalid natural number inside {...}",
 	})
 	test(&genCase{
-		Pattern: `[abcd]{8}`,
+		Pattern: `[abc$]{8}`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{16, 16},
 		Validate: func(p string) bool {
 			for _, c := range p {
-				if c < 'a' || c > 'd' {
+				switch c {
+				case 'a', 'b', 'c', '$':
+				default:
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[ab}{]{8}`,
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{16, 16},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				switch c {
+				case 'a', 'b', '}', '{':
+				default:
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `$rjust([ab}{]{8}, 10)`,
+		PassLen: [2]int{10, 10},
+		Entropy: [2]float64{16, 16},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				switch c {
+				case 'a', 'b', '}', '{', ' ':
+				default:
 					return false
 				}
 			}
