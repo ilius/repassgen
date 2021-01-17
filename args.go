@@ -6,12 +6,12 @@ func splitArgsStr(argsStr string) ([]string, error) {
 	res := []string{""}
 	openParenth := 0
 	openBracket := false
-	openCurly := 0
+	openCurly := false
 	backslash := false
 	for _, c := range argsStr {
 		if backslash {
 			backslash = false
-			if !(c == ',' && openParenth == 0 && !openBracket && openCurly == 0) {
+			if !(c == ',' && openParenth == 0 && !openBracket && !openCurly) {
 				res[len(res)-1] += "\\"
 			}
 			res[len(res)-1] += string(c)
@@ -34,7 +34,7 @@ func splitArgsStr(argsStr string) ([]string, error) {
 			continue
 		}
 		if c == ',' {
-			if openParenth == 0 && !openBracket && openCurly == 0 {
+			if openParenth == 0 && !openBracket && !openCurly {
 				res = append(res, "")
 			} else {
 				res[len(res)-1] += string(c)
@@ -46,11 +46,14 @@ func splitArgsStr(argsStr string) ([]string, error) {
 		case '(':
 			openParenth++
 		case '{':
-			openCurly++
+			if openCurly {
+				return nil, fmt.Errorf("nested '{'")
+			}
+			openCurly = true
 		case ')':
 			openParenth--
 		case '}':
-			openCurly--
+			openCurly = false
 		}
 	}
 	if openParenth > 0 {
@@ -62,11 +65,8 @@ func splitArgsStr(argsStr string) ([]string, error) {
 	if openBracket {
 		return nil, fmt.Errorf("unclosed '['")
 	}
-	if openCurly > 0 {
+	if openCurly {
 		return nil, fmt.Errorf("unclosed '{'")
-	}
-	if openCurly < 0 {
-		return nil, fmt.Errorf("too many '{'")
 	}
 	if len(res[len(res)-1]) == 0 {
 		res = res[:len(res)-1]

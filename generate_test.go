@@ -894,6 +894,10 @@ func TestGenerate(t *testing.T) {
 		Error:   `value error near index 6: invalid fillChar="ab", must have length 1`,
 	})
 	test(&genCase{
+		Pattern: `$rjust({{}},7)`,
+		Error:   `nested '{'`,
+	})
+	test(&genCase{
 		Pattern:  `$ljust((abc,),7,0)`,
 		PassLen:  [2]int{7, 7},
 		Entropy:  [2]float64{0, 0},
