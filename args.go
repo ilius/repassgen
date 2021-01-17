@@ -11,12 +11,14 @@ func splitArgsStr(argsStr string) ([]string, error) {
 	for _, c := range argsStr {
 		if backslash {
 			backslash = false
+			if !(c == ',' && openParenth == 0 && openBracket == 0 && openCurly == 0) {
+				res[len(res)-1] += "\\"
+			}
 			res[len(res)-1] += string(c)
 			continue
 		}
 		if c == '\\' {
 			backslash = true
-			res[len(res)-1] += string(c)
 			continue
 		}
 		if c == ',' {
