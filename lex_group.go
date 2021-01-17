@@ -34,10 +34,6 @@ func lexGroup(s *State) (LexType, error) {
 func lexGroupBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.move(1)
-	if c == ')' {
-		s.patternBuff = append(s.patternBuff, c)
-	} else {
-		s.patternBuff = append(s.patternBuff, '\\', c)
-	}
+	s.patternBuff = append(s.patternBuff, '\\', c)
 	return lexGroup, nil
 }

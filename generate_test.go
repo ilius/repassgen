@@ -277,6 +277,12 @@ func TestGenerate(t *testing.T) {
 		Entropy:  [2]float64{0, 0},
 	})
 	test(&genCase{
+		Pattern:  `(\\\)\(){2}`,
+		PassLen:  [2]int{6, 6},
+		Password: strPtr(`\)(\)(`),
+		Entropy:  [2]float64{0, 0},
+	})
+	test(&genCase{
 		Pattern: `([a-z]{5}[1-9]{2}-){2}`,
 		PassLen: [2]int{16, 16},
 		Entropy: [2]float64{59.6, 59.7},
