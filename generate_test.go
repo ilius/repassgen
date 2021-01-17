@@ -50,76 +50,76 @@ func TestGenerate(t *testing.T) {
 		}
 	}
 	test(&genCase{
-		Pattern: "",
+		Pattern: ``,
 		PassLen: [2]int{0, 0},
 		Entropy: [2]float64{0, 0},
 	})
 	test(&genCase{
-		Pattern: "[a-z]{a}",
+		Pattern: `[a-z]{a}`,
 		Error:   "syntax error near index 6: invalid natural number inside {...}",
 	})
 	test(&genCase{
-		Pattern: "[a-z]{2.5}",
+		Pattern: `[a-z]{2.5}`,
 		Error:   "syntax error near index 7: invalid natural number inside {...}",
 	})
 	test(&genCase{
-		Pattern: "[a-z]{2.0}",
+		Pattern: `[a-z]{2.0}`,
 		Error:   "syntax error near index 7: invalid natural number inside {...}",
 	})
 	test(&genCase{
-		Pattern: "[a-z]{1-3}",
+		Pattern: `[a-z]{1-3}`,
 		Error:   "syntax error near index 7: repetition range syntax is '{M,N}' not '{M-N}'",
 	})
 	test(&genCase{
-		Pattern: "test([a-z]{1-3})",
+		Pattern: `test([a-z]{1-3})`,
 		Error:   "syntax error near index 12: repetition range syntax is '{M,N}' not '{M-N}'",
 	})
 	test(&genCase{
-		Pattern: "test([a-z]{1,})",
+		Pattern: `test([a-z]{1,})`,
 		Error:   "syntax error near index 13: no number after ','",
 	})
 	test(&genCase{
-		Pattern: "test([a-z]{,3})",
+		Pattern: `test([a-z]{,3})`,
 		Error:   "syntax error near index 13: no number before ','",
 	})
 	test(&genCase{
-		Pattern: "test([a-z]{1,2,3})",
+		Pattern: `test([a-z]{1,2,3})`,
 		Error:   "syntax error near index 16: multiple ',' inside {...}",
 	})
 	test(&genCase{
-		Pattern: "[a-z]{{}",
+		Pattern: `[a-z]{{}`,
 		Error:   "syntax error near index 6: nested '{'",
 	})
 	test(&genCase{
-		Pattern: "[a-z]{[}",
+		Pattern: `[a-z]{[}`,
 		Error:   "syntax error near index 6: '[' inside {...}",
 	})
 	test(&genCase{
-		Pattern: "[a-z]{$}",
+		Pattern: `[a-z]{$}`,
 		Error:   "syntax error near index 6: '$' inside {...}",
 	})
 	test(&genCase{
-		Pattern: "test([a-z]{1a})",
+		Pattern: `test([a-z]{1a})`,
 		Error:   "syntax error near index 12: invalid natural number inside {...}",
 	})
 	test(&genCase{
-		Pattern: "test([a-z]{})",
+		Pattern: `test([a-z]{})`,
 		Error:   "syntax error near index 11: missing number inside {}",
 	})
 	test(&genCase{
-		Pattern: "[a-z]{3,1}",
+		Pattern: `[a-z]{3,1}`,
 		Error:   "value error near index 9: invalid numbers 3 > 1 inside {...}",
 	})
 	test(&genCase{
-		Pattern: "{3}",
+		Pattern: `{3}`,
 		Error:   "syntax error near index 2: nothing to repeat",
 	})
 	test(&genCase{
-		Pattern: "x{0}",
+		Pattern: `x{0}`,
 		Error:   "syntax error near index 3: invalid natural number inside {...}",
 	})
 	test(&genCase{
-		Pattern: "[abcd]{8}",
+		Pattern: `[abcd]{8}`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{16, 16},
 		Validate: func(p string) bool {
@@ -132,7 +132,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "[abcccdab]{8}",
+		Pattern: `[abcccdab]{8}`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{16, 16},
 		Validate: func(p string) bool {
@@ -145,7 +145,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "[a-z]{8}",
+		Pattern: `[a-z]{8}`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{37.6, 37.7},
 		Validate: func(p string) bool {
@@ -158,7 +158,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "[a-z]{8,10}",
+		Pattern: `[a-z]{8,10}`,
 		PassLen: [2]int{8, 10},
 		Entropy: [2]float64{37.6, 47.01},
 		Validate: func(p string) bool {
@@ -171,12 +171,12 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "[]",
+		Pattern: `[]`,
 		PassLen: [2]int{0, 0},
 		Entropy: [2]float64{0, 0},
 	})
 	test(&genCase{
-		Pattern: "[a-z]{8}[1-9]{3}",
+		Pattern: `[a-z]{8}[1-9]{3}`,
 		PassLen: [2]int{11, 11},
 		Entropy: [2]float64{47.1, 47.2},
 		Validate: func(p string) bool {
@@ -194,7 +194,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "([a-z]{8}[1-9]{3})",
+		Pattern: `([a-z]{8}[1-9]{3})`,
 		PassLen: [2]int{11, 11},
 		Entropy: [2]float64{47.1, 47.2},
 		Validate: func(p string) bool {
@@ -212,7 +212,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "([a-z]{5}[1-9]{2}){2}",
+		Pattern: `([a-z]{5}[1-9]{2}){2}`,
 		PassLen: [2]int{14, 14},
 		Entropy: [2]float64{59.6, 59.7},
 		Validate: func(p string) bool {
@@ -245,7 +245,7 @@ func TestGenerate(t *testing.T) {
 		Entropy:  [2]float64{0, 0},
 	})
 	test(&genCase{
-		Pattern: "([a-z]{5}[1-9]{2}-){2}",
+		Pattern: `([a-z]{5}[1-9]{2}-){2}`,
 		PassLen: [2]int{16, 16},
 		Entropy: [2]float64{59.6, 59.7},
 		Validate: func(p string) bool {
@@ -269,7 +269,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "$?(a)$?(b)$?(c)$?(d)",
+		Pattern: `$?(a)$?(b)$?(c)$?(d)`,
 		PassLen: [2]int{0, 4},
 		Entropy: [2]float64{4, 4},
 	})
@@ -290,7 +290,7 @@ func TestGenerate(t *testing.T) {
 	})
 	// base64 length: ((bytes + 2) / 3) * 4
 	test(&genCase{
-		Pattern: "$base64([:alnum:]{10})",
+		Pattern: `$base64([:alnum:]{10})`,
 		PassLen: [2]int{16, 16},
 		Entropy: [2]float64{59.5, 59.6},
 		Validate: func(p string) bool {
@@ -311,7 +311,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "$base64([:alnum:]{9})",
+		Pattern: `$base64([:alnum:]{9})`,
 		PassLen: [2]int{12, 12},
 		Entropy: [2]float64{53.5, 53.6},
 		Validate: func(p string) bool {
@@ -332,7 +332,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "$base64([:alnum:]{5})",
+		Pattern: `$base64([:alnum:]{5})`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{29.7, 29.8},
 		Validate: func(p string) bool {
@@ -353,7 +353,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "$base64url([:alnum:]{5})",
+		Pattern: `$base64url([:alnum:]{5})`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{29.7, 29.8},
 		Validate: func(p string) bool {
@@ -374,7 +374,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "$base32([:alnum:]{5})",
+		Pattern: `$base32([:alnum:]{5})`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{29.7, 29.8},
 		Validate: func(p string) bool {
@@ -398,7 +398,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "$BASE32([:alnum:]{5})",
+		Pattern: `$BASE32([:alnum:]{5})`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{29.7, 29.8},
 		Validate: func(p string) bool {
@@ -422,7 +422,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "$base32std([:alnum:]{5})",
+		Pattern: `$base32std([:alnum:]{5})`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{29.7, 29.8},
 		Validate: func(p string) bool {
@@ -446,7 +446,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "$hex([:alnum:]{8})",
+		Pattern: `$hex([:alnum:]{8})`,
 		PassLen: [2]int{16, 16},
 		Entropy: [2]float64{47.6, 47.7},
 		Validate: func(p string) bool {
@@ -470,7 +470,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "$HEX([:alnum:]{8})",
+		Pattern: `$HEX([:alnum:]{8})`,
 		PassLen: [2]int{16, 16},
 		Entropy: [2]float64{47.6, 47.7},
 		Validate: func(p string) bool {
@@ -494,7 +494,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "$hex([a-c)(]{4})",
+		Pattern: `$hex([a-c)(]{4})`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{9.28, 9.29},
 		Validate: func(p string) bool {
@@ -519,7 +519,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "$hex(([a-e]{4}))",
+		Pattern: `$hex(([a-e]{4}))`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{9.28, 9.29},
 		Validate: func(p string) bool {
@@ -582,7 +582,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "$bip39word(x)",
+		Pattern: `$bip39word(x)`,
 		Error:   "value error near index 10: invalid number 'x'",
 	})
 	// 1 bip39 word   => 11 bits entropy
@@ -598,35 +598,35 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: "$()",
+		Pattern: `$()`,
 		Error:   "syntax error near index 1: missing function name",
 	})
 	test(&genCase{
-		Pattern: "$hex([a-z]",
+		Pattern: `$hex([a-z]`,
 		Error:   "syntax error near index 9: '(' not closed",
 	})
 	test(&genCase{
-		Pattern: "$hex(([a-z]",
+		Pattern: `$hex(([a-z]`,
 		Error:   "syntax error near index 10: '(' not closed",
 	})
 	test(&genCase{
-		Pattern: "(",
+		Pattern: `(`,
 		Error:   "syntax error near index 0: '(' not closed",
 	})
 	test(&genCase{
-		Pattern: "$foo",
+		Pattern: `$foo`,
 		Error:   "syntax error near index 3: expected a function call",
 	})
 	test(&genCase{
-		Pattern: "($foo",
+		Pattern: `($foo`,
 		Error:   "syntax error near index 4: '(' not closed",
 	})
 	test(&genCase{
-		Pattern: "$foo(",
+		Pattern: `$foo(`,
 		Error:   "syntax error near index 4: '(' not closed",
 	})
 	test(&genCase{
-		Pattern: "$foo(123)",
+		Pattern: `$foo(123)`,
 		Error:   "value error near index 4: invalid function 'foo'",
 	})
 	test(&genCase{
@@ -634,19 +634,19 @@ func TestGenerate(t *testing.T) {
 		Error:   "syntax error near index 4: expected a function call",
 	})
 	test(&genCase{
-		Pattern: "test($foo(123))",
+		Pattern: `test($foo(123))`,
 		Error:   "value error near index 9: invalid function 'foo'",
 	})
 	test(&genCase{
-		Pattern: "test $foo",
+		Pattern: `test $foo`,
 		Error:   "syntax error near index 8: expected a function call",
 	})
 	test(&genCase{
-		Pattern: "test($foo)",
+		Pattern: `test($foo)`,
 		Error:   "syntax error near index 8: expected a function call",
 	})
 	test(&genCase{
-		Pattern: "$shuffle([a-z]{5}[1-9]{2})",
+		Pattern: `$shuffle([a-z]{5}[1-9]{2})`,
 		PassLen: [2]int{7, 7},
 		Entropy: [2]float64{29.8, 29.9},
 		Validate: func(p string) bool {
@@ -705,29 +705,29 @@ func TestGenerate(t *testing.T) {
 		Entropy: [2]float64{12.8, 12.9},
 	})
 	test(&genCase{
-		Pattern: "$date(2000,2020)",
+		Pattern: `$date(2000,2020)`,
 		PassLen: [2]int{10, 10},
 		Entropy: [2]float64{12.8, 12.9},
 	})
 	test(&genCase{
-		Pattern: "$date(2000,2020,\\,)",
+		Pattern: `$date(2000,2020,\,)`,
 		PassLen: [2]int{10, 10},
 		Entropy: [2]float64{12.8, 12.9},
 	})
 	test(&genCase{
-		Pattern: "$date()",
+		Pattern: `$date()`,
 		Error:   "argument error near index 5: date: too few characters as arguments",
 	})
 	test(&genCase{
-		Pattern: "$date(2000)",
+		Pattern: `$date(2000)`,
 		Error:   "argument error near index 5: date: at least 2 arguments are required",
 	})
 	test(&genCase{
-		Pattern: "$date(2000a,2000b)",
+		Pattern: `$date(2000a,2000b)`,
 		Error:   "value error near index 5: invalid year 2000a",
 	})
 	test(&genCase{
-		Pattern: "$date(2000,2000b)",
+		Pattern: `$date(2000,2000b)`,
 		Error:   "value error near index 5: invalid year 2000b",
 	})
 	test(&genCase{
