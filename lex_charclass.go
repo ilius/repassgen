@@ -17,7 +17,7 @@ func lexRange(s *State) (LexType, error) {
 		s.patternBuffStart = uint(len(s.patternBuff))
 		return lexRangeColon, nil
 	case '-':
-		return lexRangeDash, nil
+		return lexRangeDashInit, nil
 	case ']':
 		s.openBracket = false
 		charset := s.patternBuff
@@ -69,20 +69,35 @@ func lexRangeColon(s *State) (LexType, error) {
 	return lexRangeColon, nil
 }
 
-func lexRangeDash(s *State) (LexType, error) {
+func lexRangeDashInit(s *State) (LexType, error) {
 	if s.end() {
 		return nil, s.errorSyntax("'[' not closed")
 	}
-	c1 := s.pattern[s.patternPos]
+	s.patternBuff = append(s.patternBuff, s.pattern[s.patternPos-1], s.pattern[s.patternPos])
 	s.move(1)
 	if s.end() {
 		return nil, s.errorSyntax("no character after '-'")
 	}
+	//s.patternBuff = append(s.patternBuff, s.pattern[s.patternPos])
+	//s.move(1)
+	return lexRangeDash, nil
+}
+
+func lexRangeDash(s *State) (LexType, error) {
 	n := len(s.patternBuff)
 	if n < 1 {
 		return nil, s.errorSyntax("no character before '-'")
 	}
-	c0 := s.patternBuff[n-1]
+	c1 := s.patternBuff[n-1]
+	if c1 == '\\' {
+		s.patternBuff = s.patternBuff[:n-1]
+		return lexRangeDashBackslash, nil
+	}
+	if s.patternBuff[n-2] != '-' {
+		return nil, s.errorUnknown("expected '-', buffer=%#v", string(s.patternBuff))
+	}
+	c0 := s.patternBuff[n-3]
+	s.patternBuff = s.patternBuff[:n-2]
 	for b := int(c0) + 1; b <= int(c1); b++ {
 		s.patternBuff = append(s.patternBuff, rune(b))
 	}
@@ -92,6 +107,57 @@ func lexRangeDash(s *State) (LexType, error) {
 func lexRangeBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.move(1)
+	if c == 'u' {
+		s.patternBuffStart2 = uint(len(s.patternBuff))
+		s.patternBuff = append(s.patternBuff, '\\', 'u')
+		return lexRangeUnicode, nil
+	}
 	s.patternBuff = append(s.patternBuff, backslashEscape(c))
 	return lexRange, nil
+}
+
+func lexRangeDashBackslash(s *State) (LexType, error) {
+	c := s.pattern[s.patternPos]
+	s.move(1)
+	if c == 'u' {
+		s.patternBuffStart2 = uint(len(s.patternBuff))
+		s.patternBuff = append(s.patternBuff, '\\', 'u')
+		return lexRangeDashUnicode, nil
+	}
+	s.patternBuff = append(s.patternBuff, backslashEscape(c))
+	return lexRangeDash, nil
+}
+
+func lexRangeUnicode(s *State) (LexType, error) {
+	c := s.pattern[s.patternPos]
+	s.move(1)
+	s.patternBuff = append(s.patternBuff, c)
+	start := int(s.patternBuffStart2)
+	if len(s.patternBuff)-start == 6 {
+		_, char, err := unescapeUnicodeSingle(s.patternBuff, start)
+		if err != nil {
+			return nil, s.errorSyntax("invalid escape sequence")
+		}
+		s.patternBuff = append(s.patternBuff[:start], char)
+		s.patternBuffStart2 = 0
+		return lexRange, nil
+	}
+	return lexRangeUnicode, nil
+}
+
+func lexRangeDashUnicode(s *State) (LexType, error) {
+	c := s.pattern[s.patternPos]
+	s.move(1)
+	s.patternBuff = append(s.patternBuff, c)
+	start := int(s.patternBuffStart2)
+	if len(s.patternBuff)-start == 6 {
+		_, char, err := unescapeUnicodeSingle(s.patternBuff, start)
+		if err != nil {
+			return nil, s.errorSyntax("invalid escape sequence")
+		}
+		s.patternBuff = append(s.patternBuff[:start], char)
+		s.patternBuffStart2 = 0
+		return lexRangeDash, nil
+	}
+	return lexRangeDashUnicode, nil
 }

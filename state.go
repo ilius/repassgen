@@ -20,8 +20,10 @@ type State struct {
 	patternBuff []rune
 	output      []rune
 
-	patternPos       uint
-	patternBuffStart uint
+	patternPos uint
+
+	patternBuffStart  uint
+	patternBuffStart2 uint
 
 	openParenth uint
 	openBracket bool

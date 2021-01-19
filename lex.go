@@ -53,8 +53,31 @@ func backslashEscape(c rune) rune {
 func lexBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.move(1)
+	if c == 'u' {
+		if s.patternBuff != nil {
+			return nil, s.errorUnknown("incomplete buffer: %s", string(s.patternBuff))
+		}
+		s.patternBuff = []rune(`\u`)
+		return lexUnicode, nil
+	}
 	s.addOutputOne(backslashEscape(c))
 	return LexRoot, nil
+}
+
+func lexUnicode(s *State) (LexType, error) {
+	c := s.pattern[s.patternPos]
+	s.move(1)
+	s.patternBuff = append(s.patternBuff, c)
+	if len(s.patternBuff) == 6 {
+		_, char, err := unescapeUnicodeSingle(s.patternBuff, 0)
+		if err != nil {
+			return nil, s.errorSyntax("invalid escape sequence")
+		}
+		s.addOutputOne(char)
+		s.patternBuff = nil
+		return LexRoot, nil
+	}
+	return lexUnicode, nil
 }
 
 func lexIdent(s *State) (LexType, error) {

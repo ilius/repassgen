@@ -15,11 +15,7 @@ type GenerateOutput struct {
 // see README.md for examples of pattern
 func Generate(in GenerateInput) (*GenerateOutput, error) {
 	ss := &SharedState{}
-	escapedPattern, err := unescapeUnicode(in.Pattern)
-	if err != nil {
-		return nil, err
-	}
-	s := NewState(ss, escapedPattern)
+	s := NewState(ss, in.Pattern)
 	g := NewRootGenerator()
 	{
 		err := g.Generate(s)

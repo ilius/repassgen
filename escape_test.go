@@ -24,10 +24,53 @@
 package main
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/ilius/is/v2"
 )
+
+// unescape unescapes the string contained in 'in' and returns it as a slice.
+func unescapeUnicode(in []rune) ([]rune, error) {
+	firstBackslash := strings.IndexRune(string(in), '\\')
+	if firstBackslash == -1 {
+		return in, nil
+	}
+
+	out := make([]rune, 0, len(in))
+
+	// Copy the first sequence of unescaped bytes to the output and obtain a buffer pointer (subslice)
+	out = in[:firstBackslash]
+	start := firstBackslash
+
+	for start < len(in) {
+		// Unescape the next escaped character
+		inLen, r, err := unescapeUnicodeSingle(in, start)
+		if err != nil {
+			return nil, err
+		}
+		if inLen == -1 {
+			out = append(out, in[start])
+			start += 1
+			continue
+		}
+		out = append(out, r)
+
+		start += inLen
+
+		// Copy everything up until the next backslash
+		nextBackslash := strings.IndexRune(string(in[start:]), '\\')
+		if nextBackslash == -1 {
+			out = append(out, in[start:]...)
+			break
+		} else {
+			out = append(out, in[start:start+nextBackslash]...)
+			start += nextBackslash
+		}
+	}
+
+	return out, nil
+}
 
 func TestH2I(t *testing.T) {
 	hexChars := []rune{'0', '9', 'A', 'F', 'a', 'f', 'x', '\000'}

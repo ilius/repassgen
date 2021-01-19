@@ -36,7 +36,7 @@ func TestGenerate(t *testing.T) {
 		pwStr := string(out.Password)
 		is = is.AddMsg("password=%#v", pwStr)
 		if tc.Validate != nil {
-			is.True(tc.Validate(pwStr))
+			is.AddMsg("validation failed").True(tc.Validate(pwStr))
 		}
 
 		isFloatBetween(is, out.PatternEntropy, tc.Entropy[0], tc.Entropy[1])
@@ -714,15 +714,15 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `\u00mn`,
-		Error:   `invalid escape sequence near index 0`,
+		Error:   `syntax error near index 5: invalid escape sequence`,
 	})
 	test(&genCase{
 		Pattern: `test1 \u00mn test2`,
-		Error:   `invalid escape sequence near index 6`,
+		Error:   `syntax error near index 11: invalid escape sequence`,
 	})
 	test(&genCase{
 		Pattern: `(test1 \u00mn test2){2}`,
-		Error:   `invalid escape sequence near index 7`,
+		Error:   `syntax error near index 12: invalid escape sequence`,
 	})
 	test(&genCase{
 		Pattern: `[\u00e0-\u00e6]{10}`,
