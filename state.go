@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 )
 
 // SharedState is the shared part of State
@@ -92,6 +93,17 @@ func (s *State) errorUnknown(msg string, args ...interface{}) error {
 		s.getErrorPos(),
 		fmt.Sprintf(msg, args...),
 	)
+}
+
+func (s *State) PrintError(err error) {
+	fmt.Println(err)
+	myErr, ok := err.(*Error)
+	if !ok {
+		return
+	}
+	pos := int(myErr.pos)
+	fmt.Println(string(s.pattern))
+	fmt.Println(strings.Repeat(" ", pos) + "^")
 }
 
 // NewState is factory function for State

@@ -15,7 +15,7 @@ import (
 func TestGenerate(t *testing.T) {
 	test := func(tc *genCase) {
 		is := is.New(t).AddMsg("pattern=%#v", tc.Pattern)
-		out, err := Generate(GenerateInput{Pattern: []rune(tc.Pattern)})
+		out, _, err := Generate(GenerateInput{Pattern: []rune(tc.Pattern)})
 		if tc.Error != "" {
 			is.ErrMsg(err, tc.Error)
 			is.Nil(out)
