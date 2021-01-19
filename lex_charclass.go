@@ -136,6 +136,7 @@ func lexRangeUnicode(s *State) (LexType, error) {
 	if len(s.patternBuff)-start == 6 {
 		_, char, err := unescapeUnicodeSingle(s.patternBuff, start)
 		if err != nil {
+			s.errorOffset = -5
 			return nil, s.errorSyntax("invalid escape sequence")
 		}
 		s.patternBuff = append(s.patternBuff[:start], char)
@@ -153,6 +154,7 @@ func lexRangeDashUnicode(s *State) (LexType, error) {
 	if len(s.patternBuff)-start == 6 {
 		_, char, err := unescapeUnicodeSingle(s.patternBuff, start)
 		if err != nil {
+			s.errorOffset = -5
 			return nil, s.errorSyntax("invalid escape sequence")
 		}
 		s.patternBuff = append(s.patternBuff[:start], char)

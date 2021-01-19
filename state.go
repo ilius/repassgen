@@ -8,6 +8,8 @@ import (
 type SharedState struct {
 	absPos uint
 
+	errorOffset int
+
 	patternEntropy float64
 }
 
@@ -48,20 +50,45 @@ func (s *State) end() bool {
 	return s.patternPos >= uint(len(s.pattern))
 }
 
+func (s *State) getErrorPos() uint {
+	pos := int(s.absPos) + s.errorOffset - 1
+	if pos < 0 {
+		fmt.Printf("Warning: getErrorPos: pos=%v\n", pos)
+		pos = 0
+	}
+	return uint(pos)
+}
+
 func (s *State) errorSyntax(msg string, args ...interface{}) error {
-	return NewError(ErrorSyntax, s.absPos-1, fmt.Sprintf(msg, args...))
+	return NewError(
+		ErrorSyntax,
+		s.getErrorPos(),
+		fmt.Sprintf(msg, args...),
+	)
 }
 
 func (s *State) errorArg(msg string, args ...interface{}) error {
-	return NewError(ErrorArg, s.absPos-1, fmt.Sprintf(msg, args...))
+	return NewError(
+		ErrorArg,
+		s.getErrorPos(),
+		fmt.Sprintf(msg, args...),
+	)
 }
 
 func (s *State) errorValue(msg string, args ...interface{}) error {
-	return NewError(ErrorValue, s.absPos-1, fmt.Sprintf(msg, args...))
+	return NewError(
+		ErrorValue,
+		s.getErrorPos(),
+		fmt.Sprintf(msg, args...),
+	)
 }
 
 func (s *State) errorUnknown(msg string, args ...interface{}) error {
-	return NewError(ErrorUnknown, s.absPos-1, fmt.Sprintf(msg, args...))
+	return NewError(
+		ErrorUnknown,
+		s.getErrorPos(),
+		fmt.Sprintf(msg, args...),
+	)
 }
 
 // NewState is factory function for State

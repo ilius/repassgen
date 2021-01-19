@@ -714,14 +714,22 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `\u00mn`,
-		Error:   `syntax error near index 5: invalid escape sequence`,
+		Error:   `syntax error near index 0: invalid escape sequence`,
 	})
 	test(&genCase{
 		Pattern: `test1 \u00mn test2`,
-		Error:   `syntax error near index 11: invalid escape sequence`,
+		Error:   `syntax error near index 6: invalid escape sequence`,
 	})
 	test(&genCase{
 		Pattern: `(test1 \u00mn test2){2}`,
+		Error:   `syntax error near index 7: invalid escape sequence`,
+	})
+	test(&genCase{
+		Pattern: `test[\u00mn-\u00e0]abc`,
+		Error:   `syntax error near index 5: invalid escape sequence`,
+	})
+	test(&genCase{
+		Pattern: `test[\u00e0-\u00mn]abc`,
 		Error:   `syntax error near index 12: invalid escape sequence`,
 	})
 	test(&genCase{
