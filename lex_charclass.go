@@ -85,7 +85,7 @@ func lexRangeDashInit(s *State) (LexType, error) {
 
 func lexRangeDash(s *State) (LexType, error) {
 	n := len(s.patternBuff)
-	if n < 1 {
+	if n < 3 {
 		return nil, s.errorSyntax("no character before '-'")
 	}
 	c1 := s.patternBuff[n-1]
