@@ -55,6 +55,34 @@ func TestGenerate(t *testing.T) {
 		Entropy: [2]float64{0, 0},
 	})
 	test(&genCase{
+		Pattern: `[a`,
+		Error:   "syntax error near index 1: '[' not closed",
+	})
+	test(&genCase{
+		Pattern: `[[]]`,
+		Error:   "syntax error near index 1: nested '['",
+	})
+	test(&genCase{
+		Pattern: `[:x]`,
+		Error:   "syntax error near index 3: ':' not closed",
+	})
+	test(&genCase{
+		Pattern: `[:x`,
+		Error:   "syntax error near index 2: ':' not closed",
+	})
+	test(&genCase{
+		Pattern: `[a-`,
+		Error:   "syntax error near index 2: '[' not closed",
+	})
+	test(&genCase{
+		Pattern: `[a-]`,
+		Error:   "syntax error near index 3: no character after '-'",
+	})
+	test(&genCase{
+		Pattern: `[-a]`,
+		Error:   "syntax error near index 2: no character before '-'",
+	})
+	test(&genCase{
 		Pattern: `[a-z]{a}`,
 		Error:   "syntax error near index 6: invalid natural number inside {...}",
 	})
@@ -183,6 +211,45 @@ func TestGenerate(t *testing.T) {
 		Validate: func(p string) bool {
 			for _, c := range p {
 				if c < 'a' || c > 'z' {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[a-\u007a]{8}`,
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{37.6, 37.7},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < 'a' || c > 'z' {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[\u0009-\u000a]{8}`,
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{8, 8},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < '\t' || c > '\n' {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[\t-\n]{8}`,
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{8, 8},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < '\t' || c > '\n' {
 					return false
 				}
 			}
