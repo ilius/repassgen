@@ -21,15 +21,6 @@ func TestEncoderFunctionCallGenerator(t *testing.T) {
 		is.ErrMsg(entropyErr, `unknown error near index 0: entropy is not calculated`)
 	}
 	{
-		s := newTestState("$hex([:x:])")
-		gen := &encoderFunctionCallGenerator{
-			funcName:   "hex",
-			argPattern: []rune("$hex([:x:])"),
-		}
-		err := gen.Generate(s)
-		is.ErrMsg(err, `value error near index 7: invalid character class "x"`)
-	}
-	{
 		s := newTestState("$hex([a-z]{2})")
 		gen := &encoderFunctionCallGenerator{
 			funcName:   "hex",
