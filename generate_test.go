@@ -715,6 +715,10 @@ func TestGenerate(t *testing.T) {
 		Error:   "syntax error near index 10: '(' not closed",
 	})
 	test(&genCase{
+		Pattern: `$hex([:x:])`,
+		Error:   `value error near index 8: invalid character class "x"`,
+	})
+	test(&genCase{
 		Pattern: `(`,
 		Error:   "syntax error near index 0: '(' not closed",
 	})
