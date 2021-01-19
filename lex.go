@@ -71,7 +71,7 @@ func lexUnicode(s *State) (LexType, error) {
 	if len(s.patternBuff) == 6 {
 		_, char, err := unescapeUnicodeSingle(s.patternBuff, 0)
 		if err != nil {
-			s.errorOffset = -5
+			s.errorOffset -= 5
 			return nil, s.errorSyntax("invalid escape sequence")
 		}
 		s.addOutputOne(char)
