@@ -51,9 +51,12 @@ func (s *State) end() bool {
 }
 
 func (s *State) getErrorPos() uint {
+	if s.absPos == 0 {
+		return uint(s.errorOffset)
+	}
 	pos := int(s.absPos) + s.errorOffset - 1
 	if pos < 0 {
-		fmt.Printf("Warning: getErrorPos: pos=%v\n", pos)
+		fmt.Printf("Warning: getErrorPos: pos=%v, pattern=%#v\n", pos, string(s.pattern))
 		pos = 0
 	}
 	return uint(pos)

@@ -15,10 +15,10 @@ func TestEncoderFunctionCallGenerator(t *testing.T) {
 			argPattern: []rune("$foo()"),
 		}
 		err := gen.Generate(s)
-		is.ErrMsg(err, `value error near index 5: invalid function 'foo'`)
+		is.ErrMsg(err, `value error near index 0: invalid function 'foo'`)
 		entropy, entropyErr := gen.Entropy(s)
 		is.Equal(entropy, 0)
-		is.ErrMsg(entropyErr, `unknown error near index 5: entropy is not calculated`)
+		is.ErrMsg(entropyErr, `unknown error near index 0: entropy is not calculated`)
 	}
 	{
 		s := newTestState("$hex([:x:])")
@@ -27,7 +27,7 @@ func TestEncoderFunctionCallGenerator(t *testing.T) {
 			argPattern: []rune("$hex([:x:])"),
 		}
 		err := gen.Generate(s)
-		is.ErrMsg(err, `value error near index 19: invalid character class "x"`)
+		is.ErrMsg(err, `value error near index 7: invalid character class "x"`)
 	}
 	{
 		s := newTestState("$hex([a-z]{2})")

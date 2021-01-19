@@ -58,6 +58,7 @@ func lexRangeColon(s *State) (LexType, error) {
 		name := string(s.patternBuff[s.patternBuffStart:n])
 		charset, ok := charClasses[name]
 		if !ok {
+			s.errorOffset -= len(name)
 			return nil, s.errorValue("invalid character class %#v", name)
 		}
 		s.patternBuff = append(s.patternBuff[:s.patternBuffStart], charset...)

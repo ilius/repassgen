@@ -716,7 +716,7 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `$hex([:x:])`,
-		Error:   `value error near index 8: invalid character class "x"`,
+		Error:   `value error near index 7: invalid character class "x"`,
 	})
 	test(&genCase{
 		Pattern: `(`,

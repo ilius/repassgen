@@ -20,7 +20,6 @@ func newTestState(patternArg interface{}) *State {
 		panic("invalid patternArg")
 	}
 	s := NewState(&SharedState{}, pattern)
-	s.absPos = uint(len(pattern))
 	return s
 }
 

@@ -13,7 +13,7 @@ func TestRootGenerator(t *testing.T) {
 	s := newTestState(pattern)
 	{
 		entropy, err := g.Entropy(s)
-		is.ErrMsg(err, "unknown error near index 15: entropy is not calculated")
+		is.ErrMsg(err, "unknown error near index 0: entropy is not calculated")
 		is.Equal(0.0, entropy)
 	}
 	{

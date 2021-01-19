@@ -18,7 +18,7 @@ func TestRepeatGeneratorByGroup(t *testing.T) {
 	s := newTestState(pattern)
 	{
 		entropy, err := g.Entropy(s)
-		is.ErrMsg(err, "unknown error near index 7: entropy is not calculated")
+		is.ErrMsg(err, "unknown error near index 0: entropy is not calculated")
 		is.Equal(0, entropy)
 	}
 	{
