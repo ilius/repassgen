@@ -30,14 +30,15 @@ func lexRange(s *State) (LexType, error) {
 		if reverse {
 			charset = excludeCharsASCII(charset)
 		}
-		s.lastGen = &charClassGenerator{
+		gen := &charClassGenerator{
 			charClasses: [][]rune{charset},
 		}
-		err := s.lastGen.Generate(s)
+		err := gen.Generate(s)
 		if err != nil {
 			return nil, err
 		}
 		s.patternBuff = nil
+		s.lastGen = gen
 		return LexRoot, nil
 	}
 	s.patternBuff = append(s.patternBuff, c)
