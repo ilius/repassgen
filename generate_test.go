@@ -5,20 +5,29 @@ import (
 	"encoding/base32"
 	"encoding/base64"
 	"encoding/hex"
+	"fmt"
 	"strings"
 	"testing"
+
+	"os"
 
 	"github.com/ilius/crock32"
 	"github.com/ilius/is/v2"
 )
 
+var verbose = os.Getenv("TEST_VERBOSE") == "1"
+
 func TestGenerate(t *testing.T) {
 	test := func(tc *genCase) {
 		is := is.New(t).AddMsg("pattern=%#v", tc.Pattern)
-		out, _, err := Generate(GenerateInput{Pattern: []rune(tc.Pattern)})
+		out, s, err := Generate(GenerateInput{Pattern: []rune(tc.Pattern)})
 		if tc.Error != "" {
 			is.ErrMsg(err, tc.Error)
 			is.Nil(out)
+			if verbose {
+				s.PrintError(err)
+				fmt.Println("------------------------------------")
+			}
 			return
 		}
 		is.NotErr(err)
