@@ -16,13 +16,18 @@ func lexGroup(s *State) (LexType, error) {
 		if s.openParenth > 0 {
 			break
 		}
-		s.absPos -= uint(len(s.patternBuff)) + 1
+		s2 := NewState(&SharedState{}, s.pattern)
+		s2.output = s.output
+		s2.absPos = s.absPos - uint(len(s.patternBuff)) - 1
+		s2.patternEntropy = s.patternEntropy
 		childPattern := s.patternBuff[s.patternBuffStart:len(s.patternBuff)]
 		gen := newGroupGenerator(childPattern)
-		err := gen.Generate(s)
+		err := gen.Generate(s2)
 		if err != nil {
 			return nil, err
 		}
+		s.output = s2.output
+		s.patternEntropy = s2.patternEntropy
 		s.lastGen = gen
 		s.patternBuff = nil
 		return LexRoot, nil

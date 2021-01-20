@@ -763,6 +763,14 @@ func TestGenerate(t *testing.T) {
 		Error:   "syntax error near index 18: no character after '-'",
 	})
 	test(&genCase{
+		Pattern: `(((a{10,20})))[`,
+		Error:   "syntax error near index 14: '[' not closed",
+	})
+	test(&genCase{
+		Pattern: `(((a{10,20})))[a-]`,
+		Error:   "syntax error near index 17: no character after '-'",
+	})
+	test(&genCase{
 		Pattern: `$shuffle([a-z]{5}[1-9]{2})`,
 		PassLen: [2]int{7, 7},
 		Entropy: [2]float64{29.8, 29.9},
