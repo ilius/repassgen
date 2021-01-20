@@ -45,6 +45,15 @@ func (e *Error) Error() string {
 	)
 }
 
+func (e *Error) SpacedError() string {
+	return fmt.Sprintf(
+		"%s^ %s error: %s\n",
+		strings.Repeat(" ", int(e.pos)),
+		string(e.typ),
+		strings.Join(e.msgs, ", "),
+	)
+}
+
 // AppendMsg add a message to the begining of current messages
 func (e *Error) AppendMsg(msg string) {
 	e.msgs = append(e.msgs, msg)
