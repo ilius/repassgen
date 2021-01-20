@@ -34,20 +34,25 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 		if s.openParenth > 0 {
 			break
 		}
+		s2 := NewState(&SharedState{}, s.pattern)
+		s2.output = s.output
+		s2.absPos = s.absPos - (uint(len(s.patternBuff)) - s.patternBuffStart + 1)
+		s2.patternEntropy = s.patternEntropy
 		funcName := string(s.patternBuff[:s.patternBuffStart])
-		s.absPos -= uint(len(s.patternBuff)) - s.patternBuffStart + 1
 		if funcName == "" {
-			return nil, s.errorSyntax("missing function name")
+			return nil, s2.errorSyntax("missing function name")
 		}
 		arg := s.patternBuff[s.patternBuffStart:n]
-		gen, err := getFuncGenerator(s, funcName, arg)
+		gen, err := getFuncGenerator(s2, funcName, arg)
 		if err != nil {
 			return nil, err
 		}
-		err = gen.Generate(s)
+		err = gen.Generate(s2)
 		if err != nil {
 			return nil, err
 		}
+		s.output = s2.output
+		s.patternEntropy = s2.patternEntropy
 		s.patternBuff = nil
 		s.lastGen = gen
 		return LexRoot, nil

@@ -756,13 +756,11 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `$rjust(a,10000)[`,
-		Error:   "syntax error near index 8: '[' not closed",
-		// FIXME: index
+		Error:   "syntax error near index 15: '[' not closed",
 	})
 	test(&genCase{
 		Pattern: `$rjust(a,10000)[a-]`,
-		Error:   "syntax error near index 11: no character after '-'",
-		// FIXME: index
+		Error:   "syntax error near index 18: no character after '-'",
 	})
 	test(&genCase{
 		Pattern: `$shuffle([a-z]{5}[1-9]{2})`,
