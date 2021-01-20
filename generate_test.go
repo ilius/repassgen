@@ -755,6 +755,16 @@ func TestGenerate(t *testing.T) {
 		Error:   "syntax error near index 8: expected a function call",
 	})
 	test(&genCase{
+		Pattern: `$rjust(a,10000)[`,
+		Error:   "syntax error near index 8: '[' not closed",
+		// FIXME: index
+	})
+	test(&genCase{
+		Pattern: `$rjust(a,10000)[a-]`,
+		Error:   "syntax error near index 11: no character after '-'",
+		// FIXME: index
+	})
+	test(&genCase{
 		Pattern: `$shuffle([a-z]{5}[1-9]{2})`,
 		PassLen: [2]int{7, 7},
 		Entropy: [2]float64{29.8, 29.9},
