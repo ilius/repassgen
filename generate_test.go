@@ -27,7 +27,15 @@ func TestGenerate(t *testing.T) {
 			switch expErr := tc.Error.(type) {
 			case string:
 				if okErr {
-					is.Equal(tErr.SpacedError(), expErr)
+					expErrTyped := ParseSpacedError(expErr)
+					if expErrTyped == nil {
+						t.Errorf("bad spaced error %#v", expErr)
+						is.Equal(tErr.SpacedError(), expErr)
+						return
+					}
+					is.Equal(tErr.typ, expErrTyped.typ)
+					is.Equal(tErr.Message(), expErrTyped.Message())
+					is.Equal(tErr.pos, expErrTyped.pos)
 				} else {
 					is.Equal(err.Error(), expErr)
 				}

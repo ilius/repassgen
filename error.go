@@ -58,6 +58,25 @@ func (e *Error) SpacedError() string {
 	)
 }
 
+func ParseSpacedError(str string) *Error {
+	trimmed := strings.TrimLeft(str, " ")
+	pos := len(str) - len(trimmed)
+	parts := strings.SplitN(trimmed, " ", 4)
+	if parts[0] != "^" {
+		return nil
+	}
+	if parts[2] != "error:" {
+		return nil
+	}
+	typ := parts[1]
+	msgs := strings.Split(parts[3], ": ")
+	return &Error{
+		typ:  ErrorType(typ),
+		pos:  uint(pos),
+		msgs: msgs,
+	}
+}
+
 // AppendMsg add a message to the begining of current messages
 func (e *Error) AppendMsg(msg string) {
 	e.msgs = append(e.msgs, msg)
