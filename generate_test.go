@@ -23,19 +23,25 @@ func TestGenerate(t *testing.T) {
 		is = is.Lax()
 		out, s, err := Generate(GenerateInput{Pattern: []rune(tc.Pattern)})
 		if tc.Error != nil {
-			tExpErr, okExp := tc.Error.(*Error)
-			tErr, ok := err.(*Error)
-			if !(ok && okExp) {
-				is.ErrMsg(err, tc.Error.Error())
-				return
+			tErr, okErr := err.(*Error)
+			switch expErr := tc.Error.(type) {
+			case string:
+				if okErr {
+					is.Equal(tErr.SpacedError(), expErr)
+				} else {
+					is.Equal(err.Error(), expErr)
+				}
+			case *Error:
+				is.Equal(tErr.typ, expErr.typ)
+				is.Equal(tErr.Message(), expErr.Message())
+				is.Equal(tErr.pos, expErr.pos)
+			case error:
+				is.ErrMsg(err, expErr.Error())
 			}
-			if verbose {
+			if okErr && verbose {
 				t.Log(string(s.pattern))
 				t.Log(tErr.SpacedError())
 			}
-			is.Equal(tErr.typ, tExpErr.typ)
-			is.Equal(tErr.Message(), tExpErr.Message())
-			is.Equal(tErr.pos, tExpErr.pos)
 			is.Nil(out)
 			if verbose {
 				t.Log("------------------------------------")
@@ -77,95 +83,95 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `[a`,
-		Error:   NewError(ErrorSyntax, 1, "'[' not closed"),
+		Error:   ` ^ syntax error: '[' not closed`,
 	})
 	test(&genCase{
 		Pattern: `[[]]`,
-		Error:   NewError(ErrorSyntax, 1, "nested '['"),
+		Error:   ` ^ syntax error: nested '['`,
 	})
 	test(&genCase{
 		Pattern: `[:x]`,
-		Error:   NewError(ErrorSyntax, 3, "':' not closed"),
+		Error:   `   ^ syntax error: ':' not closed`,
 	})
 	test(&genCase{
 		Pattern: `[:x`,
-		Error:   NewError(ErrorSyntax, 2, "':' not closed"),
+		Error:   `  ^ syntax error: ':' not closed`,
 	})
 	test(&genCase{
 		Pattern: `[a-`,
-		Error:   NewError(ErrorSyntax, 2, "'[' not closed"),
+		Error:   `  ^ syntax error: '[' not closed`,
 	})
 	test(&genCase{
 		Pattern: `[a-]`,
-		Error:   NewError(ErrorSyntax, 3, "no character after '-'"),
+		Error:   `   ^ syntax error: no character after '-'`,
 	})
 	test(&genCase{
 		Pattern: `[-a]`,
-		Error:   NewError(ErrorSyntax, 2, "no character before '-'"),
+		Error:   `  ^ syntax error: no character before '-'`,
 	})
 	test(&genCase{
 		Pattern: `[a-z]{a}`,
-		Error:   NewError(ErrorSyntax, 6, "invalid natural number inside {...}"),
+		Error:   `      ^ syntax error: invalid natural number inside {...}`,
 	})
 	test(&genCase{
 		Pattern: `[a-z]{2.5}`,
-		Error:   NewError(ErrorSyntax, 7, "invalid natural number inside {...}"),
+		Error:   `       ^ syntax error: invalid natural number inside {...}`,
 	})
 	test(&genCase{
 		Pattern: `[a-z]{2.0}`,
-		Error:   NewError(ErrorSyntax, 7, "invalid natural number inside {...}"),
+		Error:   `       ^ syntax error: invalid natural number inside {...}`,
 	})
 	test(&genCase{
 		Pattern: `[a-z]{1-3}`,
-		Error:   NewError(ErrorSyntax, 7, "repetition range syntax is '{M,N}' not '{M-N}'"),
+		Error:   `       ^ syntax error: repetition range syntax is '{M,N}' not '{M-N}'`,
 	})
 	test(&genCase{
 		Pattern: `test([a-z]{1-3})`,
-		Error:   NewError(ErrorSyntax, 12, "repetition range syntax is '{M,N}' not '{M-N}'"),
+		Error:   `            ^ syntax error: repetition range syntax is '{M,N}' not '{M-N}'`,
 	})
 	test(&genCase{
 		Pattern: `test([a-z]{1,})`,
-		Error:   NewError(ErrorSyntax, 13, "no number after ','"),
+		Error:   `             ^ syntax error: no number after ','`,
 	})
 	test(&genCase{
 		Pattern: `test([a-z]{,3})`,
-		Error:   NewError(ErrorSyntax, 13, "no number before ','"),
+		Error:   `             ^ syntax error: no number before ','`,
 	})
 	test(&genCase{
 		Pattern: `test([a-z]{1,2,3})`,
-		Error:   NewError(ErrorSyntax, 16, "multiple ',' inside {...}"),
+		Error:   `                ^ syntax error: multiple ',' inside {...}`,
 	})
 	test(&genCase{
 		Pattern: `[a-z]{{}`,
-		Error:   NewError(ErrorSyntax, 6, "nested '{'"),
+		Error:   `      ^ syntax error: nested '{'`,
 	})
 	test(&genCase{
 		Pattern: `[a-z]{[}`,
-		Error:   NewError(ErrorSyntax, 6, "'[' inside {...}"),
+		Error:   `      ^ syntax error: '[' inside {...}`,
 	})
 	test(&genCase{
 		Pattern: `[a-z]{$}`,
-		Error:   NewError(ErrorSyntax, 6, "'$' inside {...}"),
+		Error:   `      ^ syntax error: '$' inside {...}`,
 	})
 	test(&genCase{
 		Pattern: `test([a-z]{1a})`,
-		Error:   NewError(ErrorSyntax, 12, "invalid natural number inside {...}"),
+		Error:   `            ^ syntax error: invalid natural number inside {...}`,
 	})
 	test(&genCase{
 		Pattern: `test([a-z]{})`,
-		Error:   NewError(ErrorSyntax, 11, "missing number inside {}"),
+		Error:   `           ^ syntax error: missing number inside {}`,
 	})
 	test(&genCase{
 		Pattern: `[a-z]{3,1}`,
-		Error:   NewError(ErrorValue, 9, "invalid numbers 3 > 1 inside {...}"),
+		Error:   `         ^ value error: invalid numbers 3 > 1 inside {...}`,
 	})
 	test(&genCase{
 		Pattern: `{3}`,
-		Error:   NewError(ErrorSyntax, 2, "nothing to repeat"),
+		Error:   `  ^ syntax error: nothing to repeat`,
 	})
 	test(&genCase{
 		Pattern: `x{0}`,
-		Error:   NewError(ErrorSyntax, 3, "invalid natural number inside {...}"),
+		Error:   `   ^ syntax error: invalid natural number inside {...}`,
 	})
 	test(&genCase{
 		Pattern: `[abc$]{8}`,
@@ -709,7 +715,7 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `$bip39word(x)`,
-		Error:   NewError(ErrorValue, 10, "invalid number 'x'"),
+		Error:   `          ^ value error: invalid number 'x'`,
 	})
 	// 1 bip39 word   => 11 bits entropy
 	// 8 bip39 words  => 11 bytes entropy
@@ -725,71 +731,71 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `$()`,
-		Error:   NewError(ErrorSyntax, 1, "missing function name"),
+		Error:   ` ^ syntax error: missing function name`,
 	})
 	test(&genCase{
 		Pattern: `$hex([a-z]`,
-		Error:   NewError(ErrorSyntax, 9, "'(' not closed"),
+		Error:   `         ^ syntax error: '(' not closed`,
 	})
 	test(&genCase{
 		Pattern: `$hex(([a-z]`,
-		Error:   NewError(ErrorSyntax, 10, "'(' not closed"),
+		Error:   `          ^ syntax error: '(' not closed`,
 	})
 	test(&genCase{
 		Pattern: `$hex([:x:])`,
-		Error:   NewError(ErrorValue, 7, `invalid character class "x"`),
+		Error:   `       ^ value error: invalid character class "x"`,
 	})
 	test(&genCase{
 		Pattern: `(`,
-		Error:   NewError(ErrorSyntax, 0, "'(' not closed"),
+		Error:   `^ syntax error: '(' not closed`,
 	})
 	test(&genCase{
 		Pattern: `$foo`,
-		Error:   NewError(ErrorSyntax, 3, "expected a function call"),
+		Error:   `   ^ syntax error: expected a function call`,
 	})
 	test(&genCase{
 		Pattern: `($foo`,
-		Error:   NewError(ErrorSyntax, 4, "'(' not closed"),
+		Error:   `    ^ syntax error: '(' not closed`,
 	})
 	test(&genCase{
 		Pattern: `$foo(`,
-		Error:   NewError(ErrorSyntax, 4, "'(' not closed"),
+		Error:   `    ^ syntax error: '(' not closed`,
 	})
 	test(&genCase{
 		Pattern: `$foo(123)`,
-		Error:   NewError(ErrorValue, 4, "invalid function 'foo'"),
+		Error:   `    ^ value error: invalid function 'foo'`,
 	})
 	test(&genCase{
 		Pattern: `$foo\()`,
-		Error:   NewError(ErrorSyntax, 4, "expected a function call"),
+		Error:   `    ^ syntax error: expected a function call`,
 	})
 	test(&genCase{
 		Pattern: `test($foo(123))`,
-		Error:   NewError(ErrorValue, 9, "invalid function 'foo'"),
+		Error:   `         ^ value error: invalid function 'foo'`,
 	})
 	test(&genCase{
 		Pattern: `test $foo`,
-		Error:   NewError(ErrorSyntax, 8, "expected a function call"),
+		Error:   `        ^ syntax error: expected a function call`,
 	})
 	test(&genCase{
 		Pattern: `test($foo)`,
-		Error:   NewError(ErrorSyntax, 8, "expected a function call"),
+		Error:   `        ^ syntax error: expected a function call`,
 	})
 	test(&genCase{
 		Pattern: `$rjust(a,10000)[`,
-		Error:   NewError(ErrorSyntax, 15, "'[' not closed"),
+		Error:   `               ^ syntax error: '[' not closed`,
 	})
 	test(&genCase{
 		Pattern: `$rjust(a,10000)[a-]`,
-		Error:   NewError(ErrorSyntax, 18, "no character after '-'"),
+		Error:   `                  ^ syntax error: no character after '-'`,
 	})
 	test(&genCase{
 		Pattern: `(((a{10,20})))[`,
-		Error:   NewError(ErrorSyntax, 14, "'[' not closed"),
+		Error:   `              ^ syntax error: '[' not closed`,
 	})
 	test(&genCase{
 		Pattern: `(((a{10,20})))[a-]`,
-		Error:   NewError(ErrorSyntax, 17, "no character after '-'"),
+		Error:   `                 ^ syntax error: no character after '-'`,
 	})
 	test(&genCase{
 		Pattern: `$shuffle([a-z]{5}[1-9]{2})`,
@@ -822,23 +828,23 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `\u00mn`,
-		Error:   NewError(ErrorSyntax, 0, `invalid escape sequence`),
+		Error:   `^ syntax error: invalid escape sequence`,
 	})
 	test(&genCase{
 		Pattern: `test1 \u00mn test2`,
-		Error:   NewError(ErrorSyntax, 6, `invalid escape sequence`),
+		Error:   `      ^ syntax error: invalid escape sequence`,
 	})
 	test(&genCase{
 		Pattern: `(test1 \u00mn test2){2}`,
-		Error:   NewError(ErrorSyntax, 7, `invalid escape sequence`),
+		Error:   `       ^ syntax error: invalid escape sequence`,
 	})
 	test(&genCase{
 		Pattern: `test[\u00mn-\u00e0]abc`,
-		Error:   NewError(ErrorSyntax, 5, `invalid escape sequence`),
+		Error:   `     ^ syntax error: invalid escape sequence`,
 	})
 	test(&genCase{
 		Pattern: `test[\u00e0-\u00mn]abc`,
-		Error:   NewError(ErrorSyntax, 12, `invalid escape sequence`),
+		Error:   `            ^ syntax error: invalid escape sequence`,
 	})
 	test(&genCase{
 		Pattern: `[\u00e0-\u00e6]{10}`,
@@ -870,19 +876,19 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `$date()`,
-		Error:   NewError(ErrorArg, 5, "date: too few characters as arguments"),
+		Error:   `     ^ argument error: date: too few characters as arguments`,
 	})
 	test(&genCase{
 		Pattern: `$date(2000)`,
-		Error:   NewError(ErrorArg, 5, "date: at least 2 arguments are required"),
+		Error:   `     ^ argument error: date: at least 2 arguments are required`,
 	})
 	test(&genCase{
 		Pattern: `$date(2000a,2000b)`,
-		Error:   NewError(ErrorValue, 5, "invalid year 2000a"),
+		Error:   `     ^ value error: invalid year 2000a`,
 	})
 	test(&genCase{
 		Pattern: `$date(2000,2000b)`,
-		Error:   NewError(ErrorValue, 5, "invalid year 2000b"),
+		Error:   `     ^ value error: invalid year 2000b`,
 	})
 	test(&genCase{
 		Pattern:  `$space()`,
@@ -1043,19 +1049,19 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `$rjust(abc)`,
-		Error:   NewError(ErrorArg, 6, `rjust: at least 2 arguments are required`),
+		Error:   `      ^ argument error: rjust: at least 2 arguments are required`,
 	})
 	test(&genCase{
 		Pattern: `$rjust(abc,a)`,
-		Error:   NewError(ErrorValue, 6, `invalid width a`),
+		Error:   `      ^ value error: invalid width a`,
 	})
 	test(&genCase{
 		Pattern: `$rjust(abc,0)`,
-		Error:   NewError(ErrorValue, 6, `invalid width 0`),
+		Error:   `      ^ value error: invalid width 0`,
 	})
 	test(&genCase{
 		Pattern: `$rjust(abc,1,ab)`,
-		Error:   NewError(ErrorValue, 6, `invalid fillChar="ab", must have length 1`),
+		Error:   `      ^ value error: invalid fillChar="ab", must have length 1`,
 	})
 	test(&genCase{
 		Pattern: `$rjust({{}},7)`,
