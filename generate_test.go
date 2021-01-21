@@ -147,7 +147,7 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `test([a-z]{1,2,3})`,
-		Error:   `                ^ syntax error: multiple ',' inside {...}`,
+		Error:   `              ^ syntax error: multiple ',' inside {...}`,
 	})
 	test(&genCase{
 		Pattern: `[a-z]{{}`,
@@ -175,11 +175,11 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `{3}`,
-		Error:   `  ^ syntax error: nothing to repeat`,
+		Error:   `^ syntax error: nothing to repeat`,
 	})
 	test(&genCase{
 		Pattern: `x{0}`,
-		Error:   `   ^ syntax error: invalid natural number inside {...}`,
+		Error:   `   ^ syntax error: invalid natural number '0'`,
 	})
 	test(&genCase{
 		Pattern: `[abc$]{8}`,

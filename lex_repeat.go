@@ -21,7 +21,13 @@ func lexRepeat(s *State) (LexType, error) {
 		return nil, s.errorSyntax("nested '{'")
 	case '$':
 		return nil, s.errorSyntax("'$' inside {...}")
-	case ',', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+	case ',':
+		if hasRune(s.patternBuff, ',') {
+			return nil, s.errorSyntax("multiple ',' inside {...}")
+		}
+		s.patternBuff = append(s.patternBuff, c)
+		return lexRepeat, nil
+	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		s.patternBuff = append(s.patternBuff, c)
 		return lexRepeat, nil
 	case '-':
@@ -34,6 +40,7 @@ func lexRepeat(s *State) (LexType, error) {
 			return nil, s.errorSyntax("nothing to repeat")
 		}
 		child := s.lastGen
+		// FIXME: lastGen may have used another state
 		count, err := parseRepeatCount(s, s.patternBuff)
 		if err != nil {
 			return nil, err
@@ -70,10 +77,10 @@ func parseRepeatCount(s *State, countRunes []rune) (int, error) {
 	if len(parts) == 1 {
 		countI64, err := strconv.ParseInt(countStr, 10, 64)
 		if err != nil {
-			return 0, s.errorSyntax(badRepeatCount)
+			return 0, s.errorSyntax("invalid natural number '%v'", countStr)
 		}
 		if countI64 < 1 {
-			return 0, s.errorSyntax(badRepeatCount)
+			return 0, s.errorSyntax("invalid natural number '%v'", countStr)
 		}
 		return int(countI64), nil
 	}

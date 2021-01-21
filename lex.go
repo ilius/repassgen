@@ -23,6 +23,9 @@ func LexRoot(s *State) (LexType, error) {
 		s.openBracket = true
 		return lexRange, nil
 	case '{':
+		if s.lastGen == nil {
+			return nil, s.errorSyntax("nothing to repeat")
+		}
 		return lexRepeat, nil
 	case '(':
 		s.openParenth++

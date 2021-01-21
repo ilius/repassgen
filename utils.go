@@ -36,3 +36,12 @@ func excludeCharsASCII(exclude []rune) []rune {
 	}
 	return list
 }
+
+func hasRune(st []rune, c rune) bool {
+	for _, c2 := range st {
+		if c2 == c {
+			return true
+		}
+	}
+	return false
+}
