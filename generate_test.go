@@ -63,6 +63,13 @@ func TestGenerate(t *testing.T) {
 			}
 			return
 		}
+		pwStr := string(out.Password)
+		is = is.AddMsg("password=%#v", pwStr)
+		if tc.Password != nil {
+			if !is.Equal(pwStr, *tc.Password) {
+				return
+			}
+		}
 		{
 			length := len(out.Password)
 			minLen := tc.PassLen[0]
@@ -74,17 +81,12 @@ func TestGenerate(t *testing.T) {
 				maxLen,
 			).True(minLen <= length && length <= maxLen)
 		}
-		pwStr := string(out.Password)
-		is = is.AddMsg("password=%#v", pwStr)
 		if tc.Validate != nil {
 			is.AddMsg("validation failed").True(tc.Validate(pwStr))
 		}
 
 		isFloatBetween(is, out.PatternEntropy, tc.Entropy[0], tc.Entropy[1])
 
-		if tc.Password != nil {
-			is.Equal(pwStr, *tc.Password)
-		}
 		if tc.WordCount != 0 {
 			actual := len(strings.Split(pwStr, " "))
 			is.Equal(actual, tc.WordCount)
