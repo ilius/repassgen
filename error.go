@@ -51,7 +51,7 @@ func (e *Error) Error() string {
 
 func (e *Error) SpacedError() string {
 	return fmt.Sprintf(
-		"%s^ %s error: %s\n",
+		"%s^ %s error: %s",
 		strings.Repeat(" ", int(e.pos)),
 		string(e.typ),
 		e.Message(),
