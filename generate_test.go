@@ -21,8 +21,16 @@ func TestGenerate(t *testing.T) {
 	test := func(tc *genCase) {
 		is := is.New(t).AddMsg("pattern=%#v", tc.Pattern)
 		out, s, err := Generate(GenerateInput{Pattern: []rune(tc.Pattern)})
-		if tc.Error != "" {
-			is.ErrMsg(err, tc.Error)
+		if tc.Error != nil {
+			tExpErr, okExp := tc.Error.(*Error)
+			tErr, ok := err.(*Error)
+			if !(ok && okExp) {
+				is.ErrMsg(err, tc.Error.Error())
+				return
+			}
+			is.Equal(tErr.typ, tExpErr.typ)
+			is.Equal(tErr.Message(), tExpErr.Message())
+			is.Equal(tErr.pos, tExpErr.pos)
 			is.Nil(out)
 			if verbose {
 				s.PrintError(err)
@@ -65,95 +73,95 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `[a`,
-		Error:   "syntax error near index 1: '[' not closed",
+		Error:   NewError(ErrorSyntax, 1, "'[' not closed"),
 	})
 	test(&genCase{
 		Pattern: `[[]]`,
-		Error:   "syntax error near index 1: nested '['",
+		Error:   NewError(ErrorSyntax, 1, "nested '['"),
 	})
 	test(&genCase{
 		Pattern: `[:x]`,
-		Error:   "syntax error near index 3: ':' not closed",
+		Error:   NewError(ErrorSyntax, 3, "':' not closed"),
 	})
 	test(&genCase{
 		Pattern: `[:x`,
-		Error:   "syntax error near index 2: ':' not closed",
+		Error:   NewError(ErrorSyntax, 2, "':' not closed"),
 	})
 	test(&genCase{
 		Pattern: `[a-`,
-		Error:   "syntax error near index 2: '[' not closed",
+		Error:   NewError(ErrorSyntax, 2, "'[' not closed"),
 	})
 	test(&genCase{
 		Pattern: `[a-]`,
-		Error:   "syntax error near index 3: no character after '-'",
+		Error:   NewError(ErrorSyntax, 3, "no character after '-'"),
 	})
 	test(&genCase{
 		Pattern: `[-a]`,
-		Error:   "syntax error near index 2: no character before '-'",
+		Error:   NewError(ErrorSyntax, 2, "no character before '-'"),
 	})
 	test(&genCase{
 		Pattern: `[a-z]{a}`,
-		Error:   "syntax error near index 6: invalid natural number inside {...}",
+		Error:   NewError(ErrorSyntax, 6, "invalid natural number inside {...}"),
 	})
 	test(&genCase{
 		Pattern: `[a-z]{2.5}`,
-		Error:   "syntax error near index 7: invalid natural number inside {...}",
+		Error:   NewError(ErrorSyntax, 7, "invalid natural number inside {...}"),
 	})
 	test(&genCase{
 		Pattern: `[a-z]{2.0}`,
-		Error:   "syntax error near index 7: invalid natural number inside {...}",
+		Error:   NewError(ErrorSyntax, 7, "invalid natural number inside {...}"),
 	})
 	test(&genCase{
 		Pattern: `[a-z]{1-3}`,
-		Error:   "syntax error near index 7: repetition range syntax is '{M,N}' not '{M-N}'",
+		Error:   NewError(ErrorSyntax, 7, "repetition range syntax is '{M,N}' not '{M-N}'"),
 	})
 	test(&genCase{
 		Pattern: `test([a-z]{1-3})`,
-		Error:   "syntax error near index 12: repetition range syntax is '{M,N}' not '{M-N}'",
+		Error:   NewError(ErrorSyntax, 12, "repetition range syntax is '{M,N}' not '{M-N}'"),
 	})
 	test(&genCase{
 		Pattern: `test([a-z]{1,})`,
-		Error:   "syntax error near index 13: no number after ','",
+		Error:   NewError(ErrorSyntax, 13, "no number after ','"),
 	})
 	test(&genCase{
 		Pattern: `test([a-z]{,3})`,
-		Error:   "syntax error near index 13: no number before ','",
+		Error:   NewError(ErrorSyntax, 13, "no number before ','"),
 	})
 	test(&genCase{
 		Pattern: `test([a-z]{1,2,3})`,
-		Error:   "syntax error near index 16: multiple ',' inside {...}",
+		Error:   NewError(ErrorSyntax, 16, "multiple ',' inside {...}"),
 	})
 	test(&genCase{
 		Pattern: `[a-z]{{}`,
-		Error:   "syntax error near index 6: nested '{'",
+		Error:   NewError(ErrorSyntax, 6, "nested '{'"),
 	})
 	test(&genCase{
 		Pattern: `[a-z]{[}`,
-		Error:   "syntax error near index 6: '[' inside {...}",
+		Error:   NewError(ErrorSyntax, 6, "'[' inside {...}"),
 	})
 	test(&genCase{
 		Pattern: `[a-z]{$}`,
-		Error:   "syntax error near index 6: '$' inside {...}",
+		Error:   NewError(ErrorSyntax, 6, "'$' inside {...}"),
 	})
 	test(&genCase{
 		Pattern: `test([a-z]{1a})`,
-		Error:   "syntax error near index 12: invalid natural number inside {...}",
+		Error:   NewError(ErrorSyntax, 12, "invalid natural number inside {...}"),
 	})
 	test(&genCase{
 		Pattern: `test([a-z]{})`,
-		Error:   "syntax error near index 11: missing number inside {}",
+		Error:   NewError(ErrorSyntax, 11, "missing number inside {}"),
 	})
 	test(&genCase{
 		Pattern: `[a-z]{3,1}`,
-		Error:   "value error near index 9: invalid numbers 3 > 1 inside {...}",
+		Error:   NewError(ErrorValue, 9, "invalid numbers 3 > 1 inside {...}"),
 	})
 	test(&genCase{
 		Pattern: `{3}`,
-		Error:   "syntax error near index 2: nothing to repeat",
+		Error:   NewError(ErrorSyntax, 2, "nothing to repeat"),
 	})
 	test(&genCase{
 		Pattern: `x{0}`,
-		Error:   "syntax error near index 3: invalid natural number inside {...}",
+		Error:   NewError(ErrorSyntax, 3, "invalid natural number inside {...}"),
 	})
 	test(&genCase{
 		Pattern: `[abc$]{8}`,
@@ -697,7 +705,7 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `$bip39word(x)`,
-		Error:   "value error near index 10: invalid number 'x'",
+		Error:   NewError(ErrorValue, 10, "invalid number 'x'"),
 	})
 	// 1 bip39 word   => 11 bits entropy
 	// 8 bip39 words  => 11 bytes entropy
@@ -713,71 +721,71 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `$()`,
-		Error:   "syntax error near index 1: missing function name",
+		Error:   NewError(ErrorSyntax, 1, "missing function name"),
 	})
 	test(&genCase{
 		Pattern: `$hex([a-z]`,
-		Error:   "syntax error near index 9: '(' not closed",
+		Error:   NewError(ErrorSyntax, 9, "'(' not closed"),
 	})
 	test(&genCase{
 		Pattern: `$hex(([a-z]`,
-		Error:   "syntax error near index 10: '(' not closed",
+		Error:   NewError(ErrorSyntax, 10, "'(' not closed"),
 	})
 	test(&genCase{
 		Pattern: `$hex([:x:])`,
-		Error:   `value error near index 7: invalid character class "x"`,
+		Error:   NewError(ErrorValue, 7, `invalid character class "x"`),
 	})
 	test(&genCase{
 		Pattern: `(`,
-		Error:   "syntax error near index 0: '(' not closed",
+		Error:   NewError(ErrorSyntax, 0, "'(' not closed"),
 	})
 	test(&genCase{
 		Pattern: `$foo`,
-		Error:   "syntax error near index 3: expected a function call",
+		Error:   NewError(ErrorSyntax, 3, "expected a function call"),
 	})
 	test(&genCase{
 		Pattern: `($foo`,
-		Error:   "syntax error near index 4: '(' not closed",
+		Error:   NewError(ErrorSyntax, 4, "'(' not closed"),
 	})
 	test(&genCase{
 		Pattern: `$foo(`,
-		Error:   "syntax error near index 4: '(' not closed",
+		Error:   NewError(ErrorSyntax, 4, "'(' not closed"),
 	})
 	test(&genCase{
 		Pattern: `$foo(123)`,
-		Error:   "value error near index 4: invalid function 'foo'",
+		Error:   NewError(ErrorValue, 4, "invalid function 'foo'"),
 	})
 	test(&genCase{
 		Pattern: `$foo\()`,
-		Error:   "syntax error near index 4: expected a function call",
+		Error:   NewError(ErrorSyntax, 4, "expected a function call"),
 	})
 	test(&genCase{
 		Pattern: `test($foo(123))`,
-		Error:   "value error near index 9: invalid function 'foo'",
+		Error:   NewError(ErrorValue, 9, "invalid function 'foo'"),
 	})
 	test(&genCase{
 		Pattern: `test $foo`,
-		Error:   "syntax error near index 8: expected a function call",
+		Error:   NewError(ErrorSyntax, 8, "expected a function call"),
 	})
 	test(&genCase{
 		Pattern: `test($foo)`,
-		Error:   "syntax error near index 8: expected a function call",
+		Error:   NewError(ErrorSyntax, 8, "expected a function call"),
 	})
 	test(&genCase{
 		Pattern: `$rjust(a,10000)[`,
-		Error:   "syntax error near index 15: '[' not closed",
+		Error:   NewError(ErrorSyntax, 15, "'[' not closed"),
 	})
 	test(&genCase{
 		Pattern: `$rjust(a,10000)[a-]`,
-		Error:   "syntax error near index 18: no character after '-'",
+		Error:   NewError(ErrorSyntax, 18, "no character after '-'"),
 	})
 	test(&genCase{
 		Pattern: `(((a{10,20})))[`,
-		Error:   "syntax error near index 14: '[' not closed",
+		Error:   NewError(ErrorSyntax, 14, "'[' not closed"),
 	})
 	test(&genCase{
 		Pattern: `(((a{10,20})))[a-]`,
-		Error:   "syntax error near index 17: no character after '-'",
+		Error:   NewError(ErrorSyntax, 17, "no character after '-'"),
 	})
 	test(&genCase{
 		Pattern: `$shuffle([a-z]{5}[1-9]{2})`,
@@ -810,23 +818,23 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `\u00mn`,
-		Error:   `syntax error near index 0: invalid escape sequence`,
+		Error:   NewError(ErrorSyntax, 0, `invalid escape sequence`),
 	})
 	test(&genCase{
 		Pattern: `test1 \u00mn test2`,
-		Error:   `syntax error near index 6: invalid escape sequence`,
+		Error:   NewError(ErrorSyntax, 6, `invalid escape sequence`),
 	})
 	test(&genCase{
 		Pattern: `(test1 \u00mn test2){2}`,
-		Error:   `syntax error near index 7: invalid escape sequence`,
+		Error:   NewError(ErrorSyntax, 7, `invalid escape sequence`),
 	})
 	test(&genCase{
 		Pattern: `test[\u00mn-\u00e0]abc`,
-		Error:   `syntax error near index 5: invalid escape sequence`,
+		Error:   NewError(ErrorSyntax, 5, `invalid escape sequence`),
 	})
 	test(&genCase{
 		Pattern: `test[\u00e0-\u00mn]abc`,
-		Error:   `syntax error near index 12: invalid escape sequence`,
+		Error:   NewError(ErrorSyntax, 12, `invalid escape sequence`),
 	})
 	test(&genCase{
 		Pattern: `[\u00e0-\u00e6]{10}`,
@@ -858,19 +866,19 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `$date()`,
-		Error:   "argument error near index 5: date: too few characters as arguments",
+		Error:   NewError(ErrorArg, 5, "date: too few characters as arguments"),
 	})
 	test(&genCase{
 		Pattern: `$date(2000)`,
-		Error:   "argument error near index 5: date: at least 2 arguments are required",
+		Error:   NewError(ErrorArg, 5, "date: at least 2 arguments are required"),
 	})
 	test(&genCase{
 		Pattern: `$date(2000a,2000b)`,
-		Error:   "value error near index 5: invalid year 2000a",
+		Error:   NewError(ErrorValue, 5, "invalid year 2000a"),
 	})
 	test(&genCase{
 		Pattern: `$date(2000,2000b)`,
-		Error:   "value error near index 5: invalid year 2000b",
+		Error:   NewError(ErrorValue, 5, "invalid year 2000b"),
 	})
 	test(&genCase{
 		Pattern:  `$space()`,
@@ -1031,23 +1039,23 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `$rjust(abc)`,
-		Error:   `argument error near index 6: rjust: at least 2 arguments are required`,
+		Error:   NewError(ErrorArg, 6, `rjust: at least 2 arguments are required`),
 	})
 	test(&genCase{
 		Pattern: `$rjust(abc,a)`,
-		Error:   `value error near index 6: invalid width a`,
+		Error:   NewError(ErrorValue, 6, `invalid width a`),
 	})
 	test(&genCase{
 		Pattern: `$rjust(abc,0)`,
-		Error:   `value error near index 6: invalid width 0`,
+		Error:   NewError(ErrorValue, 6, `invalid width 0`),
 	})
 	test(&genCase{
 		Pattern: `$rjust(abc,1,ab)`,
-		Error:   `value error near index 6: invalid fillChar="ab", must have length 1`,
+		Error:   NewError(ErrorValue, 6, `invalid fillChar="ab", must have length 1`),
 	})
 	test(&genCase{
 		Pattern: `$rjust({{}},7)`,
-		Error:   `nested '{'`,
+		Error:   fmt.Errorf(`nested '{'`),
 	})
 	test(&genCase{
 		Pattern:  `$ljust((abc,),7,0)`,

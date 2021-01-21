@@ -35,13 +35,17 @@ type Error struct {
 	pos  uint
 }
 
+func (e *Error) Message() string {
+	return strings.Join(e.msgs, ": ")
+}
+
 // Error returns error string
 func (e *Error) Error() string {
 	return fmt.Sprintf(
 		"%s error near index %d: %s",
 		string(e.typ),
 		e.pos,
-		strings.Join(e.msgs, ": "),
+		e.Message(),
 	)
 }
 
@@ -50,7 +54,7 @@ func (e *Error) SpacedError() string {
 		"%s^ %s error: %s\n",
 		strings.Repeat(" ", int(e.pos)),
 		string(e.typ),
-		strings.Join(e.msgs, ", "),
+		e.Message(),
 	)
 }
 

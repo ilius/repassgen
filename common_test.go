@@ -35,7 +35,7 @@ func isFloatBetween(is *is.Is, actual float64, min float64, max float64) {
 type genCase struct {
 	Pattern string
 
-	Error string
+	Error error
 
 	PassLen  [2]int // {min, max}
 	Validate func(string) bool
