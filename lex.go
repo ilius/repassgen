@@ -116,23 +116,23 @@ func lexBackslashTrans(parentLex LexType) LexType {
 	}
 }
 
-func lexUnicodeBuff(parentLex LexType) LexType {
+func lexUnicodeBuff(parentLex LexType, symbol rune, width int) LexType {
 	return func(s *State) (LexType, error) {
-		buff := make([]rune, 0, 6)
-		buff = append(buff, '\\', 'u')
-		for ; len(buff) < 6 && !s.end(); s.move(1) {
+		buff := make([]rune, 0, width)
+		buff = append(buff, '\\', symbol)
+		for ; len(buff) < width && !s.end(); s.move(1) {
 			buff = append(buff, s.pattern[s.patternPos])
 		}
-		if len(buff) != 6 {
-			s.errorOffset -= 5
+		if len(buff) != width {
+			s.errorOffset -= width - 1
 			return nil, s.errorSyntax("invalid escape sequence")
 		}
-		_, char, err := unescapeUnicodeSingle(buff, 0)
+		chars, err := unescapeUnicode(buff)
 		if err != nil {
-			s.errorOffset -= 5
+			s.errorOffset -= width - 1
 			return nil, s.errorSyntax("invalid escape sequence")
 		}
-		s.patternBuff = append(s.patternBuff, char)
+		s.patternBuff = append(s.patternBuff, chars...)
 		return parentLex, nil
 	}
 }
