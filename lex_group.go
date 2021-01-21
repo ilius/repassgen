@@ -1,5 +1,7 @@
 package main
 
+import "strconv"
+
 func lexGroup(s *State) (LexType, error) {
 	if s.end() {
 		s.errorOffset++
@@ -12,15 +14,20 @@ func lexGroup(s *State) (LexType, error) {
 		return lexGroupBackslash, nil
 	case '(':
 		s.openParenth++
+		//s.lastGroupId++
 	case ')':
 		s.openParenth--
 		if s.openParenth > 0 {
 			break
 		}
+		groupId := s.lastGroupId
+		lastOutputSize := len(s.output)
 		s2 := NewState(&SharedState{}, s.pattern)
 		s2.output = s.output
 		s2.absPos = s.absPos - uint(len(s.patternBuff)) - 1
 		s2.patternEntropy = s.patternEntropy
+		s2.lastGroupId = groupId
+		s2.groupsOutput = s.groupsOutput
 		childPattern := s.patternBuff[s.patternBuffStart:len(s.patternBuff)]
 		gen := newGroupGenerator(childPattern)
 		err := gen.Generate(s2)
@@ -29,6 +36,8 @@ func lexGroup(s *State) (LexType, error) {
 		}
 		s.output = s2.output
 		s.patternEntropy = s2.patternEntropy
+		s.lastGroupId = s2.lastGroupId
+		s.groupsOutput[groupId] = s.output[lastOutputSize:]
 		s.lastGen = gen
 		s.patternBuff = nil
 		return LexRoot, nil
@@ -42,4 +51,25 @@ func lexGroupBackslash(s *State) (LexType, error) {
 	s.move(1)
 	s.patternBuff = append(s.patternBuff, '\\', c)
 	return lexGroup, nil
+}
+
+func processGroupRef(s *State, parentLex LexType) (LexType, error) {
+	gid_r := []rune{}
+	for ; !s.end(); s.move(1) {
+		c := s.pattern[s.patternPos]
+		if c < '0' || c > '9' {
+			break
+		}
+		gid_r = append(gid_r, c)
+	}
+	gid, err := strconv.ParseInt(string(gid_r), 10, 64)
+	if err != nil {
+		return nil, s.errorUnknown("unexpected group id '%v'", string(gid_r))
+	}
+	output, ok := s.groupsOutput[uint(gid)]
+	if !ok {
+		return nil, s.errorValue("invalid group id '%v'", gid)
+	}
+	s.addOutput(output)
+	return parentLex, nil
 }

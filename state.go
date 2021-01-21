@@ -11,6 +11,9 @@ type SharedState struct {
 	errorOffset int
 
 	patternEntropy float64
+
+	lastGroupId  uint
+	groupsOutput map[uint][]rune
 }
 
 // State is lex inputs, output and temp state
@@ -36,8 +39,18 @@ func (s *State) move(chars uint) {
 	s.absPos += chars
 }
 
+func (s *State) moveBack(chars uint) {
+	s.patternPos -= chars
+	s.absPos -= chars
+}
+
 func (s *State) addOutputOne(c rune) {
 	s.lastGen = &staticStringGenerator{str: []rune{c}}
+	s.lastGen.Generate(s)
+}
+
+func (s *State) addOutput(str []rune) {
+	s.lastGen = &staticStringGenerator{str: str}
 	s.lastGen.Generate(s)
 }
 
@@ -102,6 +115,12 @@ func (s *State) PrintError(err error) {
 	}
 	fmt.Println(string(s.pattern))
 	fmt.Println(myErr.SpacedError())
+}
+
+func NewSharedState() *SharedState {
+	return &SharedState{
+		groupsOutput: map[uint][]rune{},
+	}
 }
 
 // NewState is factory function for State

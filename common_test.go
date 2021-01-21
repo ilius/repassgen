@@ -19,7 +19,7 @@ func newTestState(patternArg interface{}) *State {
 	default:
 		panic("invalid patternArg")
 	}
-	s := NewState(&SharedState{}, pattern)
+	s := NewState(NewSharedState(), pattern)
 	return s
 }
 

@@ -35,10 +35,12 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 		if s.openParenth > 0 {
 			break
 		}
-		s2 := NewState(&SharedState{}, s.pattern)
+		s2 := NewState(NewSharedState(), s.pattern)
 		s2.output = s.output
 		s2.absPos = s.absPos - (uint(len(s.patternBuff)) - s.patternBuffStart + 1)
 		s2.patternEntropy = s.patternEntropy
+		s2.lastGroupId = s.lastGroupId
+		s2.groupsOutput = s.groupsOutput
 		funcName := string(s.patternBuff[:s.patternBuffStart])
 		if funcName == "" {
 			return nil, s2.errorSyntax("missing function name")
@@ -54,6 +56,7 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 		}
 		s.output = s2.output
 		s.patternEntropy = s2.patternEntropy
+		s.lastGroupId = s2.lastGroupId
 		s.patternBuff = nil
 		s.lastGen = gen
 		return LexRoot, nil

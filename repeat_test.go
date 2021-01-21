@@ -42,7 +42,7 @@ func TestRepeatGeneratorByStatic(t *testing.T) {
 		child: &staticStringGenerator{str: []rune(str)},
 		count: count,
 	}
-	s := NewState(&SharedState{}, pattern)
+	s := NewState(NewSharedState(), pattern)
 	{
 		err := g.Generate(s)
 		is.NotErr(err)

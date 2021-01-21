@@ -29,6 +29,7 @@ func LexRoot(s *State) (LexType, error) {
 		return lexRepeat, nil
 	case '(':
 		s.openParenth++
+		s.lastGroupId++
 		return lexGroup, nil
 	case '$':
 		return lexIdent, nil
@@ -55,6 +56,9 @@ func backslashEscape(c rune) rune {
 
 func lexBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
+	if c >= '1' && c <= '9' {
+		return processGroupRef(s, LexRoot)
+	}
 	s.move(1)
 	if c == 'u' {
 		if s.patternBuff != nil {

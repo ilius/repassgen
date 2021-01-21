@@ -14,7 +14,7 @@ type GenerateOutput struct {
 // Generate generates random password based on given pattern
 // see README.md for examples of pattern
 func Generate(in GenerateInput) (*GenerateOutput, *State, error) {
-	ss := &SharedState{}
+	ss := NewSharedState()
 	s := NewState(ss, in.Pattern)
 	g := NewRootGenerator()
 	{

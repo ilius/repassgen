@@ -56,7 +56,13 @@ func TestGenerate(t *testing.T) {
 			}
 			return
 		}
-		is.NotErr(err)
+		if !is.NotErr(err) {
+			tErr, okErr := err.(*Error)
+			if okErr {
+				t.Logf("Error: `" + tErr.SpacedError() + "`")
+			}
+			return
+		}
 		{
 			length := len(out.Password)
 			minLen := tc.PassLen[0]
@@ -1098,5 +1104,37 @@ func TestGenerate(t *testing.T) {
 		PassLen:  [2]int{8, 8},
 		Entropy:  [2]float64{0, 0},
 		Password: strPtr(`  abc,  `),
+	})
+	test(&genCase{
+		Pattern:  `(abc) test1 \1 test2`,
+		PassLen:  [2]int{19, 19},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`abc test1 abc test2`),
+	})
+	test(&genCase{
+		Pattern: `(abc) test1 \2 test2`,
+		Error:   `             ^ value error: invalid group id '2'`,
+	})
+	test(&genCase{
+		Pattern: `(abc) test1 \20 test2`,
+		Error:   `              ^ value error: invalid group id '20'`,
+	})
+	test(&genCase{
+		Pattern:  `(a(b(c))) 1:'\1' 2:'\2' 3:'\3'`,
+		PassLen:  [2]int{24, 24},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`abc 1:'abc' 2:'bc' 3:'c'`),
+	})
+	test(&genCase{
+		Pattern:  `$hex((abc)) 1:'\1'`,
+		PassLen:  [2]int{14, 14},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`616263 1:'abc'`),
+	})
+	test(&genCase{
+		Pattern:  `kana: (そうたい) romaji: $romaji(\1)`,
+		PassLen:  [2]int{25, 25},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`kana: そうたい romaji: soutai`),
 	})
 }
