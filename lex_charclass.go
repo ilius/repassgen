@@ -4,6 +4,7 @@ package main
 
 func lexRange(s *State) (LexType, error) {
 	if s.end() {
+		s.errorOffset++
 		return nil, s.errorSyntax("'[' not closed")
 	}
 	c := s.pattern[s.patternPos]
@@ -47,6 +48,7 @@ func lexRange(s *State) (LexType, error) {
 
 func lexRangeColon(s *State) (LexType, error) {
 	if s.end() {
+		s.errorOffset++
 		return nil, s.errorSyntax("':' not closed")
 	}
 	n := uint(len(s.patternBuff))
@@ -73,6 +75,7 @@ func lexRangeColon(s *State) (LexType, error) {
 
 func lexRangeDashInit(s *State) (LexType, error) {
 	if s.end() {
+		s.errorOffset++
 		return nil, s.errorSyntax("'[' not closed")
 	}
 	s.patternBuff = append(s.patternBuff, s.pattern[s.patternPos-1], s.pattern[s.patternPos])
@@ -88,6 +91,7 @@ func lexRangeDashInit(s *State) (LexType, error) {
 func lexRangeDash(s *State) (LexType, error) {
 	n := len(s.patternBuff)
 	if n < 3 {
+		s.errorOffset--
 		return nil, s.errorSyntax("no character before '-'")
 	}
 	c1 := s.patternBuff[n-1]

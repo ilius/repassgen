@@ -91,7 +91,7 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `[a`,
-		Error:   ` ^ syntax error: '[' not closed`,
+		Error:   `  ^ syntax error: '[' not closed`,
 	})
 	test(&genCase{
 		Pattern: `[[]]`,
@@ -103,11 +103,11 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `[:x`,
-		Error:   `  ^ syntax error: ':' not closed`,
+		Error:   `   ^ syntax error: ':' not closed`,
 	})
 	test(&genCase{
 		Pattern: `[a-`,
-		Error:   `  ^ syntax error: '[' not closed`,
+		Error:   `   ^ syntax error: '[' not closed`,
 	})
 	test(&genCase{
 		Pattern: `[a-]`,
@@ -115,7 +115,7 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `[-a]`,
-		Error:   `  ^ syntax error: no character before '-'`,
+		Error:   ` ^ syntax error: no character before '-'`,
 	})
 	test(&genCase{
 		Pattern: `[a-z]{a}`,
@@ -142,8 +142,8 @@ func TestGenerate(t *testing.T) {
 		Error:   `             ^ syntax error: no number after ','`,
 	})
 	test(&genCase{
-		Pattern: `test([a-z]{,3})`,
-		Error:   `             ^ syntax error: no number before ','`,
+		Pattern: `test([a-z]{,3333})`,
+		Error:   `           ^ syntax error: no number before ','`,
 	})
 	test(&genCase{
 		Pattern: `test([a-z]{1,2,3})`,
@@ -791,7 +791,7 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `$rjust(a,10000)[`,
-		Error:   `               ^ syntax error: '[' not closed`,
+		Error:   `                ^ syntax error: '[' not closed`,
 	})
 	test(&genCase{
 		Pattern: `$rjust(a,10000)[a-]`,
@@ -799,7 +799,7 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `(((a{10,20})))[`,
-		Error:   `              ^ syntax error: '[' not closed`,
+		Error:   `               ^ syntax error: '[' not closed`,
 	})
 	test(&genCase{
 		Pattern: `(((a{10,20})))[a-]`,

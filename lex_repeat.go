@@ -34,7 +34,7 @@ func lexRepeat(s *State) (LexType, error) {
 			return nil, s.errorSyntax("nothing to repeat")
 		}
 		child := s.lastGen
-		count, err := parseRepeatCount(s, string(s.patternBuff))
+		count, err := parseRepeatCount(s, s.patternBuff)
 		if err != nil {
 			return nil, err
 		}
@@ -60,7 +60,8 @@ func lexRepeat(s *State) (LexType, error) {
 	return nil, s.errorSyntax(badRepeatCount)
 }
 
-func parseRepeatCount(s *State, countStr string) (int, error) {
+func parseRepeatCount(s *State, countRunes []rune) (int, error) {
+	countStr := string(countRunes)
 	parts := strings.Split(countStr, ",")
 	// we know that len(parts) >= 1
 	if len(parts) > 2 {
@@ -78,6 +79,7 @@ func parseRepeatCount(s *State, countStr string) (int, error) {
 	}
 	// now we know len(parts) == 2
 	if countStr[0] == ',' {
+		s.errorOffset -= len(countRunes)
 		return 0, s.errorSyntax("no number before ','")
 	}
 	if countStr[len(countStr)-1] == ',' {
