@@ -722,8 +722,8 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: `$bip39word(x)`,
-		Error:   `          ^ value error: invalid number 'x'`,
+		Pattern: `$bip39word(abcd)`,
+		Error:   `               ^ value error: invalid number 'abcd'`,
 	})
 	// 1 bip39 word   => 11 bits entropy
 	// 8 bip39 words  => 11 bytes entropy
@@ -743,11 +743,11 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `$hex([a-z]`,
-		Error:   `         ^ syntax error: '(' not closed`,
+		Error:   `          ^ syntax error: '(' not closed`,
 	})
 	test(&genCase{
 		Pattern: `$hex(([a-z]`,
-		Error:   `          ^ syntax error: '(' not closed`,
+		Error:   `           ^ syntax error: '(' not closed`,
 	})
 	test(&genCase{
 		Pattern: `$hex([:x:])`,
@@ -755,19 +755,19 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `(`,
-		Error:   `^ syntax error: '(' not closed`,
+		Error:   ` ^ syntax error: '(' not closed`,
 	})
 	test(&genCase{
 		Pattern: `$foo`,
-		Error:   `   ^ syntax error: expected a function call`,
+		Error:   `    ^ syntax error: expected a function call`,
 	})
 	test(&genCase{
 		Pattern: `($foo`,
-		Error:   `    ^ syntax error: '(' not closed`,
+		Error:   `     ^ syntax error: '(' not closed`,
 	})
 	test(&genCase{
 		Pattern: `$foo(`,
-		Error:   `    ^ syntax error: '(' not closed`,
+		Error:   `     ^ syntax error: '(' not closed`,
 	})
 	test(&genCase{
 		Pattern: `$foo(123)`,
@@ -783,11 +783,11 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `test $foo`,
-		Error:   `        ^ syntax error: expected a function call`,
+		Error:   `         ^ syntax error: expected a function call`,
 	})
 	test(&genCase{
 		Pattern: `test($foo)`,
-		Error:   `        ^ syntax error: expected a function call`,
+		Error:   `         ^ syntax error: expected a function call`,
 	})
 	test(&genCase{
 		Pattern: `$rjust(a,10000)[`,
@@ -884,19 +884,19 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `$date()`,
-		Error:   `     ^ argument error: date: too few characters as arguments`,
+		Error:   `      ^ argument error: date: too few characters as arguments`,
 	})
 	test(&genCase{
 		Pattern: `$date(2000)`,
-		Error:   `     ^ argument error: date: at least 2 arguments are required`,
+		Error:   `          ^ argument error: date: at least 2 arguments are required`,
 	})
 	test(&genCase{
 		Pattern: `$date(2000a,2000b)`,
-		Error:   `     ^ value error: invalid year 2000a`,
+		Error:   `          ^ value error: invalid year 2000a`,
 	})
 	test(&genCase{
 		Pattern: `$date(2000,2000b)`,
-		Error:   `     ^ value error: invalid year 2000b`,
+		Error:   `               ^ value error: invalid year 2000b`,
 	})
 	test(&genCase{
 		Pattern:  `$space()`,
@@ -1057,19 +1057,19 @@ func TestGenerate(t *testing.T) {
 	})
 	test(&genCase{
 		Pattern: `$rjust(abc)`,
-		Error:   `      ^ argument error: rjust: at least 2 arguments are required`,
+		Error:   `          ^ argument error: rjust: at least 2 arguments are required`,
 	})
 	test(&genCase{
 		Pattern: `$rjust(abc,a)`,
-		Error:   `      ^ value error: invalid width a`,
+		Error:   `           ^ value error: invalid width a`,
 	})
 	test(&genCase{
 		Pattern: `$rjust(abc,0)`,
-		Error:   `      ^ value error: invalid width 0`,
+		Error:   `           ^ value error: invalid width 0`,
 	})
 	test(&genCase{
 		Pattern: `$rjust(abc,1,ab)`,
-		Error:   `      ^ value error: invalid fillChar="ab", must have length 1`,
+		Error:   `              ^ value error: invalid fillChar="ab", must have length 1`,
 	})
 	test(&genCase{
 		Pattern: `$rjust({{}},7)`,

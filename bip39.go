@@ -56,6 +56,7 @@ func newBIP39WordGenerator(s *State, arg string) (*bip39WordGenerator, error) {
 	}
 	argInt64, err := strconv.ParseInt(arg, 10, 64)
 	if err != nil {
+		s.errorOffset += len(arg) + 1
 		return nil, s.errorValue("invalid number '%v'", arg)
 	}
 	return &bip39WordGenerator{

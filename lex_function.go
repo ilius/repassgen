@@ -2,6 +2,7 @@ package main
 
 func lexIdentFuncCall(s *State) (LexType, error) {
 	if s.end() {
+		s.errorOffset++
 		if s.openParenth > 0 {
 			return nil, s.errorSyntax("'(' not closed")
 		}

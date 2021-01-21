@@ -2,6 +2,7 @@ package main
 
 func lexGroup(s *State) (LexType, error) {
 	if s.end() {
+		s.errorOffset++
 		return nil, s.errorSyntax("'(' not closed")
 	}
 	c := s.pattern[s.patternPos]

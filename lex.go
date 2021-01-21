@@ -86,6 +86,7 @@ func lexUnicode(s *State) (LexType, error) {
 
 func lexIdent(s *State) (LexType, error) {
 	if s.end() {
+		s.errorOffset++
 		return nil, s.errorSyntax("expected a function call")
 	}
 	c := s.pattern[s.patternPos]
