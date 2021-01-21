@@ -14,7 +14,7 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 	s.move(1)
 	switch c {
 	case '\\':
-		return lexIdentFuncCallBackslash, nil
+		return lexBackslashTrans(lexIdentFuncCall), nil
 	case '(':
 		if s.openBracket {
 			break
@@ -62,12 +62,5 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 		return LexRoot, nil
 	}
 	s.patternBuff = append(s.patternBuff, c)
-	return lexIdentFuncCall, nil
-}
-
-func lexIdentFuncCallBackslash(s *State) (LexType, error) {
-	c := s.pattern[s.patternPos]
-	s.move(1)
-	s.patternBuff = append(s.patternBuff, '\\', c)
 	return lexIdentFuncCall, nil
 }

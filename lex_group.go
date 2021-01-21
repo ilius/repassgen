@@ -11,7 +11,7 @@ func lexGroup(s *State) (LexType, error) {
 	s.move(1)
 	switch c {
 	case '\\':
-		return lexGroupBackslash, nil
+		return lexBackslashTrans(lexGroup), nil
 	case '(':
 		s.openParenth++
 		//s.lastGroupId++
@@ -43,13 +43,6 @@ func lexGroup(s *State) (LexType, error) {
 		return LexRoot, nil
 	}
 	s.patternBuff = append(s.patternBuff, c)
-	return lexGroup, nil
-}
-
-func lexGroupBackslash(s *State) (LexType, error) {
-	c := s.pattern[s.patternPos]
-	s.move(1)
-	s.patternBuff = append(s.patternBuff, '\\', c)
 	return lexGroup, nil
 }
 
