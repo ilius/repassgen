@@ -20,6 +20,7 @@ var verbose = os.Getenv("TEST_VERBOSE") == "1"
 func TestGenerate(t *testing.T) {
 	test := func(tc *genCase) {
 		is := is.New(t).AddMsg("pattern=%#v", tc.Pattern)
+		is = is.Lax()
 		out, s, err := Generate(GenerateInput{Pattern: []rune(tc.Pattern)})
 		if tc.Error != nil {
 			tExpErr, okExp := tc.Error.(*Error)
@@ -28,13 +29,16 @@ func TestGenerate(t *testing.T) {
 				is.ErrMsg(err, tc.Error.Error())
 				return
 			}
+			if verbose {
+				t.Log(string(s.pattern))
+				t.Log(tErr.SpacedError())
+			}
 			is.Equal(tErr.typ, tExpErr.typ)
 			is.Equal(tErr.Message(), tExpErr.Message())
 			is.Equal(tErr.pos, tExpErr.pos)
 			is.Nil(out)
 			if verbose {
-				s.PrintError(err)
-				fmt.Println("------------------------------------")
+				t.Log("------------------------------------")
 			}
 			return
 		}
