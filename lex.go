@@ -118,21 +118,21 @@ func lexBackslashTrans(parentLex LexType) LexType {
 
 func lexUnicodeBuff(parentLex LexType) LexType {
 	return func(s *State) (LexType, error) {
-		c := s.pattern[s.patternPos]
-		s.move(1)
-		s.patternBuff = append(s.patternBuff, c)
-		start := int(s.patternBuffStart2)
-		if len(s.patternBuff)-start == 6 {
-			_, char, err := unescapeUnicodeSingle(s.patternBuff, start)
-			if err != nil {
-				s.errorOffset -= 5
-				return nil, s.errorSyntax("invalid escape sequence")
-			}
-			s.patternBuff = append(s.patternBuff[:start], char)
-			s.patternBuffStart2 = 0
-			return parentLex, nil
+		buff := make([]rune, 0, 6)
+		buff = append(buff, '\\', 'u')
+		for ; len(buff) < 6 && !s.end(); s.move(1) {
+			buff = append(buff, s.pattern[s.patternPos])
 		}
-		// TODO: use loop instead of recursion
-		return lexUnicodeBuff(parentLex), nil
+		if len(buff) != 6 {
+			s.errorOffset -= 5
+			return nil, s.errorSyntax("invalid escape sequence")
+		}
+		_, char, err := unescapeUnicodeSingle(buff, 0)
+		if err != nil {
+			s.errorOffset -= 5
+			return nil, s.errorSyntax("invalid escape sequence")
+		}
+		s.patternBuff = append(s.patternBuff, char)
+		return parentLex, nil
 	}
 }

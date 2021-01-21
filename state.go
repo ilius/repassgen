@@ -27,8 +27,7 @@ type State struct {
 
 	patternPos uint
 
-	patternBuffStart  uint
-	patternBuffStart2 uint
+	patternBuffStart uint
 
 	openParenth uint
 	openBracket bool
