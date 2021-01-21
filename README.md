@@ -39,6 +39,7 @@ Then `repassgen` binary file will be created in current directory.
 - [x] `[:cntrl:]` Control characters
 - [x] `[:ascii:]` ASCII characters
 - [x] [Unicode code points](https://www.regular-expressions.info/unicode.html), like `[\u00e0-\u00ef]{5}`
+- [x] Group references `\1`, `\2`, etc
 
 # Aditional Features (not part of regexp)
 - [x] Combined multiple named/manual character classes, for example:
@@ -69,6 +70,9 @@ Then `repassgen` binary file will be created in current directory.
 - [x] `$date(2000,2020,-)` Generate a random date in the given year range
 - [x] `$space(...)` Adds spaces between each two characters of string (generated from given pattern)
 - [x] `$expand(|...)` Adds `|` (for example) between each two characters (similar to `$space`)
+- [x] `$rjust(PATTERN,N,X)` Justify to right, `N` is width (N>=1), `X` is the character to fill
+- [x] `$ljust(PATTERN,N,X)` Justify to left, similar to `$rjust`
+- [x] `$center(PATTERN,N,X)` Justify to center, similar to `$rjust`
 - [x] `$romaji(...)` Converts Japanese hiragana/katakana string to Latin
 
 
