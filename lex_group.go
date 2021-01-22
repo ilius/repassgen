@@ -2,6 +2,12 @@ package main
 
 import "strconv"
 
+var lexGroupBackslash LexType
+
+func init() {
+	lexGroupBackslash = makeLexBackslashTrans(lexGroup)
+}
+
 func lexGroup(s *State) (LexType, error) {
 	if s.end() {
 		s.errorOffset++
@@ -11,7 +17,7 @@ func lexGroup(s *State) (LexType, error) {
 	s.move(1)
 	switch c {
 	case '\\':
-		return lexBackslashTrans(lexGroup), nil
+		return lexGroupBackslash, nil
 	case '(':
 		s.openParenth++
 		//s.lastGroupId++

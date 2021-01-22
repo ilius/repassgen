@@ -2,6 +2,20 @@ package main
 
 // FIXME: `[\^abc]` becomes `[^abc]` and excludes `abc`
 
+var (
+	lexRangeUnicode         LexType
+	lexRangeUnicodeWide     LexType
+	lexRangeDashUnicode     LexType
+	lexRangeDashUnicodeWide LexType
+)
+
+func init() {
+	lexRangeUnicode = makeLexUnicode(lexRange, 'u', 6, true)
+	lexRangeUnicodeWide = makeLexUnicode(lexRange, 'U', 10, true)
+	lexRangeDashUnicode = makeLexUnicode(lexRangeDash, 'u', 6, true)
+	lexRangeDashUnicodeWide = makeLexUnicode(lexRangeDash, 'U', 10, true)
+}
+
 func lexRange(s *State) (LexType, error) {
 	if s.end() {
 		s.errorOffset++
@@ -114,10 +128,10 @@ func lexRangeBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.move(1)
 	if c == 'u' {
-		return lexUnicodeBuff(lexRange, 'u', 6, true), nil
+		return makeLexUnicode(lexRange, 'u', 6, true), nil
 	}
 	if c == 'U' {
-		return lexUnicodeBuff(lexRange, 'U', 10, true), nil
+		return makeLexUnicode(lexRange, 'U', 10, true), nil
 	}
 	s.patternBuff = append(s.patternBuff, backslashEscape(c))
 	return lexRange, nil
@@ -127,10 +141,10 @@ func lexRangeDashBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.move(1)
 	if c == 'u' {
-		return lexUnicodeBuff(lexRangeDash, 'u', 6, true), nil
+		return makeLexUnicode(lexRangeDash, 'u', 6, true), nil
 	}
 	if c == 'U' {
-		return lexUnicodeBuff(lexRangeDash, 'U', 10, true), nil
+		return makeLexUnicode(lexRangeDash, 'U', 10, true), nil
 	}
 	s.patternBuff = append(s.patternBuff, backslashEscape(c))
 	return lexRangeDash, nil

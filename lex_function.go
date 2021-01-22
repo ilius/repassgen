@@ -1,5 +1,11 @@
 package main
 
+var lexIdentFuncCallBackslash LexType
+
+func init() {
+	lexIdentFuncCallBackslash = makeLexBackslashTrans(lexIdentFuncCall)
+}
+
 func lexIdentFuncCall(s *State) (LexType, error) {
 	if s.end() {
 		s.errorOffset++
@@ -14,7 +20,7 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 	s.move(1)
 	switch c {
 	case '\\':
-		return lexBackslashTrans(lexIdentFuncCall), nil
+		return lexIdentFuncCallBackslash, nil
 	case '(':
 		if s.openBracket {
 			break
