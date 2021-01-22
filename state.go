@@ -31,6 +31,8 @@ type State struct {
 
 	openParenth uint
 	openBracket bool
+
+	rangeReverse bool
 }
 
 func (s *State) move(chars uint) {

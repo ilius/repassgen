@@ -1,7 +1,5 @@
 package main
 
-// FIXME: `[\^abc]` becomes `[^abc]` and excludes `abc`
-
 var (
 	lexRangeUnicode         LexType
 	lexRangeUnicodeWide     LexType
@@ -16,8 +14,10 @@ func init() {
 	lexRangeDashUnicodeWide = makeLexUnicode(lexRangeDash, 'U', 10, true)
 }
 
-func processRange(s *State, charset []rune, reverse bool) (LexType, error) {
+func processRange(s *State, charset []rune) (LexType, error) {
+	reverse := s.rangeReverse
 	s.openBracket = false
+	s.rangeReverse = false
 	charset = removeDuplicateRunes(charset)
 	if reverse {
 		charset = excludeCharsASCII(charset)
@@ -51,14 +51,13 @@ func lexRange(s *State) (LexType, error) {
 		return lexRangeColon, nil
 	case '-':
 		return lexRangeDashInit, nil
-	case ']':
-		charset := s.patternBuff
-		reverse := false
-		if len(charset) > 0 && charset[0] == '^' {
-			reverse = true
-			charset = charset[1:]
+	case '^':
+		if !s.rangeReverse && len(s.patternBuff) == int(s.patternBuffStart) {
+			s.rangeReverse = true
+			return lexRange, nil
 		}
-		return processRange(s, charset, reverse)
+	case ']':
+		return processRange(s, s.patternBuff)
 	}
 	s.patternBuff = append(s.patternBuff, c)
 	return lexRange, nil
