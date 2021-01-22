@@ -16,6 +16,24 @@ func init() {
 	lexRangeDashUnicodeWide = makeLexUnicode(lexRangeDash, 'U', 10, true)
 }
 
+func processRange(s *State, charset []rune, reverse bool) (LexType, error) {
+	s.openBracket = false
+	charset = removeDuplicateRunes(charset)
+	if reverse {
+		charset = excludeCharsASCII(charset)
+	}
+	gen := &charClassGenerator{
+		charClasses: [][]rune{charset},
+	}
+	err := gen.Generate(s)
+	if err != nil {
+		return nil, err
+	}
+	s.patternBuff = nil
+	s.lastGen = gen
+	return LexRoot, nil
+}
+
 func lexRange(s *State) (LexType, error) {
 	if s.end() {
 		s.errorOffset++
@@ -34,27 +52,13 @@ func lexRange(s *State) (LexType, error) {
 	case '-':
 		return lexRangeDashInit, nil
 	case ']':
-		s.openBracket = false
 		charset := s.patternBuff
 		reverse := false
 		if len(charset) > 0 && charset[0] == '^' {
 			reverse = true
 			charset = charset[1:]
 		}
-		charset = removeDuplicateRunes(charset)
-		if reverse {
-			charset = excludeCharsASCII(charset)
-		}
-		gen := &charClassGenerator{
-			charClasses: [][]rune{charset},
-		}
-		err := gen.Generate(s)
-		if err != nil {
-			return nil, err
-		}
-		s.patternBuff = nil
-		s.lastGen = gen
-		return LexRoot, nil
+		return processRange(s, charset, reverse)
 	}
 	s.patternBuff = append(s.patternBuff, c)
 	return lexRange, nil
