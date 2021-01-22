@@ -25,6 +25,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 )
@@ -126,13 +127,21 @@ func unescapeUnicodeSingle(in []rune, start int) (int, rune, error) {
 	// https://tools.ietf.org/html/rfc7159#section-7
 	switch e := in[start+1]; e {
 	case 'u':
-		// Unicode escape
+		// unicode escape
 		if r, inLen := decodeUnicodeEscape(in[start:]); inLen == -1 {
 			// Invalid Unicode escape
 			return -1, 0, fmt.Errorf("invalid escape sequence near index %d", start)
 		} else {
 			return inLen, r, nil
 		}
+	case 'U':
+		// wide unicode escape
+		r, _, tail, err := strconv.UnquoteChar(string(in[start:]), '"')
+		if err != nil {
+			return -1, 0, err
+		}
+		inLen := len(in) - start - len(tail)
+		return inLen, r, nil
 	}
 
 	return -1, 0, nil

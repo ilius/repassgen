@@ -274,6 +274,25 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
+		Pattern:  `\U000103a0 \U000103c3`,
+		PassLen:  [2]int{3, 3},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`𐎠 𐏃`),
+	})
+	test(&genCase{
+		Pattern: `[\U000103a0-\U000103c3]{8}`,
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{41.3, 41.4},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < '𐎠' || c > '𐏃' {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
 		Pattern: `[\u0009-\u000a]{8}`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{8, 8},

@@ -114,7 +114,10 @@ func lexRangeBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.move(1)
 	if c == 'u' {
-		return lexUnicodeBuff(lexRange, 'u', 6), nil
+		return lexUnicodeBuff(lexRange, 'u', 6, true), nil
+	}
+	if c == 'U' {
+		return lexUnicodeBuff(lexRange, 'U', 10, true), nil
 	}
 	s.patternBuff = append(s.patternBuff, backslashEscape(c))
 	return lexRange, nil
@@ -124,7 +127,10 @@ func lexRangeDashBackslash(s *State) (LexType, error) {
 	c := s.pattern[s.patternPos]
 	s.move(1)
 	if c == 'u' {
-		return lexUnicodeBuff(lexRangeDash, 'u', 6), nil
+		return lexUnicodeBuff(lexRangeDash, 'u', 6, true), nil
+	}
+	if c == 'U' {
+		return lexUnicodeBuff(lexRangeDash, 'U', 10, true), nil
 	}
 	s.patternBuff = append(s.patternBuff, backslashEscape(c))
 	return lexRangeDash, nil
