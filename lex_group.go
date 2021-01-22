@@ -34,8 +34,7 @@ func lexGroup(s *State) (LexType, error) {
 		s2.patternEntropy = s.patternEntropy
 		s2.lastGroupId = groupId
 		s2.groupsOutput = s.groupsOutput
-		childPattern := s.patternBuff[s.patternBuffStart:len(s.patternBuff)]
-		gen := newGroupGenerator(childPattern)
+		gen := newGroupGenerator(s.patternBuff)
 		err := gen.Generate(s2)
 		if err != nil {
 			return nil, err
