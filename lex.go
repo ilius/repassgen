@@ -1,5 +1,7 @@
 package main
 
+import "strconv"
+
 // LexType is the type for lex functions
 type LexType func(*State) (LexType, error)
 
@@ -115,7 +117,7 @@ func lexUnicodeBuff(parentLex LexType, symbol rune, width int, toBuff bool) LexT
 			s.errorOffset -= width - 1
 			return nil, s.errorSyntax("invalid escape sequence")
 		}
-		_, char, err := unescapeUnicodeSingle(buff, 0)
+		char, _, _, err := strconv.UnquoteChar(string(buff), '"')
 		if err != nil {
 			s.errorOffset -= width - 1
 			return nil, s.errorSyntax("invalid escape sequence")
