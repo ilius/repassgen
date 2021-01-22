@@ -856,6 +856,14 @@ func TestGenerate(t *testing.T) {
 		Entropy:  [2]float64{0, 0},
 	})
 	test(&genCase{
+		Pattern:  `\u00e0-\u00e`,
+		Error:    `       ^ syntax error: invalid escape sequence`,
+	})
+	test(&genCase{
+		Pattern:  `\u00e0-\U00e6`,
+		Error:    `       ^ syntax error: invalid escape sequence`,
+	})
+	test(&genCase{
 		Pattern:  `test1 \u00e1 test2 \u00e2 test3`,
 		PassLen:  [2]int{21, 21},
 		Password: strPtr(`test1 á test2 â test3`),

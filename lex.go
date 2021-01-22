@@ -114,7 +114,7 @@ func lexUnicodeBuff(parentLex LexType, symbol rune, width int, toBuff bool) LexT
 			buff = append(buff, s.pattern[s.patternPos])
 		}
 		if len(buff) != width {
-			s.errorOffset -= width - 1
+			s.errorOffset -= len(buff) - 1
 			return nil, s.errorSyntax("invalid escape sequence")
 		}
 		char, _, _, err := strconv.UnquoteChar(string(buff), '"')
