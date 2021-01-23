@@ -482,6 +482,7 @@ func TestGenerate(t *testing.T) {
 		Validate: func(p string) bool {
 			pwBytes, err := base64.StdEncoding.DecodeString(p)
 			if err != nil {
+				t.Logf("p=%#v", p)
 				panic(err)
 			}
 			if len(pwBytes) != 10 {

@@ -47,12 +47,11 @@ func lexRange(s *State) (LexType, error) {
 	case '[':
 		return nil, s.errorSyntax("nested '['")
 	case ':':
-		s.patternBuffStart = uint(len(s.patternBuff))
 		return lexRangeColon, nil
 	case '-':
 		return lexRangeDashInit, nil
 	case '^':
-		if !s.rangeReverse && len(s.patternBuff) == int(s.patternBuffStart) {
+		if !s.rangeReverse && len(s.patternBuff) == 0 {
 			s.rangeReverse = true
 			return lexRange, nil
 		}
@@ -68,26 +67,27 @@ func lexRangeColon(s *State) (LexType, error) {
 		s.errorOffset++
 		return nil, s.errorSyntax("':' not closed")
 	}
-	n := uint(len(s.patternBuff))
-	// "[:digit:]"  -->  c.patternBuffStart == 0
-	// "[abc:digit:]"  -->  c.patternBuffStart == 3
-	c := s.pattern[s.patternPos]
-	s.move(1)
-	switch c {
-	case ':':
-		name := string(s.patternBuff[s.patternBuffStart:n])
-		charset, ok := charClasses[name]
-		if !ok {
-			s.errorOffset -= len(name)
-			return nil, s.errorValue("invalid character class %#v", name)
+	nameRunes := []rune{}
+	for !s.end() {
+		c := s.pattern[s.patternPos]
+		s.move(1)
+		switch c {
+		case ':':
+			name := string(nameRunes)
+			charset, ok := charClasses[name]
+			if !ok {
+				s.errorOffset -= len(name)
+				return nil, s.errorValue("invalid character class %#v", name)
+			}
+			s.patternBuff = append(s.patternBuff, charset...)
+			return lexRange, nil
+		case ']':
+			return nil, s.errorSyntax("':' not closed")
 		}
-		s.patternBuff = append(s.patternBuff[:s.patternBuffStart], charset...)
-		return lexRange, nil
-	case ']':
-		return nil, s.errorSyntax("':' not closed")
+		nameRunes = append(nameRunes, c)
 	}
-	s.patternBuff = append(s.patternBuff, c)
-	return lexRangeColon, nil
+	s.errorOffset++
+	return nil, s.errorSyntax("':' not closed")
 }
 
 func lexRangeDashInit(s *State) (LexType, error) {
