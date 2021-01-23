@@ -725,6 +725,12 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
+		Pattern:  `$hex2dec(616263)`,
+		PassLen:  [2]int{7, 7},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`6382179`),
+	})
+	test(&genCase{
 		Pattern:  `$escape(")`,
 		PassLen:  [2]int{2, 2},
 		Entropy:  [2]float64{0, 0},

@@ -68,6 +68,17 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 		), nil
 	},
 
+	"hex2dec": func(s *State, in []rune) ([]rune, error) {
+		//if len(in) > 2 && in[0] == '0' && in[1] == 'x' {
+		//	in = in[2:]
+		//}
+		i64, err := strconv.ParseInt(string(in), 16, 64)
+		if err != nil {
+			return nil, s.errorValue("invalid hex number %#v", string(in))
+		}
+		return []rune(strconv.FormatInt(i64, 10)), nil
+	},
+
 	"space": func(s *State, in []rune) ([]rune, error) {
 		return expand1(' ', in), nil
 	},
