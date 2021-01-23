@@ -10,8 +10,8 @@ import (
 	"github.com/ilius/bip39-coder/bip39"
 )
 
-func bip39encode(in []rune) []rune {
-	return []rune(bip39.Encode([]byte(string(in))))
+func bip39encode(s *State, in []rune) ([]rune, error) {
+	return []rune(bip39.Encode([]byte(string(in)))), nil
 }
 
 type bip39WordGenerator struct {

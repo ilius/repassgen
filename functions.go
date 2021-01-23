@@ -23,65 +23,75 @@ func expand1(sep rune, in []rune) []rune {
 	return out
 }
 
-var encoderFunctions = map[string]func(in []rune) []rune{
-	"base64": func(in []rune) []rune {
-		return []rune(base64.StdEncoding.EncodeToString([]byte(string(in))))
+var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
+	"base64": func(s *State, in []rune) ([]rune, error) {
+		return []rune(
+			base64.StdEncoding.EncodeToString([]byte(string(in))),
+		), nil
 	},
-	"base64url": func(in []rune) []rune {
-		return []rune(base64.URLEncoding.EncodeToString([]byte(string(in))))
+	"base64url": func(s *State, in []rune) ([]rune, error) {
+		return []rune(
+			base64.URLEncoding.EncodeToString([]byte(string(in))),
+		), nil
 	},
 
 	// Crockford's Base32 encode functions (lowercase and uppercase)
-	"base32": func(in []rune) []rune {
-		return []rune(strings.ToLower(crock32.Encode([]byte(string(in)))))
+	"base32": func(s *State, in []rune) ([]rune, error) {
+		return []rune(
+			strings.ToLower(crock32.Encode([]byte(string(in)))),
+		), nil
 	},
-	"BASE32": func(in []rune) []rune {
-		return []rune(crock32.Encode([]byte(string(in))))
+	"BASE32": func(s *State, in []rune) ([]rune, error) {
+		return []rune(
+			crock32.Encode([]byte(string(in))),
+		), nil
 	},
 
 	// standard Base32 encode function (uppercase, with no padding)
-	"base32std": func(in []rune) []rune {
+	"base32std": func(s *State, in []rune) ([]rune, error) {
 		return []rune(
 			base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(
 				[]byte(string(in)),
 			),
-		)
+		), nil
 	},
 
 	// Hex encode functions (lowercase and uppercase)
-	"hex": func(in []rune) []rune {
-		return []rune(hex.EncodeToString([]byte(string(in))))
-	},
-	"HEX": func(in []rune) []rune {
-		return []rune(strings.ToUpper(
+	"hex": func(s *State, in []rune) ([]rune, error) {
+		return []rune(
 			hex.EncodeToString([]byte(string(in))),
-		))
+		), nil
+	},
+	"HEX": func(s *State, in []rune) ([]rune, error) {
+		return []rune(
+			strings.ToUpper(hex.EncodeToString([]byte(string(in)))),
+		), nil
 	},
 
-	"space": func(in []rune) []rune {
-		return expand1(' ', in)
+	"space": func(s *State, in []rune) ([]rune, error) {
+		return expand1(' ', in), nil
 	},
-	"expand": func(in []rune) []rune {
+	"expand": func(s *State, in []rune) ([]rune, error) {
 		if len(in) < 1 {
-			return nil
+			return nil, nil
 		}
-		return expand1(in[0], in[1:])
+		return expand1(in[0], in[1:]), nil
 	},
 
 	// Escape unicode characters, non-printable characters and double quote
 	// The returned string uses Go escape sequences (\t, \n, \xFF, \u0100)
 	// for non-ASCII characters and non-printable characters
-	"escape": func(in []rune) []rune {
+	"escape": func(s *State, in []rune) ([]rune, error) {
 		q := strconv.QuoteToASCII(string(in))
-		return []rune(q[1 : len(q)-1])
+		return []rune(q[1 : len(q)-1]), nil
 	},
 
 	// BIP-39 encode function
 	"bip39encode": bip39encode,
 
 	// Japanese Kana to Latin
-	"romaji": func(in []rune) []rune {
-		return []rune(KanaToRomaji(string(in)))
+	"romaji": func(s *State, in []rune) ([]rune, error) {
+		return []rune(KanaToRomaji(string(in))), nil
 	},
 }
 

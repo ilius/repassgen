@@ -1,11 +1,11 @@
 package main
 
-func shuffle(in []rune) []rune {
+func shuffle(s *State, in []rune) ([]rune, error) {
 	r := NewRandSource()
 	r.Shuffle(len(in), func(i int, j int) {
 		in[i], in[j] = in[j], in[i]
 	})
-	return in
+	return in, nil
 }
 
 type shuffleGenerator struct {
