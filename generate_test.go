@@ -35,14 +35,18 @@ func TestGenerate(t *testing.T) {
 					}
 					is.Equal(tErr.typ, expErrTyped.typ)
 					is.Equal(tErr.Message(), expErrTyped.Message())
-					is.Equal(tErr.pos, expErrTyped.pos)
+					is.AddMsg(
+						"msg=%#v", tErr.Message(),
+					).Equal(tErr.pos, expErrTyped.pos)
 				} else {
 					is.Equal(err.Error(), expErr)
 				}
 			case *Error:
 				is.Equal(tErr.typ, expErr.typ)
 				is.Equal(tErr.Message(), expErr.Message())
-				is.Equal(tErr.pos, expErr.pos)
+				is.AddMsg(
+					"msg=%#v", tErr.Message(),
+				).Equal(tErr.pos, expErr.pos)
 			case error:
 				is.ErrMsg(err, expErr.Error())
 			}
