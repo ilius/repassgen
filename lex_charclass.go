@@ -1,19 +1,5 @@
 package main
 
-var (
-	lexRangeUnicode         LexType
-	lexRangeUnicodeWide     LexType
-	lexRangeDashUnicode     LexType
-	lexRangeDashUnicodeWide LexType
-)
-
-func init() {
-	lexRangeUnicode = makeLexUnicode(lexRange, 'u', 6, true)
-	lexRangeUnicodeWide = makeLexUnicode(lexRange, 'U', 10, true)
-	lexRangeDashUnicode = makeLexUnicode(lexRangeDash, 'u', 6, true)
-	lexRangeDashUnicodeWide = makeLexUnicode(lexRangeDash, 'U', 10, true)
-}
-
 func processRange(s *State, charset []rune) (LexType, error) {
 	reverse := s.rangeReverse
 	s.openBracket = false
@@ -100,8 +86,6 @@ func lexRangeDashInit(s *State) (LexType, error) {
 	if s.end() {
 		return nil, s.errorSyntax("no character after '-'")
 	}
-	//s.patternBuff = append(s.patternBuff, s.pattern[s.patternPos])
-	//s.move(1)
 	return lexRangeDash, nil
 }
 
