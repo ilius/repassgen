@@ -2,12 +2,6 @@ package main
 
 import "strconv"
 
-var lexGroupBackslash LexType
-
-func init() {
-	lexGroupBackslash = makeLexBackslashTrans(lexGroup)
-}
-
 func lexGroup(s *State) (LexType, error) {
 	if s.end() {
 		s.errorOffset++
@@ -17,7 +11,14 @@ func lexGroup(s *State) (LexType, error) {
 	s.move(1)
 	switch c {
 	case '\\':
-		return lexGroupBackslash, nil
+		if s.end() {
+			s.errorOffset++
+			return nil, s.errorSyntax("'(' not closed")
+		}
+		c := s.pattern[s.patternPos]
+		s.move(1)
+		s.patternBuff = append(s.patternBuff, '\\', c)
+		return lexGroup, nil
 	case '(':
 		s.openParenth++
 		//s.lastGroupId++

@@ -398,6 +398,10 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
+		Pattern: `abc(test\`,
+		Error:   `         ^ syntax error: '(' not closed`,
+	})
+	test(&genCase{
 		Pattern:  `(\)){2}`,
 		PassLen:  [2]int{2, 2},
 		Password: strPtr("))"),
