@@ -2,19 +2,25 @@ package main
 
 import "fmt"
 
-func splitArgsStr(input []rune, sep rune) ([]string, error) {
-	res := []string{""}
+func splitArgsStr(input []rune, sep rune) ([][]rune, error) {
+	res := [][]rune{nil}
 	openParenth := 0
 	openBracket := false
 	openCurly := false
 	backslash := false
+
+	add := func(c rune) {
+		i := len(res) - 1
+		res[i] = append(res[i], c)
+	}
+
 	for _, c := range input {
 		if backslash {
 			backslash = false
 			if !(c == sep && openParenth == 0 && !openBracket && !openCurly) {
-				res[len(res)-1] += "\\"
+				add('\\')
 			}
-			res[len(res)-1] += string(c)
+			add(c)
 			continue
 		}
 		if c == '\\' {
@@ -25,23 +31,23 @@ func splitArgsStr(input []rune, sep rune) ([]string, error) {
 			if c == ']' {
 				openBracket = false
 			}
-			res[len(res)-1] += string(c)
+			add(c)
 			continue
 		}
 		if c == '[' {
 			openBracket = true
-			res[len(res)-1] += string(c)
+			add(c)
 			continue
 		}
 		if c == sep {
 			if openParenth == 0 && !openBracket && !openCurly {
-				res = append(res, "")
+				res = append(res, nil)
 			} else {
-				res[len(res)-1] += string(c)
+				add(c)
 			}
 			continue
 		}
-		res[len(res)-1] += string(c)
+		add(c)
 		switch c {
 		case '(':
 			openParenth++

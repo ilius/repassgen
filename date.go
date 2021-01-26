@@ -53,19 +53,19 @@ func newDateGenerator(s *State, argsStr []rune) (*dateGenerator, error) {
 		s.errorOffset += len(argsStr) + 1
 		return nil, s.errorArg("date: at least 2 arguments are required")
 	}
-	startYear, err := strconv.Atoi(strings.TrimSpace(args[0]))
+	startYear, err := strconv.Atoi(strings.TrimSpace(string(args[0])))
 	if err != nil {
 		s.errorOffset += len(args[0])
-		return nil, s.errorValue("invalid year %s", args[0])
+		return nil, s.errorValue("invalid year %s", string(args[0]))
 	}
-	endYear, err := strconv.Atoi(strings.TrimSpace(args[1]))
+	endYear, err := strconv.Atoi(strings.TrimSpace(string(args[1])))
 	if err != nil {
 		s.errorOffset += len(argsStr)
-		return nil, s.errorValue("invalid year %s", args[1])
+		return nil, s.errorValue("invalid year %s", string(args[1]))
 	}
 	sep := "-"
 	if len(args) > 2 {
-		sep = args[2]
+		sep = string(args[2])
 	}
 	startJd := gregorian.ToJd(lib.NewDate(startYear, 1, 1))
 	endJd := gregorian.ToJd(lib.NewDate(endYear, 1, 1))
