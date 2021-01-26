@@ -40,7 +40,7 @@ func (g *dateGenerator) Entropy(s *State) (float64, error) {
 	return math.Log2(float64(g.endJd - g.startJd)), nil
 }
 
-func newDateGenerator(s *State, argsStr string) (*dateGenerator, error) {
+func newDateGenerator(s *State, argsStr []rune) (*dateGenerator, error) {
 	if len(argsStr) < 3 {
 		s.errorOffset += len(argsStr) + 1
 		return nil, s.errorArg("date: too few characters as arguments")

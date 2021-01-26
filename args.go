@@ -2,13 +2,13 @@ package main
 
 import "fmt"
 
-func splitArgsStr(argsStr string, sep rune) ([]string, error) {
+func splitArgsStr(input []rune, sep rune) ([]string, error) {
 	res := []string{""}
 	openParenth := 0
 	openBracket := false
 	openCurly := false
 	backslash := false
-	for _, c := range argsStr {
+	for _, c := range input {
 		if backslash {
 			backslash = false
 			if !(c == sep && openParenth == 0 && !openBracket && !openCurly) {

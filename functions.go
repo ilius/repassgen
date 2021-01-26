@@ -151,15 +151,15 @@ func getFuncGenerator(s *State, funcName string, arg []rune) (generatorIface, er
 	case "shuffle":
 		return newShuffleGenerator(arg)
 	case "date":
-		return newDateGenerator(s, string(arg))
+		return newDateGenerator(s, arg)
 	case "?":
 		return newOnceOrNoneGenerator(arg)
 	case "rjust":
-		return newRjustGenerator(s, string(arg))
+		return newRjustGenerator(s, arg)
 	case "ljust":
-		return newLjustGenerator(s, string(arg))
+		return newLjustGenerator(s, arg)
 	case "center":
-		return newCenterGenerator(s, string(arg))
+		return newCenterGenerator(s, arg)
 	}
 	return nil, s.errorValue("invalid function '%v'", funcName)
 }

@@ -76,7 +76,7 @@ func (g *justifyGenerator) Entropy(s *State) (float64, error) {
 	return 0, s.errorUnknown("entropy is not calculated")
 }
 
-func parseJustifyArgs(s *State, argsStr string, funcName string) (*JustifyArgs, error) {
+func parseJustifyArgs(s *State, argsStr []rune, funcName string) (*JustifyArgs, error) {
 	if len(argsStr) < 3 {
 		return nil, s.errorArg("%s: too few characters as arguments", funcName)
 	}
@@ -114,7 +114,7 @@ func parseJustifyArgs(s *State, argsStr string, funcName string) (*JustifyArgs, 
 	}, nil
 }
 
-func newRjustGenerator(s *State, argsStr string) (*justifyGenerator, error) {
+func newRjustGenerator(s *State, argsStr []rune) (*justifyGenerator, error) {
 	args, err := parseJustifyArgs(s, argsStr, "rjust")
 	if err != nil {
 		return nil, err
@@ -125,7 +125,7 @@ func newRjustGenerator(s *State, argsStr string) (*justifyGenerator, error) {
 	}, nil
 }
 
-func newLjustGenerator(s *State, argsStr string) (*justifyGenerator, error) {
+func newLjustGenerator(s *State, argsStr []rune) (*justifyGenerator, error) {
 	args, err := parseJustifyArgs(s, argsStr, "ljust")
 	if err != nil {
 		return nil, err
@@ -136,7 +136,7 @@ func newLjustGenerator(s *State, argsStr string) (*justifyGenerator, error) {
 	}, nil
 }
 
-func newCenterGenerator(s *State, argsStr string) (*justifyGenerator, error) {
+func newCenterGenerator(s *State, argsStr []rune) (*justifyGenerator, error) {
 	args, err := parseJustifyArgs(s, argsStr, "center")
 	if err != nil {
 		return nil, err
