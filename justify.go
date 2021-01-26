@@ -80,7 +80,7 @@ func parseJustifyArgs(s *State, argsStr []rune, funcName string) (*JustifyArgs, 
 	if len(argsStr) < 3 {
 		return nil, s.errorArg("%s: too few characters as arguments", funcName)
 	}
-	args, err := splitArgsStr(argsStr, ',')
+	args, _, err := splitArgsStr(argsStr, ',')
 	if err != nil {
 		return nil, err
 	}

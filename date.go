@@ -45,7 +45,7 @@ func newDateGenerator(s *State, argsStr []rune) (*dateGenerator, error) {
 		s.errorOffset += len(argsStr) + 1
 		return nil, s.errorArg("date: too few characters as arguments")
 	}
-	args, err := splitArgsStr(argsStr, ',')
+	args, _, err := splitArgsStr(argsStr, ',')
 	if err != nil {
 		return nil, err
 	}

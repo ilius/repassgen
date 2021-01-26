@@ -1,6 +1,9 @@
 package main
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 func lexGroup(s *State) (LexType, error) {
 	if s.end() {
@@ -11,17 +14,79 @@ func lexGroup(s *State) (LexType, error) {
 	s.move(1)
 	switch c {
 	case '\\':
-		return processGroupBackslash(s)
+		return processGroupBackslash(s, lexGroup)
 	case '(':
 		s.openParenth++
 	case ')':
+		s.openParenth--
+		if s.openParenth > 0 {
+			s.patternBuff = append(s.patternBuff, ')')
+			return lexGroup, nil
+		}
 		return processGroupEnd(s)
+	case '|':
+		if s.end() {
+			s.errorOffset++
+			return nil, s.errorSyntax("'|' at the end of group")
+		}
+		s.moveBack(uint(len(s.patternBuff) + 1))
+		return lexGroupAlter, nil
 	}
 	s.patternBuff = append(s.patternBuff, c)
 	return lexGroup, nil
 }
 
-func processGroupBackslash(s *State) (LexType, error) {
+func lexGroupAlter(s *State) (LexType, error) {
+	pattern := []rune{}
+	openParenth := 1
+Loop:
+	for ; !s.end(); s.move(1) {
+		c := s.pattern[s.patternPos]
+		switch c {
+		case '\\':
+			s.move(1)
+			if s.end() {
+				pattern = append(pattern, '\\')
+				break
+			}
+			pattern = append(pattern, '\\', c)
+		case '(':
+			openParenth++
+			pattern = append(pattern, '\\', c)
+		case ')':
+			openParenth--
+			if openParenth > 0 {
+				pattern = append(pattern, '\\', c)
+				break
+			}
+			break Loop
+		default:
+			pattern = append(pattern, c)
+		}
+	}
+	//s.absPos = s.absPos - uint(len(pattern)) - 1
+	parts, indexList, err := splitArgsStr(pattern, '|')
+	if err != nil {
+		return nil, err
+	}
+	gen := &alterGenerator{
+		parts:     parts,
+		indexList: indexList,
+		absPos:    s.absPos - uint(len(pattern)) - 1,
+	}
+	err = gen.Generate(s)
+	if err != nil {
+		return nil, err
+	}
+	s.move(1)
+	fmt.Printf("lexGroupAlter: s.openParenth=%v\n", s.openParenth)
+	s.openParenth--
+	s.lastGen = gen
+	s.patternBuff = nil
+	return LexRoot, nil
+}
+
+func processGroupBackslash(s *State, parentLex LexType) (LexType, error) {
 	if s.end() {
 		s.errorOffset++
 		return nil, s.errorSyntax("'(' not closed")
@@ -33,11 +98,6 @@ func processGroupBackslash(s *State) (LexType, error) {
 }
 
 func processGroupEnd(s *State) (LexType, error) {
-	s.openParenth--
-	if s.openParenth > 0 {
-		s.patternBuff = append(s.patternBuff, ')')
-		return lexGroup, nil
-	}
 	groupId := s.lastGroupId
 	lastOutputSize := len(s.output)
 	s2 := NewState(&SharedState{}, s.pattern)

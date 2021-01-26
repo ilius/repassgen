@@ -2,8 +2,9 @@ package main
 
 import "fmt"
 
-func splitArgsStr(input []rune, sep rune) ([][]rune, error) {
+func splitArgsStr(input []rune, sep rune) ([][]rune, []int, error) {
 	res := [][]rune{nil}
+	indexList := []int{0}
 	openParenth := 0
 	openBracket := false
 	openCurly := false
@@ -14,7 +15,7 @@ func splitArgsStr(input []rune, sep rune) ([][]rune, error) {
 		res[i] = append(res[i], c)
 	}
 
-	for _, c := range input {
+	for i, c := range input {
 		if backslash {
 			backslash = false
 			if !(c == sep && openParenth == 0 && !openBracket && !openCurly) {
@@ -42,6 +43,7 @@ func splitArgsStr(input []rune, sep rune) ([][]rune, error) {
 		if c == sep {
 			if openParenth == 0 && !openBracket && !openCurly {
 				res = append(res, nil)
+				indexList = append(indexList, i)
 			} else {
 				add(c)
 			}
@@ -53,7 +55,7 @@ func splitArgsStr(input []rune, sep rune) ([][]rune, error) {
 			openParenth++
 		case '{':
 			if openCurly {
-				return nil, fmt.Errorf("nested '{'")
+				return nil, nil, fmt.Errorf("nested '{'")
 			}
 			openCurly = true
 		case ')':
@@ -63,19 +65,19 @@ func splitArgsStr(input []rune, sep rune) ([][]rune, error) {
 		}
 	}
 	if openParenth > 0 {
-		return nil, fmt.Errorf("unclosed '('")
+		return nil, nil, fmt.Errorf("unclosed '('")
 	}
 	if openParenth < 0 {
-		return nil, fmt.Errorf("too many ')'")
+		return nil, nil, fmt.Errorf("too many ')'")
 	}
 	if openBracket {
-		return nil, fmt.Errorf("unclosed '['")
+		return nil, nil, fmt.Errorf("unclosed '['")
 	}
 	if openCurly {
-		return nil, fmt.Errorf("unclosed '{'")
+		return nil, nil, fmt.Errorf("unclosed '{'")
 	}
 	if len(res[len(res)-1]) == 0 {
 		res = res[:len(res)-1]
 	}
-	return res, nil
+	return res, indexList, nil
 }

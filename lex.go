@@ -21,6 +21,9 @@ func LexRoot(s *State) (LexType, error) {
 		return nil, s.errorUnknown("incomplete buffer: %s", string(s.patternBuff))
 	}
 	if s.end() {
+		if s.openParenth > 0 {
+			return nil, s.errorSyntax("unexpected: unclosed '('")
+		}
 		return nil, nil
 	}
 	c := s.pattern[s.patternPos]

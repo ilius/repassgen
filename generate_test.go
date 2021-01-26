@@ -444,6 +444,21 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
+		Pattern: `(ab|cd|ef|gh){8}`,
+		PassLen: [2]int{16, 16},
+		Entropy: [2]float64{16, 16},
+		Validate: func(p string) bool {
+			for i := 0; i < len(p); i += 2 {
+				switch p[i : i+2] {
+				case "ab", "cd", "ef", "gh":
+				default:
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
 		Pattern: `$?(a)$?(b)$?(c)$?(d)`,
 		PassLen: [2]int{0, 4},
 		Entropy: [2]float64{4, 4},
