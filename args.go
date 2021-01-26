@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func splitArgsStr(argsStr string) ([]string, error) {
+func splitArgsStr(argsStr string, sep rune) ([]string, error) {
 	res := []string{""}
 	openParenth := 0
 	openBracket := false
@@ -11,7 +11,7 @@ func splitArgsStr(argsStr string) ([]string, error) {
 	for _, c := range argsStr {
 		if backslash {
 			backslash = false
-			if !(c == ',' && openParenth == 0 && !openBracket && !openCurly) {
+			if !(c == sep && openParenth == 0 && !openBracket && !openCurly) {
 				res[len(res)-1] += "\\"
 			}
 			res[len(res)-1] += string(c)
@@ -33,7 +33,7 @@ func splitArgsStr(argsStr string) ([]string, error) {
 			res[len(res)-1] += string(c)
 			continue
 		}
-		if c == ',' {
+		if c == sep {
 			if openParenth == 0 && !openBracket && !openCurly {
 				res = append(res, "")
 			} else {
