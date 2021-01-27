@@ -12,6 +12,16 @@ var entropyFlag = flag.Bool(
 	"repassgen [-entropy] PATTERN",
 )
 
+func printError(s *State, err error) {
+	myErr, ok := err.(*Error)
+	if !ok {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(string(s.pattern))
+	fmt.Println(myErr.SpacedError())
+}
+
 func main() {
 	flag.Parse()
 
@@ -21,7 +31,7 @@ func main() {
 		Pattern: []rune(flag.Arg(0)),
 	})
 	if err != nil {
-		s.PrintError(err)
+		printError(s, err)
 		os.Exit(1)
 	}
 

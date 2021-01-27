@@ -106,16 +106,6 @@ func (s *State) errorUnknown(msg string, args ...interface{}) error {
 	)
 }
 
-func (s *State) PrintError(err error) {
-	myErr, ok := err.(*Error)
-	if !ok {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(string(s.pattern))
-	fmt.Println(myErr.SpacedError())
-}
-
 func NewSharedState() *SharedState {
 	return &SharedState{
 		groupsOutput: map[uint][]rune{},
