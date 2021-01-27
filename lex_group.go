@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 )
 
@@ -79,7 +78,6 @@ Loop:
 		return nil, err
 	}
 	s.move(1)
-	fmt.Printf("lexGroupAlter: s.openParenth=%v\n", s.openParenth)
 	s.openParenth--
 	s.lastGen = gen
 	s.patternBuff = nil
