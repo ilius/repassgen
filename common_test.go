@@ -35,8 +35,6 @@ func isFloatBetween(is *is.Is, actual float64, min float64, max float64) {
 type genCase struct {
 	Pattern string
 
-	Error interface{}
-
 	PassLen  [2]int // {min, max}
 	Validate func(string) bool
 	Entropy  [2]float64 // {min, max}
@@ -46,4 +44,10 @@ type genCase struct {
 	WordCount int
 
 	// TODO: CharClassCount map[string]int
+}
+
+type genErrCase struct {
+	Pattern string
+
+	Error interface{}
 }
