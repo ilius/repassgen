@@ -338,9 +338,10 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: `[]`,
-		PassLen: [2]int{0, 0},
-		Entropy: [2]float64{0, 0},
+		Pattern:  `[]`,
+		PassLen:  [2]int{0, 0},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(``),
 	})
 	test(&genCase{
 		Pattern: `[a-z]{8}[1-9]{3}`,
@@ -406,20 +407,20 @@ func TestGenerate(t *testing.T) {
 	test(&genCase{
 		Pattern:  `(\)){2}`,
 		PassLen:  [2]int{2, 2},
-		Password: strPtr("))"),
 		Entropy:  [2]float64{0, 0},
+		Password: strPtr("))"),
 	})
 	test(&genCase{
 		Pattern:  `(\\){2}`,
 		PassLen:  [2]int{2, 2},
-		Password: strPtr(`\\`),
 		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`\\`),
 	})
 	test(&genCase{
 		Pattern:  `(\\\)\(){2}`,
 		PassLen:  [2]int{6, 6},
-		Password: strPtr(`\)(\)(`),
 		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`\)(\)(`),
 	})
 	test(&genCase{
 		Pattern: `([a-z]{5}[1-9]{2}-){2}`,
@@ -464,11 +465,32 @@ func TestGenerate(t *testing.T) {
 		Pattern: `$?(a)$?(b)$?(c)$?(d)`,
 		PassLen: [2]int{0, 4},
 		Entropy: [2]float64{4, 4},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				switch c {
+				case 'a', 'b', 'c', 'd':
+				default:
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: `[^ :punct:]{128}`,
 		PassLen: [2]int{128, 128},
 		Entropy: [2]float64{762.1, 762.2},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				switch c {
+				case ' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*',
+					'+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@',
+					'[', '\\', ']', '^', '_', '`', '{', '|', '}', '~':
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: `[\^abc]{8}`,
@@ -489,11 +511,31 @@ func TestGenerate(t *testing.T) {
 		Pattern: `[^^]{10}`,
 		PassLen: [2]int{10, 10},
 		Entropy: [2]float64{65.5, 65.6},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				switch c {
+				case '^':
+					return false
+				}
+			}
+			return true
+		},
 	})
 	test(&genCase{
 		Pattern: `[!-~]{10}`,
 		PassLen: [2]int{10, 10},
 		Entropy: [2]float64{65.5, 65.6},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < '!' {
+					return false
+				}
+				if c > '~' {
+					return false
+				}
+			}
+			return true
+		},
 	})
 	// base64 length: ((bytes + 2) / 3) * 4
 	test(&genCase{
@@ -903,8 +945,8 @@ func TestGenerate(t *testing.T) {
 	test(&genCase{
 		Pattern:  `\u00e0-\u00e6`,
 		PassLen:  [2]int{3, 3},
-		Password: strPtr(`à-æ`),
 		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`à-æ`),
 	})
 	testErr(&genErrCase{
 		Pattern: `\u00e0-\u00e`,
@@ -917,8 +959,8 @@ func TestGenerate(t *testing.T) {
 	test(&genCase{
 		Pattern:  `test1 \u00e1 test2 \u00e2 test3`,
 		PassLen:  [2]int{21, 21},
-		Password: strPtr(`test1 á test2 â test3`),
 		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`test1 á test2 â test3`),
 	})
 	testErr(&genErrCase{
 		Pattern: `\u00mn`,
