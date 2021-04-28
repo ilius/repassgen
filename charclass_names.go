@@ -14,7 +14,7 @@ var charClasses = map[string][]rune{
 	"digit":  []rune("0123456789"),
 	"xdigit": []rune("0123456789abcdefABCDEF"),
 
-	"punct": []rune("[!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]"),
+	"punct": []rune("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"),
 
 	// Crockford's Base32
 	"b32": []rune("0123456789abcdefghjkmnpqrstvwxyz"),
