@@ -9,3 +9,5 @@ GOOS=windows GOARCH=386 go build -o repassgen-windows-x86.exe
 
 GOOS=freebsd GOARCH=amd64 go build -o repassgen-freebsd-x86_64
 GOOS=freebsd GOARCH=386 go build -o repassgen-freebsd-x86
+
+GOOS=darwin GOARCH=amd64 go build -o repassgen-darwin-x86_64
