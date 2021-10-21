@@ -6,3 +6,6 @@ GOOS=linux GOARCH=386 go build -o repassgen-linux-x86
 
 GOOS=windows GOARCH=amd64 go build -o repassgen-windows-x86_64.exe
 GOOS=windows GOARCH=386 go build -o repassgen-windows-x86.exe
+
+GOOS=freebsd GOARCH=amd64 go build -o repassgen-freebsd-x86_64
+GOOS=freebsd GOARCH=386 go build -o repassgen-freebsd-x86
