@@ -11,7 +11,7 @@ func TestAlterGenerator(t *testing.T) {
 	pattern := []rune("(a|bc)")
 	g := &alterGenerator{
 		parts:     [][]rune{[]rune("a"), []rune("bc")},
-		indexList: []int{0, 1},
+		indexList: []uint64{0, 1},
 		absPos:    0,
 	}
 	s := newTestState(pattern)

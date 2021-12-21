@@ -9,7 +9,7 @@ import (
 
 func TestRepeatGeneratorByGroup(t *testing.T) {
 	is := is.New(t)
-	count := 4
+	count := int64(4)
 	pattern := []rune(fmt.Sprintf("[a-c]{%d}", count))
 	g := &repeatGenerator{
 		child: newGroupGenerator([]rune("[a-c]")),
@@ -35,7 +35,7 @@ func TestRepeatGeneratorByGroup(t *testing.T) {
 func TestRepeatGeneratorByStatic(t *testing.T) {
 	is := is.New(t)
 	str := "a"
-	count := 4
+	count := int64(4)
 	pattern := []rune(fmt.Sprintf("%s{%d}", str, count))
 	// if len(str) > 1, pattern would be wrong, but it won't effect this test
 	g := &repeatGenerator{
