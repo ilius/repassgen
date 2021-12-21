@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/ilius/bip39-coder/bip39"
+	"github.com/spf13/cast"
 )
 
 func bip39encode(s *State, in []rune) ([]rune, error) {
@@ -15,18 +16,21 @@ func bip39encode(s *State, in []rune) ([]rune, error) {
 }
 
 type bip39WordGenerator struct {
-	wordCount int
+	wordCount int64
 }
 
 func (g *bip39WordGenerator) Generate(s *State) error {
 	count := g.wordCount
 	words := make([]string, count)
-	for ai := 0; ai < count; ai++ {
+	for ai := int64(0); ai < count; ai++ {
 		ibig, err := rand.Int(rand.Reader, big.NewInt(int64(bip39.WordCount())))
 		if err != nil {
 			panic(err)
 		}
-		index := int(ibig.Int64())
+		index, err := cast.ToIntE(ibig.Int64())
+		if err != nil {
+			return err
+		}
 		word, ok := bip39.GetWord(index)
 		if !ok {
 			return s.errorUnknown("internal error, index=%v > 2048", index)
@@ -60,6 +64,6 @@ func newBIP39WordGenerator(s *State, arg string) (*bip39WordGenerator, error) {
 		return nil, s.errorValue("invalid number '%v'", arg)
 	}
 	return &bip39WordGenerator{
-		wordCount: int(argInt64),
+		wordCount: argInt64,
 	}, nil
 }
