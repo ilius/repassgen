@@ -43,7 +43,7 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 			s.move(1)
 			s2 := NewState(NewSharedState(), s.pattern)
 			s2.output = s.output
-			s2.absPos = s.absPos - (uint(len(buff)) + 1)
+			s2.absPos = s.absPos - uint64(len(buff)) - 1
 			s2.patternEntropy = s.patternEntropy
 			s2.lastGroupId = s.lastGroupId
 			s2.groupsOutput = s.groupsOutput

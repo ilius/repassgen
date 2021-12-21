@@ -2,9 +2,9 @@ package main
 
 import "fmt"
 
-func splitArgsStr(input []rune, sep rune) ([][]rune, []int, error) {
+func splitArgsStr(input []rune, sep rune) ([][]rune, []uint64, error) {
 	res := [][]rune{nil}
-	indexList := []int{0}
+	indexList := []uint64{0}
 	openParenth := 0
 	openBracket := false
 	openCurly := false
@@ -43,7 +43,7 @@ func splitArgsStr(input []rune, sep rune) ([][]rune, []int, error) {
 		if c == sep {
 			if openParenth == 0 && !openBracket && !openCurly {
 				res = append(res, nil)
-				indexList = append(indexList, i)
+				indexList = append(indexList, uint64(i))
 			} else {
 				add(c)
 			}

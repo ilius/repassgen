@@ -8,9 +8,9 @@ import (
 
 type alterGenerator struct {
 	parts     [][]rune
-	indexList []int
+	indexList []uint64
 	entropy   *float64
-	absPos    uint
+	absPos    uint64
 }
 
 func (g *alterGenerator) Generate(s *State) error {
@@ -21,10 +21,10 @@ func (g *alterGenerator) Generate(s *State) error {
 		panic(err)
 	}
 	s.patternEntropy += math.Log2(float64(len(parts)))
-	i := int(ibig.Int64())
+	i := ibig.Int64()
 	groupId := s.lastGroupId
 	s2 := NewState(&SharedState{}, parts[i])
-	s2.absPos = g.absPos + uint(indexList[i])
+	s2.absPos = g.absPos + indexList[i]
 	s2.lastGroupId = groupId
 	s2.groupsOutput = s.groupsOutput
 	output, err := subGenerate(s2, parts[i])

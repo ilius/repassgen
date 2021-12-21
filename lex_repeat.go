@@ -67,7 +67,7 @@ func lexRepeat(s *State) (LexType, error) {
 	return nil, s.errorSyntax(badRepeatCount)
 }
 
-func parseRepeatCount(s *State, countRunes []rune) (int, error) {
+func parseRepeatCount(s *State, countRunes []rune) (int64, error) {
 	countStr := string(countRunes)
 	parts := strings.Split(countStr, ",")
 	// we know that len(parts) >= 1
@@ -82,11 +82,11 @@ func parseRepeatCount(s *State, countRunes []rune) (int, error) {
 		if countI64 < 1 {
 			return 0, s.errorSyntax("invalid natural number '%v'", countStr)
 		}
-		return int(countI64), nil
+		return countI64, nil
 	}
 	// now we know len(parts) == 2
 	if countStr[0] == ',' {
-		s.errorOffset -= len(countRunes)
+		s.errorOffset -= int64(len(countRunes))
 		return 0, s.errorSyntax("no number before ','")
 	}
 	if countStr[len(countStr)-1] == ',' {
@@ -108,5 +108,5 @@ func parseRepeatCount(s *State, countRunes []rune) (int, error) {
 	if maxCount < minCount {
 		return 0, s.errorValue("invalid numbers %v > %v inside {...}", minCount, maxCount)
 	}
-	return int(minCount) + math_rand.Intn(int(maxCount-minCount+1)), nil
+	return minCount + math_rand.Int63n(maxCount-minCount+1), nil
 }

@@ -28,7 +28,7 @@ func lexGroup(s *State) (LexType, error) {
 			s.errorOffset++
 			return nil, s.errorSyntax("'|' at the end of group")
 		}
-		s.moveBack(uint(len(s.patternBuff) + 1))
+		s.moveBack(uint64(len(s.patternBuff) + 1))
 		return lexGroupAlter, nil
 	}
 	s.patternBuff = append(s.patternBuff, c)
@@ -63,7 +63,7 @@ Loop:
 			pattern = append(pattern, c)
 		}
 	}
-	//s.absPos = s.absPos - uint(len(pattern)) - 1
+	// s.absPos = s.absPos - uint(len(pattern)) - 1
 	parts, indexList, err := splitArgsStr(pattern, '|')
 	if err != nil {
 		return nil, err
@@ -71,7 +71,7 @@ Loop:
 	gen := &alterGenerator{
 		parts:     parts,
 		indexList: indexList,
-		absPos:    s.absPos - uint(len(pattern)) - 1,
+		absPos:    s.absPos - uint64(len(pattern)) - 1,
 	}
 	err = gen.Generate(s)
 	if err != nil {
@@ -100,7 +100,7 @@ func processGroupEnd(s *State) (LexType, error) {
 	lastOutputSize := len(s.output)
 	s2 := NewState(&SharedState{}, s.pattern)
 	s2.output = s.output
-	s2.absPos = s.absPos - uint(len(s.patternBuff)) - 1
+	s2.absPos = s.absPos - uint64(len(s.patternBuff)) - 1
 	s2.patternEntropy = s.patternEntropy
 	s2.lastGroupId = groupId
 	s2.groupsOutput = s.groupsOutput
@@ -131,7 +131,7 @@ func processGroupRef(s *State, parentLex LexType) (LexType, error) {
 	if err != nil {
 		return nil, s.errorUnknown("unexpected group id '%v'", string(gid_r))
 	}
-	output, ok := s.groupsOutput[uint(gid)]
+	output, ok := s.groupsOutput[uint64(gid)]
 	if !ok {
 		return nil, s.errorValue("invalid group id '%v'", gid)
 	}

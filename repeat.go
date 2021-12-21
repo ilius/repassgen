@@ -2,13 +2,13 @@ package main
 
 type repeatGenerator struct {
 	child generatorIface
-	count int
+	count int64
 }
 
 func (g *repeatGenerator) Generate(s *State) error {
 	child := g.child
 	count := g.count
-	for i := 0; i < count; i++ {
+	for i := int64(0); i < count; i++ {
 		err := child.Generate(s)
 		if err != nil {
 			return err

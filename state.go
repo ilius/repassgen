@@ -2,18 +2,20 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/spf13/cast"
 )
 
 // SharedState is the shared part of State
 type SharedState struct {
-	absPos uint
+	absPos uint64
 
-	errorOffset int
+	errorOffset int64
 
 	patternEntropy float64
 
-	lastGroupId  uint
-	groupsOutput map[uint][]rune
+	lastGroupId  uint64
+	groupsOutput map[uint64][]rune
 }
 
 // State is lex inputs, output and temp state
@@ -25,20 +27,20 @@ type State struct {
 	patternBuff []rune
 	output      []rune
 
-	patternPos uint
+	patternPos uint64
 
-	openParenth uint
+	openParenth uint64
 	openBracket bool
 
 	rangeReverse bool
 }
 
-func (s *State) move(chars uint) {
+func (s *State) move(chars uint64) {
 	s.patternPos += chars
 	s.absPos += chars
 }
 
-func (s *State) moveBack(chars uint) {
+func (s *State) moveBack(chars uint64) {
 	s.patternPos -= chars
 	s.absPos -= chars
 }
@@ -59,19 +61,27 @@ func (s *State) addOutputNonRepeatable(data []rune) {
 }
 
 func (s *State) end() bool {
-	return s.patternPos >= uint(len(s.pattern))
+	return s.patternPos >= uint64(len(s.pattern))
 }
 
 func (s *State) getErrorPos() uint {
 	if s.absPos == 0 {
-		return uint(s.errorOffset)
+		pos, err := cast.ToUintE(s.errorOffset)
+		if err != nil {
+			panic(err)
+		}
+		return pos
 	}
-	pos := int(s.absPos) + s.errorOffset - 1
+	pos := int64(s.absPos) + s.errorOffset - 1
 	if pos < 0 {
 		fmt.Printf("Warning: getErrorPos: pos=%v, pattern=%#v\n", pos, string(s.pattern))
 		pos = 0
 	}
-	return uint(pos)
+	pos2, err := cast.ToUintE(pos)
+	if err != nil {
+		panic(err)
+	}
+	return pos2
 }
 
 func (s *State) errorSyntax(msg string, args ...interface{}) error {
@@ -108,7 +118,7 @@ func (s *State) errorUnknown(msg string, args ...interface{}) error {
 
 func NewSharedState() *SharedState {
 	return &SharedState{
-		groupsOutput: map[uint][]rune{},
+		groupsOutput: map[uint64][]rune{},
 	}
 }
 

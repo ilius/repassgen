@@ -69,7 +69,7 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 	},
 
 	"hex2dec": func(s *State, in []rune) ([]rune, error) {
-		//if len(in) > 2 && in[0] == '0' && in[1] == 'x' {
+		// if len(in) > 2 && in[0] == '0' && in[1] == 'x' {
 		//	in = in[2:]
 		//}
 		i64, err := strconv.ParseInt(string(in), 16, 64)
