@@ -1254,6 +1254,12 @@ func TestGenerate(t *testing.T) {
 		Password: strPtr(`616263 1:'abc'`),
 	})
 	test(&genCase{
+		Pattern:  `$pyhex(test)`,
+		PassLen:  [2]int{19, 19}, // byteCount * 4 + 3
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`b'\x74\x65\x73\x74'`),
+	})
+	test(&genCase{
 		Pattern:  `kana: (そうたい) romaji: $romaji(\1)`,
 		PassLen:  [2]int{25, 25},
 		Entropy:  [2]float64{0, 0},

@@ -79,6 +79,21 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 		return []rune(strconv.FormatInt(i64, 10)), nil
 	},
 
+	// pyhex converts bytes into a python bytes consisting hex values
+	"pyhex": func(s *State, in []rune) ([]rune, error) {
+		out := ""
+		for _, c := range in {
+			cbyte := byte(int32(c))
+			chex := make([]byte, 2)
+			n := hex.Encode(chex, []byte{cbyte})
+			if n != 2 {
+				return nil, s.errorUnknown("failed converting byte %x to hex", cbyte)
+			}
+			out += "\\x" + string(chex)
+		}
+		return []rune("b'" + out + "'"), nil
+	},
+
 	"space": func(s *State, in []rune) ([]rune, error) {
 		return expand1(' ', in), nil
 	},
