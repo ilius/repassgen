@@ -58,6 +58,14 @@ func TestGenerate(t *testing.T) {
 			is.Equal(actual, tc.WordCount)
 		}
 	}
+	checkErrorIsInList := func(is *is.Is, err error, expMsgs []interface{}) {
+		if !is.Err(err) {
+			return
+		}
+		// tErr, okErr := err.(*Error)
+		// if !okErr {
+		is.OneOf(err.Error(), expMsgs...)
+	}
 	testErr := func(tc *genErrCase) {
 		is := is.New(t).AddMsg("pattern=%#v", tc.Pattern)
 		is = is.Lax()
@@ -78,8 +86,10 @@ func TestGenerate(t *testing.T) {
 					"msg=%#v", tErr.Message(),
 				).Equal(tErr.pos, expErrTyped.pos)
 			} else {
-				is.Equal(err.Error(), expErr)
+				is.ErrMsg(err, expErr)
 			}
+		case []interface{}:
+			checkErrorIsInList(is, err, expErr)
 		case *Error:
 			is.Equal(tErr.typ, expErr.typ)
 			is.Equal(tErr.Message(), expErr.Message())
@@ -88,12 +98,16 @@ func TestGenerate(t *testing.T) {
 			).Equal(tErr.pos, expErr.pos)
 		case error:
 			is.ErrMsg(err, expErr.Error())
+		default:
+			panic(fmt.Errorf("invalid type %T for Error: %v", tc.Error, tc.Error))
 		}
 		if okErr && verbose {
 			t.Log(string(s.pattern))
 			t.Log(tErr.SpacedError())
 		}
-		is.Nil(out)
+		if !is.Nil(out) {
+			t.Log(string(out.Password))
+		}
 		if verbose {
 			t.Log("------------------------------------")
 		}
@@ -459,6 +473,14 @@ func TestGenerate(t *testing.T) {
 				}
 			}
 			return true
+		},
+	})
+	testErr(&genErrCase{
+		// FIXME: if one part of alteration has no error, test becomes flaky
+		Pattern: `([:foobar1:]|[:foobar2:])`,
+		Error: []interface{}{
+			`value error near index 2: invalid character class "foobar1"`,
+			`value error near index 13: invalid character class "foobar2"`,
 		},
 	})
 	test(&genCase{
@@ -1025,6 +1047,10 @@ func TestGenerate(t *testing.T) {
 	testErr(&genErrCase{
 		Pattern: `$date(2000,2000b)`,
 		Error:   `               ^ value error: invalid year 2000b`,
+	})
+	testErr(&genErrCase{
+		Pattern: `$date(2000,{{2000}})`,
+		Error:   `nested '{'`,
 	})
 	test(&genCase{
 		Pattern:  `$space()`,
