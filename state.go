@@ -116,6 +116,7 @@ func (s *State) errorUnknown(msg string, args ...interface{}) error {
 	)
 }
 
+// NewSharedState is factory function for SharedState
 func NewSharedState() *SharedState {
 	return &SharedState{
 		groupsOutput: map[uint64][]rune{},

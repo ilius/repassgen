@@ -23,7 +23,7 @@ func (g *alterGenerator) Generate(s *State) error {
 	s.patternEntropy += math.Log2(float64(len(parts)))
 	i := ibig.Int64()
 	groupId := s.lastGroupId
-	s2 := NewState(&SharedState{}, parts[i])
+	s2 := NewState(NewSharedState(), parts[i])
 	s2.absPos = g.absPos + indexList[i]
 	s2.lastGroupId = groupId
 	s2.groupsOutput = s.groupsOutput
