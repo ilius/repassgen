@@ -11,11 +11,26 @@ import (
 
 	"os"
 
+	"github.com/ilius/bip39-coder/bip39"
 	"github.com/ilius/crock32"
 	"github.com/ilius/is/v2"
 )
 
 var verbose = os.Getenv("TEST_VERBOSE") == "1"
+var bip39WordMap = getBIP39WordMap()
+
+func getBIP39WordMap() map[string]bool {
+	count := bip39.WordCount()
+	m := make(map[string]bool, count)
+	for i := 0; i < count; i++ {
+		word, ok := bip39.GetWord(i)
+		if !ok {
+			panic("NOT OK")
+		}
+		m[word] = true
+	}
+	return m
+}
 
 func TestGenerate(t *testing.T) {
 	test := func(tc *genCase) {
@@ -842,14 +857,22 @@ func TestGenerate(t *testing.T) {
 		Entropy:  [2]float64{0, 0},
 		Password: strPtr("a\t\r\n\v\fbc"),
 	})
-	// each bip39 is at least 3 chars and max 8 chars
+	// each bip39 word is at least 3 chars, and at most 8 chars
 	test(&genCase{
 		Pattern:   "$bip39word(10)",
 		WordCount: 10,
-		PassLen:   [2]int{39, 89}, // 10*4-1, 10*9+-1
+		PassLen:   [2]int{39, 89}, // 10*4 - 1, 10*9 - 1
 		Entropy:   [2]float64{110, 110},
 		Validate: func(p string) bool {
-			// TODO
+			words := strings.Split(p, " ")
+			if len(words) != 10 {
+				return false
+			}
+			for _, word := range words {
+				if !bip39WordMap[word] {
+					return false
+				}
+			}
 			return true
 		},
 	})
@@ -859,8 +882,7 @@ func TestGenerate(t *testing.T) {
 		PassLen:   [2]int{3, 8},
 		Entropy:   [2]float64{11, 11},
 		Validate: func(p string) bool {
-			// TODO
-			return true
+			return bip39WordMap[p]
 		},
 	})
 	testErr(&genErrCase{
@@ -875,7 +897,15 @@ func TestGenerate(t *testing.T) {
 		PassLen:   [2]int{38, 98}, // 11*4-1, 11*9-1 // FIXME: why 38?
 		Entropy:   [2]float64{62.7, 62.8},
 		Validate: func(p string) bool {
-			// TODO
+			words := strings.Split(p, " ")
+			if len(words) != 8 {
+				return false
+			}
+			for _, word := range words {
+				if !bip39WordMap[word] {
+					return false
+				}
+			}
 			return true
 		},
 	})
