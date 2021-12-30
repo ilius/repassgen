@@ -31,6 +31,15 @@ func (g *onceOrNoneGenerator) Generate(s *State) error {
 	return nil
 }
 
+func (g *onceOrNoneGenerator) CharProb() map[rune]float64 {
+	// TODO: charProb
+	return nil
+}
+
+func (g *onceOrNoneGenerator) Level() int {
+	return 0
+}
+
 func (g *onceOrNoneGenerator) Entropy(s *State) (float64, error) {
 	return g.entropy, nil
 }

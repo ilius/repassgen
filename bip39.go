@@ -48,6 +48,15 @@ func (g *bip39WordGenerator) Generate(s *State) error {
 	return nil
 }
 
+func (g *bip39WordGenerator) CharProb() map[rune]float64 {
+	// TODO: charProb
+	return nil
+}
+
+func (g *bip39WordGenerator) Level() int {
+	return 0
+}
+
 func (g *bip39WordGenerator) Entropy(s *State) (float64, error) {
 	return float64(g.wordCount) * math.Log2(float64(bip39.WordCount())), nil
 }

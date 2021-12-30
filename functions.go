@@ -146,6 +146,15 @@ func (g *encoderFunctionCallGenerator) Generate(s *State) error {
 	return nil
 }
 
+func (g *encoderFunctionCallGenerator) CharProb() map[rune]float64 {
+	// TODO: charProb
+	return nil
+}
+
+func (g *encoderFunctionCallGenerator) Level() int {
+	return 0
+}
+
 func (g *encoderFunctionCallGenerator) Entropy(s *State) (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil

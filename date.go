@@ -32,6 +32,15 @@ func (g *dateGenerator) Generate(s *State) error {
 	return nil
 }
 
+func (g *dateGenerator) CharProb() map[rune]float64 {
+	// TODO: charProb
+	return nil
+}
+
+func (g *dateGenerator) Level() int {
+	return 0
+}
+
 func (g *dateGenerator) entropy() float64 {
 	return math.Log2(float64(g.endJd - g.startJd))
 }

@@ -16,6 +16,26 @@ type SharedState struct {
 
 	lastGroupId  uint64
 	groupsOutput map[uint64][]rune
+
+	// character probability
+	charProbEnable bool
+	charProbIScale float64 // inversed scale of values in charProbMap
+	charProbMap    map[rune]float64
+}
+
+func (s *SharedState) applyCharProbIScale() {
+	if len(s.charProbMap) == 0 {
+		return
+	}
+	iscale := s.charProbIScale
+	if iscale == 1.0 {
+		return
+	}
+	m := s.charProbMap
+	for r, p := range m {
+		m[r] = p / iscale
+	}
+	s.charProbIScale = 1.0
 }
 
 // State is lex inputs, output and temp state

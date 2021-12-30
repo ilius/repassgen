@@ -21,6 +21,16 @@ func (g *groupGenerator) Generate(s *State) error {
 	return nil
 }
 
+func (g *groupGenerator) CharProb() map[rune]float64 {
+	return nil
+	// TODO: charProb
+	// return g.childGen.CharProb()
+}
+
+func (g *groupGenerator) Level() int {
+	return 0
+}
+
 func (g *groupGenerator) Entropy(s *State) (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil

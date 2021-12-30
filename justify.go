@@ -69,6 +69,15 @@ func (g *justifyGenerator) Generate(s *State) error {
 	return nil
 }
 
+func (g *justifyGenerator) Level() int {
+	return 0
+}
+
+func (g *justifyGenerator) CharProb() map[rune]float64 {
+	// TODO: charProb
+	return nil
+}
+
 func (g *justifyGenerator) Entropy(s *State) (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil
