@@ -29,8 +29,12 @@ var charClasses = map[string][]rune{
 	// URL-compatible Base64
 	"b64url": []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"),
 
-	// Visible characters and spaces (anything except control characters)
+	// Printable/visible characters (anything except control characters)
+	// ‘[:alnum:]’, ‘[:punct:]’, and space.
 	"print": byteRange(0x20, 0x7E),
+
+	// Graphical characters: ‘[:alnum:]’ and ‘[:punct:]’.
+	"graph": byteRange(0x21, 0x7E),
 
 	// All whitespace characters, including line breaks
 	"space": []rune(" \t\r\n\v\f"),
@@ -39,14 +43,14 @@ var charClasses = map[string][]rune{
 	"blank": []rune(" \t"),
 
 	// Control characters
+	// GNU: Control characters. In ASCII, these characters have octal codes 000
+	// through 037, and 177 (DEL). In other character sets, these are the
+	// equivalent characters, if any.
 	"cntrl": append(byteRange(0x00, 0x1F), '\x7F'),
-
-	// Visible characters (anything except spaces and control characters)
-	"graph": byteRange(0x21, 0x7E),
 
 	// ASCII characters
 	"ascii": byteRange(0x00, 0x7F),
 
 	// Any byte
-	"byte": byteRange(0x00, 0xFF),
+	"byte": byteRange(0x01, 0xFF),
 }
