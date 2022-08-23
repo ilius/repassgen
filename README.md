@@ -45,7 +45,6 @@ Then `repassgen` binary file will be created in current directory.
 - [x] Combined multiple named/manual character classes, for example:
     * `[:digit:a-m]`
     * `[:digit::alpha:]` = `[:alnum:]`
-- [x] `[:byte:]` Any random byte
 - [x] `[:b32:]` Crockford's Base32 alphabet (lowercase)
 - [x] `[:B32:]` Crockford's Base32 alphabet (uppercase)
 - [x] `[:B32STD:]` Standard Base32 alphabet (uppercase)
@@ -176,18 +175,6 @@ Then `repassgen` binary file will be created in current directory.
     uamePKmuUUUcI
     ```
 
-- Gerenate random bytes, then run Base64 encode function
-    ```sh
-    $ repassgen '$base64([:byte:]{12})'
-    bsOuN8KuRsOFw5jClkDDjMOrFA==
-    ```
-
-- Gerenate random bytes, then run Crockford's Base32 encode function
-    ```sh
-    $ repassgen '$base32([:byte:]{12})'
-    c51e2kk1aafe3jngm3gxqrazpwqva
-    ```
-
 - Use `-` or `[` or `]` inside `[...]`
     ```sh
     $ repassgen '[.\- ]{50}'
@@ -210,10 +197,4 @@ Then `repassgen` binary file will be created in current directory.
     ```sh
     $ repassgen '$bip39word(12)'
     bachelor run match video bitter nuclear hungry gossip spoon lottery grab cabbage
-    ```
-
-- Generate 16 random bytes, then encode it to [BIP-39](https://en.bitcoin.it/wiki/BIP_0039) English mnemonic words
-    ```sh
-    $ repassgen '$bip39encode([:byte:]{16})'
-    hybrid grow tide eight blouse cost math secret fire pair throw circle praise tonight bid senior injury glide tide denial account
     ```
