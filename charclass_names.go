@@ -50,7 +50,4 @@ var charClasses = map[string][]rune{
 
 	// ASCII characters
 	"ascii": byteRange(0x00, 0x7F),
-
-	// Any byte
-	"byte": byteRange(0x01, 0xFF),
 }

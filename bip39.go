@@ -2,6 +2,7 @@ package main
 
 import (
 	rand "crypto/rand"
+	"encoding/hex"
 	"math"
 	"math/big"
 	"strconv"
@@ -12,7 +13,11 @@ import (
 )
 
 func bip39encode(s *State, in []rune) ([]rune, error) {
-	return []rune(bip39.Encode([]byte(string(in)))), nil
+	data, err := hex.DecodeString(string(in))
+	if err != nil {
+		return nil, s.errorValue("invalid hex number %#v", string(in))
+	}
+	return []rune(bip39.Encode(data)), nil
 }
 
 type bip39WordGenerator struct {

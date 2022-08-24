@@ -25,33 +25,53 @@ func expand1(sep rune, in []rune) []rune {
 
 var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 	"base64": func(s *State, in []rune) ([]rune, error) {
+		data, err := hex.DecodeString(string(in))
+		if err != nil {
+			return nil, s.errorValue("invalid hex number %#v", string(in))
+		}
 		return []rune(
-			base64.StdEncoding.EncodeToString([]byte(string(in))),
+			base64.StdEncoding.EncodeToString(data),
 		), nil
 	},
 	"base64url": func(s *State, in []rune) ([]rune, error) {
+		data, err := hex.DecodeString(string(in))
+		if err != nil {
+			return nil, s.errorValue("invalid hex number %#v", string(in))
+		}
 		return []rune(
-			base64.URLEncoding.EncodeToString([]byte(string(in))),
+			base64.URLEncoding.EncodeToString(data),
 		), nil
 	},
 
 	// Crockford's Base32 encode functions (lowercase and uppercase)
 	"base32": func(s *State, in []rune) ([]rune, error) {
+		data, err := hex.DecodeString(string(in))
+		if err != nil {
+			return nil, s.errorValue("invalid hex number %#v", string(in))
+		}
 		return []rune(
-			strings.ToLower(crock32.Encode([]byte(string(in)))),
+			strings.ToLower(crock32.Encode(data)),
 		), nil
 	},
 	"BASE32": func(s *State, in []rune) ([]rune, error) {
+		data, err := hex.DecodeString(string(in))
+		if err != nil {
+			return nil, s.errorValue("invalid hex number %#v", string(in))
+		}
 		return []rune(
-			crock32.Encode([]byte(string(in))),
+			crock32.Encode(data),
 		), nil
 	},
 
 	// standard Base32 encode function (uppercase, with no padding)
 	"base32std": func(s *State, in []rune) ([]rune, error) {
+		data, err := hex.DecodeString(string(in))
+		if err != nil {
+			return nil, s.errorValue("invalid hex number %#v", string(in))
+		}
 		return []rune(
 			base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(
-				[]byte(string(in)),
+				data,
 			),
 		), nil
 	},
@@ -79,11 +99,14 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 		return []rune(strconv.FormatInt(i64, 10)), nil
 	},
 
-	// pyhex converts bytes into a python bytes consisting hex values
+	// pyhex converts hex-encoded bytes into a python bytes consisting hex values
 	"pyhex": func(s *State, in []rune) ([]rune, error) {
+		data, err := hex.DecodeString(string(in))
+		if err != nil {
+			return nil, s.errorValue("invalid hex number %#v", string(in))
+		}
 		out := ""
-		for _, c := range in {
-			cbyte := byte(int32(c))
+		for _, cbyte := range data {
 			chex := make([]byte, 2)
 			n := hex.Encode(chex, []byte{cbyte})
 			if n != 2 {
@@ -161,6 +184,10 @@ func getFuncGenerator(s *State, funcName string, arg []rune) (generatorIface, er
 		}, nil
 	}
 	switch funcName {
+	case "byte":
+		return newByteGenerator(s, arg, false)
+	case "BYTE":
+		return newByteGenerator(s, arg, true)
 	case "bip39word":
 		return newBIP39WordGenerator(s, string(arg))
 	case "shuffle":

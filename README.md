@@ -50,11 +50,11 @@ Then `repassgen` binary file will be created in current directory.
 - [x] `[:B32STD:]` Standard Base32 alphabet (uppercase)
 - [x] `[:b64:]` Standard Base64 alphabet
 - [x] `[:b64url:]` URL-safe Base64 alphabet
-- [x] `$base64(...)` Base64 encode function
-- [x] `$base64url(...)` URL-safe Base64 encode function
-- [x] `$base32(...)` Crockford's Base32 encode function (lowercase)
-- [x] `$BASE32(...)` Crockford's Base32 encode function (uppercase)
-- [x] `$base32std(...)` Standard Base32 encode function (uppercase, with no padding)
+- [x] `$base64(...)` Base64 encode function (input is hex-encoded)
+- [x] `$base64url(...)` URL-safe Base64 encode function (input is hex-encoded)
+- [x] `$base32(...)` Crockford's Base32 encode function (lowercase) (input is hex-encoded)
+- [x] `$BASE32(...)` Crockford's Base32 encode function (uppercase) (input is hex-encoded)
+- [x] `$base32std(...)` Standard Base32 encode function (uppercase, with no padding) (input is hex-encoded)
 - [x] `$hex(...)` Hex encode function (lowercase)
 - [x] `$HEX(...)` Hex encode function (uppercase)
 - [x] Show [entropy](https://en.wikipedia.org/wiki/Password_strength#Entropy_as_a_measure_of_password_strength) of pattern
@@ -66,14 +66,14 @@ Then `repassgen` binary file will be created in current directory.
 - [x] `$escape(...)` Escape unicode characters, non-printable characters and double quote
 - [x] `$?(...)` Randomly include or omit the string/pattern (%50 chance, adds 1 bit to entropy)
 - [x] `$bip39word(N)` Generate N words from BIP-39 English mnemonic words
-- [x] `$bip39encode(...)` Encode (binary) data into some BIP-39 English mnemonic words
+- [x] `$bip39encode(...)` Encode hex-encoded bytes into some BIP-39 English mnemonic words
 - [x] `$date(2000,2020,-)` Generate a random date in the given year range
 - [x] `$space(...)` Adds spaces between each two characters of string (generated from given pattern)
 - [x] `$expand(|...)` Adds `|` (for example) between each two characters (similar to `$space`)
 - [x] `$rjust(PATTERN,N,X)` Justify to right, `N` is width (N>=1), `X` is the character to fill
 - [x] `$ljust(PATTERN,N,X)` Justify to left, similar to `$rjust`
 - [x] `$center(PATTERN,N,X)` Justify to center, similar to `$rjust`
-- [x] `$pyhex(...)` Convert bytes to Python `bytes` with hex values (like `b'\x74\x65\x73\x74'`)
+- [x] `$pyhex(...)` Convert hex-encoded bytes to Python `bytes` with hex values (like `b'\x74\x65\x73\x74'`)
 - [x] `$romaji(...)` Converts Japanese hiragana/katakana string to Latin
 
 

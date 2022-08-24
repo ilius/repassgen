@@ -576,7 +576,7 @@ func TestGenerate(t *testing.T) {
 	})
 	// base64 length: ((bytes + 2) / 3) * 4
 	test(&genCase{
-		Pattern: `$base64([:alnum:]{10})`,
+		Pattern: `$base64($hex([:alnum:]{10}))`,
 		PassLen: [2]int{16, 16},
 		Entropy: [2]float64{59.5, 59.6},
 		Validate: func(p string) bool {
@@ -598,7 +598,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: `$base64([:alnum:]{9})`,
+		Pattern: `$base64($hex([:alnum:]{9}))`,
 		PassLen: [2]int{12, 12},
 		Entropy: [2]float64{53.5, 53.6},
 		Validate: func(p string) bool {
@@ -619,7 +619,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: `$base64([:alnum:]{5})`,
+		Pattern: `$base64($hex([:alnum:]{5}))`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{29.7, 29.8},
 		Validate: func(p string) bool {
@@ -640,7 +640,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: `$base64url([:alnum:]{5})`,
+		Pattern: `$base64url($hex([:alnum:]{5}))`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{29.7, 29.8},
 		Validate: func(p string) bool {
@@ -661,7 +661,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: `$base32([:alnum:]{5})`,
+		Pattern: `$base32($hex([:alnum:]{5}))`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{29.7, 29.8},
 		Validate: func(p string) bool {
@@ -685,7 +685,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: `$BASE32([:alnum:]{5})`,
+		Pattern: `$BASE32($hex([:alnum:]{5}))`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{29.7, 29.8},
 		Validate: func(p string) bool {
@@ -709,7 +709,7 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
-		Pattern: `$base32std([:alnum:]{5})`,
+		Pattern: `$base32std($hex([:alnum:]{5}))`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{29.7, 29.8},
 		Validate: func(p string) bool {
@@ -890,12 +890,12 @@ func TestGenerate(t *testing.T) {
 		Error:   `               ^ value error: invalid number 'abcd'`,
 	})
 	// 1 bip39 word   => 11 bits entropy
-	// 8 bip39 words  => 11 bytes entropy
+	// 8 bip39 words  => 11 bytes (88 bits) entropy
 	test(&genCase{
-		Pattern:   "$bip39encode([:alpha:]{11})",
+		Pattern:   "$bip39encode($byte(){11})",
 		WordCount: 8,
 		PassLen:   [2]int{38, 98}, // 11*4-1, 11*9-1 // FIXME: why 38?
-		Entropy:   [2]float64{62.7, 62.8},
+		Entropy:   [2]float64{88, 88},
 		Validate: func(p string) bool {
 			words := strings.Split(p, " ")
 			if len(words) != 8 {
@@ -1310,7 +1310,7 @@ func TestGenerate(t *testing.T) {
 		Password: strPtr(`616263 1:'abc'`),
 	})
 	test(&genCase{
-		Pattern:  `$pyhex(test)`,
+		Pattern:  `$pyhex($hex(test))`,
 		PassLen:  [2]int{19, 19}, // byteCount * 4 + 3
 		Entropy:  [2]float64{0, 0},
 		Password: strPtr(`b'\x74\x65\x73\x74'`),
