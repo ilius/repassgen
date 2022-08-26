@@ -487,6 +487,8 @@ func TestGenerate(t *testing.T) {
 			return true
 		},
 	})
+
+	// alteration
 	test(&genCase{
 		Pattern: `(ab|cd|ef|gh){8}`,
 		PassLen: [2]int{16, 16},
@@ -502,6 +504,52 @@ func TestGenerate(t *testing.T) {
 			return true
 		},
 	})
+	test(&genCase{
+		Pattern: `(ab|\\c){8}`,
+		PassLen: [2]int{16, 16},
+		Entropy: [2]float64{8, 8},
+		Validate: func(p string) bool {
+			for i := 0; i < len(p); i += 2 {
+				switch p[i : i+2] {
+				case "ab", `\c`:
+				default:
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `(ab|()){8}`,
+		PassLen: [2]int{16, 16},
+		Entropy: [2]float64{8, 8},
+		Validate: func(p string) bool {
+			for i := 0; i < len(p); i += 2 {
+				switch p[i : i+2] {
+				case "ab", `()`:
+				default:
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `(ab|c\)`,
+		PassLen: [2]int{2, 2},
+		Entropy: [2]float64{1, 1},
+		Validate: func(p string) bool {
+			for i := 0; i < len(p); i += 2 {
+				switch p[i : i+2] {
+				case "ab", `c\`:
+				default:
+					return false
+				}
+			}
+			return true
+		},
+	})
+
 	testErr(&genErrCase{
 		// FIXME: if one part of alteration has no error, test becomes flaky
 		Pattern: `([:foobar1:]|[:foobar2:])`,
