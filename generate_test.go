@@ -1330,6 +1330,12 @@ func TestGenerate(t *testing.T) {
 		Error:   fmt.Errorf(`nested '{'`),
 	})
 	test(&genCase{
+		Pattern:  `$ljust(abc,2)`,
+		PassLen:  [2]int{3, 3},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`abc`),
+	})
+	test(&genCase{
 		Pattern:  `$ljust((abc,),7,0)`,
 		PassLen:  [2]int{7, 7},
 		Entropy:  [2]float64{0, 0},
@@ -1340,6 +1346,12 @@ func TestGenerate(t *testing.T) {
 		PassLen:  [2]int{7, 7},
 		Entropy:  [2]float64{0, 0},
 		Password: strPtr(`abc,   `),
+	})
+	test(&genCase{
+		Pattern:  `$center(abc,2)`,
+		PassLen:  [2]int{3, 3},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`abc`),
 	})
 	test(&genCase{
 		Pattern:  `$center((abc,),7)`,
