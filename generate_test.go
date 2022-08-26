@@ -574,6 +574,10 @@ func TestGenerate(t *testing.T) {
 			return true
 		},
 	})
+	testErr(&genErrCase{
+		Pattern: `$base64(gh)`,
+		Error:   `         ^ value error: invalid hex number "gh"`,
+	})
 	// base64 length: ((bytes + 2) / 3) * 4
 	test(&genCase{
 		Pattern: `$base64($hex([:alnum:]{10}))`,
@@ -639,6 +643,10 @@ func TestGenerate(t *testing.T) {
 			return true
 		},
 	})
+	testErr(&genErrCase{
+		Pattern: `$base64url(gh)`,
+		Error:   `            ^ value error: invalid hex number "gh"`,
+	})
 	test(&genCase{
 		Pattern: `$base64url($hex([:alnum:]{5}))`,
 		PassLen: [2]int{8, 8},
@@ -659,6 +667,18 @@ func TestGenerate(t *testing.T) {
 			}
 			return true
 		},
+	})
+	testErr(&genErrCase{
+		Pattern: `$base32(gh)`,
+		Error:   `         ^ value error: invalid hex number "gh"`,
+	})
+	testErr(&genErrCase{
+		Pattern: `$BASE32(gh)`,
+		Error:   `         ^ value error: invalid hex number "gh"`,
+	})
+	testErr(&genErrCase{
+		Pattern: `$base32std(gh)`,
+		Error:   `            ^ value error: invalid hex number "gh"`,
 	})
 	test(&genCase{
 		Pattern: `$base32($hex([:alnum:]{5}))`,
@@ -876,6 +896,44 @@ func TestGenerate(t *testing.T) {
 			return true
 		},
 	})
+
+	test(&genCase{
+		Pattern: `$byte(){4}`,
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{32, 32},
+		Validate: func(p string) bool {
+			if strings.ToLower(p) != p {
+				return false
+			}
+			pwBytes, err := hex.DecodeString(p)
+			if err != nil {
+				panic(err)
+			}
+			if len(pwBytes) != 4 {
+				return false
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `$BYTE(){4}`,
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{32, 32},
+		Validate: func(p string) bool {
+			if strings.ToUpper(p) != p {
+				return false
+			}
+			pwBytes, err := hex.DecodeString(p)
+			if err != nil {
+				panic(err)
+			}
+			if len(pwBytes) != 4 {
+				return false
+			}
+			return true
+		},
+	})
+
 	test(&genCase{
 		Pattern:   "$bip39word()",
 		WordCount: 1,
@@ -888,6 +946,10 @@ func TestGenerate(t *testing.T) {
 	testErr(&genErrCase{
 		Pattern: `$bip39word(abcd)`,
 		Error:   `               ^ value error: invalid number 'abcd'`,
+	})
+	testErr(&genErrCase{
+		Pattern: `$bip39encode(gh)`,
+		Error:   `              ^ value error: invalid hex number "gh"`,
 	})
 	// 1 bip39 word   => 11 bits entropy
 	// 8 bip39 words  => 11 bytes (88 bits) entropy
@@ -1308,6 +1370,10 @@ func TestGenerate(t *testing.T) {
 		PassLen:  [2]int{14, 14},
 		Entropy:  [2]float64{0, 0},
 		Password: strPtr(`616263 1:'abc'`),
+	})
+	testErr(&genErrCase{
+		Pattern: `$pyhex(gh)`,
+		Error:   `        ^ value error: invalid hex number "gh"`,
 	})
 	test(&genCase{
 		Pattern:  `$pyhex($hex(test))`,
