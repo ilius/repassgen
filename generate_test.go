@@ -434,6 +434,18 @@ func TestGenerate(t *testing.T) {
 		Error:   `         ^ syntax error: '(' not closed`,
 	})
 	test(&genCase{
+		Pattern:  `\`,
+		PassLen:  [2]int{0, 0},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(""),
+	})
+	test(&genCase{
+		Pattern:  `abc\`,
+		PassLen:  [2]int{3, 3},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr("abc"),
+	})
+	test(&genCase{
 		Pattern:  `(\)){2}`,
 		PassLen:  [2]int{2, 2},
 		Entropy:  [2]float64{0, 0},

@@ -70,6 +70,9 @@ func backslashEscape(c rune) rune {
 }
 
 func lexBackslash(s *State) (LexType, error) {
+	if s.end() {
+		return LexRoot, nil
+	}
 	c := s.pattern[s.patternPos]
 	if c >= '1' && c <= '9' {
 		return processGroupRef(s, LexRoot)
