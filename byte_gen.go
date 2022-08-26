@@ -34,5 +34,9 @@ func (g *byteGenerator) Entropy(s *State) (float64, error) {
 }
 
 func newByteGenerator(s *State, argsStr []rune, uppercase bool) (*byteGenerator, error) {
+	if len(argsStr) > 0 {
+		s.errorOffset += 1
+		return nil, s.errorValue("function does not accept any arguments")
+	}
 	return &byteGenerator{uppercase: uppercase}, nil
 }

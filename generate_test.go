@@ -897,6 +897,14 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 
+	testErr(&genErrCase{
+		Pattern: `$byte(12)`,
+		Error:   `      ^ value error: function does not accept any arguments`,
+	})
+	testErr(&genErrCase{
+		Pattern: `$BYTE(12)`,
+		Error:   `      ^ value error: function does not accept any arguments`,
+	})
 	test(&genCase{
 		Pattern: `$byte(){4}`,
 		PassLen: [2]int{8, 8},
