@@ -549,6 +549,51 @@ func TestGenerate(t *testing.T) {
 			return true
 		},
 	})
+	test(&genCase{
+		Pattern: `(a|b|[cde]|f){8}`,
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{16, 16},
+		Validate: func(p string) bool {
+			for i := 0; i < len(p); i += 1 {
+				switch p[i : i+1] {
+				case "a", "b", "c", "d", "e", "f":
+				default:
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `([ab]|[cdef]|[gh]|[ij])`,
+		PassLen: [2]int{1, 1},
+		Entropy: [2]float64{3, 3},
+		Validate: func(p string) bool {
+			for i := 0; i < len(p); i += 1 {
+				switch p[i : i+1] {
+				case "a", "b", "c", "d", "e", "f", "g", "h", "i", "j":
+				default:
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `([ab]|[cdef]|[gh]|[ij]){8}`,
+		PassLen: [2]int{8, 8},
+		Entropy: [2]float64{24, 24},
+		Validate: func(p string) bool {
+			for i := 0; i < len(p); i += 1 {
+				switch p[i : i+1] {
+				case "a", "b", "c", "d", "e", "f", "g", "h", "i", "j":
+				default:
+					return false
+				}
+			}
+			return true
+		},
+	})
 
 	testErr(&genErrCase{
 		// FIXME: if one part of alteration has no error, test becomes flaky
