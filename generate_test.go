@@ -1066,14 +1066,27 @@ func TestGenerate(t *testing.T) {
 	})
 	// 1 bip39 word   => 11 bits entropy
 	// 8 bip39 words  => 11 bytes (88 bits) entropy
+	// but there is also a checksum
+	// https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki#generating-the-mnemonic
+	// Criticism: https://github.com/bitcoin/bips/wiki/Comments:BIP-0039
+	// The following table describes the relation between the initial
+	// entropy length (ENT), the checksum length (CS), and the length of
+	// the generated mnemonic sentence (MS) in words.
+	// CS = ENT / 32
+	// MS = (ENT + CS) / 11 = (ENT + ENT/32) / 11
 	test(&genCase{
-		Pattern:   "$bip39encode($byte(){11})",
-		WordCount: 8,
-		PassLen:   [2]int{38, 98}, // 11*4-1, 11*9-1 // FIXME: why 38?
-		Entropy:   [2]float64{88, 88},
+		Pattern:   "$bip39encode($byte(){8})",
+		PassLen:   [2]int{23, 62}, // 6*4-1, 7*9-1
+		Entropy:   [2]float64{64, 64},
 		Validate: func(p string) bool {
 			words := strings.Split(p, " ")
-			if len(words) != 8 {
+			if len(words) < 6 {
+				return false
+			}
+			if len(words) > 7 {
+				return false
+			}
+			if len(words) == 7 && words[len(words)-1] != "abandon" {
 				return false
 			}
 			for _, word := range words {
