@@ -1075,9 +1075,9 @@ func TestGenerate(t *testing.T) {
 	// CS = ENT / 32
 	// MS = (ENT + CS) / 11 = (ENT + ENT/32) / 11
 	test(&genCase{
-		Pattern:   "$bip39encode($byte(){8})",
-		PassLen:   [2]int{23, 62}, // 6*4-1, 7*9-1
-		Entropy:   [2]float64{64, 64},
+		Pattern: "$bip39encode($byte(){8})",
+		PassLen: [2]int{23, 62}, // 6*4-1, 7*9-1
+		Entropy: [2]float64{64, 64},
 		Validate: func(p string) bool {
 			words := strings.Split(p, " ")
 			if len(words) < 6 {

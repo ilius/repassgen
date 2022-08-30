@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/ilius/bip39-coder/bip39"
-	"github.com/spf13/cast"
 )
 
 func bip39encode(s *State, in []rune) ([]rune, error) {
@@ -32,10 +31,7 @@ func (g *bip39WordGenerator) Generate(s *State) error {
 		if err != nil {
 			panic(err)
 		}
-		index, err := cast.ToIntE(ibig.Int64())
-		if err != nil {
-			return err
-		}
+		index := int(ibig.Int64())
 		word, ok := bip39.GetWord(index)
 		if !ok {
 			return s.errorUnknown("internal error, index=%v > 2048", index)
