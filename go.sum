@@ -2,8 +2,7 @@ github.com/ilius/bip39-coder v0.0.0-20190820221636-dd78355e9ae3 h1:j0HfmT+JMiHB+
 github.com/ilius/bip39-coder v0.0.0-20190820221636-dd78355e9ae3/go.mod h1:m5pCh97aa9ru54bNU8cZ6AQ2pqA5WkuNPiZ19aYQ+aU=
 github.com/ilius/crock32 v0.0.0-20200913102936-af44b4eacbe6 h1:e0avBnobZQeL6roJvITxiusncg2W7JxkujFfSZIQpKQ=
 github.com/ilius/crock32 v0.0.0-20200913102936-af44b4eacbe6/go.mod h1:qVDHZPtpx9fchO4hIuHYKLV4LRf8EqWgq0t5CqWBDKA=
-github.com/ilius/is/v2 v2.2.0/go.mod h1:OMGTmQDDc3Svaj3EoQHeNnXHP0R1HCb5u/Hfm7kuYIM=
 github.com/ilius/is/v2 v2.3.0 h1:xr0OLNTuiYw5LT1N7KETTCgoMo5IUoEDQsQD4ohcW7U=
 github.com/ilius/is/v2 v2.3.0/go.mod h1:OMGTmQDDc3Svaj3EoQHeNnXHP0R1HCb5u/Hfm7kuYIM=
-github.com/ilius/libgostarcal v0.0.0-20211113141313-cbbda95d98c2 h1:fp5JxhxOxsuDq7pN4YXuneqtEH2R3w6/zOi3z6JBwr8=
-github.com/ilius/libgostarcal v0.0.0-20211113141313-cbbda95d98c2/go.mod h1:Z/LqOxZPpxPdTol947deWMWmHoslJXW0WbGCmI+KvkU=
+github.com/ilius/libgostarcal v1.0.0 h1:pXdmaYvilROhEkv75KR274Q+HsfhaNHpX2oXo3ppVZY=
+github.com/ilius/libgostarcal v1.0.0/go.mod h1:4+9Ebd6qxRf76UM2ijICHOQB6CXvJdE3O9xyllcdux0=
