@@ -1,13 +1,24 @@
 #!/bin/bash
 set -x
 
-GOOS=linux GOARCH=amd64 go build -o repassgen-linux-x86_64
-GOOS=linux GOARCH=386 go build -o repassgen-linux-x86
+FLAGS=(-ldflags '-s -w')
 
-GOOS=windows GOARCH=amd64 go build -o repassgen-windows-x86_64.exe
-GOOS=windows GOARCH=386 go build -o repassgen-windows-x86.exe
+function build_for_os64() {
+	GOOS=$1 GOARCH=amd64 go build -o repassgen-$1-x86_64 "${FLAGS[@]}"
+}
+function build_for_os32() {
+	GOOS=$1 GOARCH=386 go build -o repassgen-$1-x86 "${FLAGS[@]}"
+}
 
-GOOS=freebsd GOARCH=amd64 go build -o repassgen-freebsd-x86_64
-GOOS=freebsd GOARCH=386 go build -o repassgen-freebsd-x86
 
-GOOS=darwin GOARCH=amd64 go build -o repassgen-darwin-x86_64
+build_for_os64 linux
+build_for_os32 linux
+
+build_for_os64 windows
+build_for_os32 windows
+
+build_for_os64 freebsd
+build_for_os32 freebsd
+
+build_for_os64 darwin
+
