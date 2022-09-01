@@ -77,7 +77,7 @@ func ParseSpacedError(str string) *Error {
 	}
 }
 
-// AppendMsg add a message to the begining of current messages
+// AppendMsg add a message to the beginning of current messages
 func (e *Error) AppendMsg(msg string) {
 	e.msgs = append(e.msgs, msg)
 }
