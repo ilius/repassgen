@@ -35,25 +35,33 @@ func _lexIdentFuncCallParanClose(s *State, buff []rune) (LexType, error) {
 	return LexRoot, nil
 }
 
+func _lexIdentFuncCallEndError(s *State) error {
+	s.errorOffset++
+	if s.openParenth > 0 {
+		return s.errorSyntax("'(' not closed")
+	}
+	return s.errorSyntax("expected a function call")
+}
+
+func _lexIdentFuncCallBackslash(s *State, buff []rune) []rune {
+	buff = append(buff, '\\')
+	s.move(1)
+	if !s.end() {
+		buff = append(buff, s.pattern[s.patternPos])
+	}
+	return buff
+}
+
 func lexIdentFuncCall(s *State) (LexType, error) {
 	if s.end() {
-		s.errorOffset++
-		if s.openParenth > 0 {
-			return nil, s.errorSyntax("'(' not closed")
-		}
-		return nil, s.errorSyntax("expected a function call")
+		return nil, _lexIdentFuncCallEndError(s)
 	}
 	buff := []rune{}
 	for ; !s.end(); s.move(1) {
 		c := s.pattern[s.patternPos]
 		switch c {
 		case '\\':
-			buff = append(buff, '\\')
-			s.move(1)
-			if s.end() {
-				continue
-			}
-			buff = append(buff, s.pattern[s.patternPos])
+			buff = _lexIdentFuncCallBackslash(s, buff)
 			continue
 		case '(':
 			if s.openBracket {
