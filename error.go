@@ -30,9 +30,10 @@ func NewError(typ ErrorType, pos uint, msg string) *Error {
 
 // Error is lexical error struct
 type Error struct {
-	typ  ErrorType
-	msgs []string
-	pos  uint
+	typ     ErrorType
+	msgs    []string
+	pos     uint
+	markLen uint
 }
 
 func (e *Error) Message() string {
@@ -49,10 +50,24 @@ func (e *Error) Error() string {
 	)
 }
 
+func (e *Error) WithMarkLen(markLen uint) *Error {
+	e.markLen = markLen
+	return e
+}
+
 func (e *Error) SpacedError() string {
+	if e.markLen <= 0 {
+		return fmt.Sprintf(
+			"%s^ %s error: %s",
+			strings.Repeat(" ", int(e.pos)),
+			string(e.typ),
+			e.Message(),
+		)
+	}
 	return fmt.Sprintf(
-		"%s^ %s error: %s",
-		strings.Repeat(" ", int(e.pos)),
+		"%s%s %s error: %s",
+		strings.Repeat(" ", int(e.pos-e.markLen+1)),
+		strings.Repeat("^", int(e.markLen)),
 		string(e.typ),
 		e.Message(),
 	)
@@ -60,20 +75,23 @@ func (e *Error) SpacedError() string {
 
 func ParseSpacedError(str string) *Error {
 	trimmed := strings.TrimLeft(str, " ")
-	pos := len(str) - len(trimmed)
-	parts := strings.SplitN(trimmed, " ", 4)
-	if parts[0] != "^" {
+	if trimmed[0] != '^' {
 		return nil
 	}
-	if parts[2] != "error:" {
+	remain := strings.TrimLeft(trimmed, "^")
+	pos := len(str) - len(remain) - 1
+	markLen := len(trimmed) - len(remain)
+	parts := strings.SplitN(strings.TrimLeft(remain, " "), " ", 3)
+	if parts[1] != "error:" {
 		return nil
 	}
-	typ := parts[1]
-	msgs := strings.Split(parts[3], ": ")
+	typ := parts[0]
+	msgs := strings.Split(parts[2], ": ")
 	return &Error{
-		typ:  ErrorType(typ),
-		pos:  uint(pos),
-		msgs: msgs,
+		typ:     ErrorType(typ),
+		pos:     uint(pos),
+		markLen: uint(markLen),
+		msgs:    msgs,
 	}
 }
 
