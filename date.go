@@ -56,11 +56,13 @@ func newDateGenerator(s *State, argsStr []rune) (*dateGenerator, error) {
 	startYear, err := strconv.Atoi(strings.TrimSpace(string(args[0])))
 	if err != nil {
 		s.errorOffset += int64(len(args[0]))
+		s.errorMarkLen = len(args[0])
 		return nil, s.errorValue("invalid year %s", string(args[0]))
 	}
 	endYear, err := strconv.Atoi(strings.TrimSpace(string(args[1])))
 	if err != nil {
 		s.errorOffset += int64(len(argsStr))
+		s.errorMarkLen = len(args[1])
 		return nil, s.errorValue("invalid year %s", string(args[1]))
 	}
 	sep := "-"

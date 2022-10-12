@@ -1070,11 +1070,11 @@ func TestGenerate(t *testing.T) {
 	})
 	testErr(&genErrCase{
 		Pattern: `$bip39word(abcd)`,
-		Error:   `               ^ value error: invalid number 'abcd'`,
+		Error:   `           ^^^^ value error: invalid number 'abcd'`,
 	})
 	testErr(&genErrCase{
 		Pattern: `$bip39encode(gh)`,
-		Error:   `              ^ value error: invalid hex number "gh"`,
+		Error:   `             ^^ value error: invalid hex number "gh"`,
 	})
 	// 1 bip39 word   => 11 bits entropy
 	// 8 bip39 words  => 11 bytes (88 bits) entropy
@@ -1150,8 +1150,8 @@ func TestGenerate(t *testing.T) {
 		Error:   `     ^ syntax error: '(' not closed`,
 	})
 	testErr(&genErrCase{
-		Pattern: `$foo(123)`,
-		Error:   `    ^ value error: invalid function 'foo'`,
+		Pattern: `test $foo(123)`,
+		Error:   `     ^^^^^ value error: invalid function 'foo'`,
 	})
 	testErr(&genErrCase{
 		Pattern: `$foo\()`,
@@ -1159,7 +1159,7 @@ func TestGenerate(t *testing.T) {
 	})
 	testErr(&genErrCase{
 		Pattern: `test($foo(123))`,
-		Error:   `         ^ value error: invalid function 'foo'`,
+		Error:   `     ^^^^^ value error: invalid function 'foo'`,
 	})
 	testErr(&genErrCase{
 		Pattern: `test $foo`,
@@ -1280,11 +1280,11 @@ func TestGenerate(t *testing.T) {
 	})
 	testErr(&genErrCase{
 		Pattern: `$date(2000a,2000b)`,
-		Error:   `          ^ value error: invalid year 2000a`,
+		Error:   `      ^^^^^ value error: invalid year 2000a`,
 	})
 	testErr(&genErrCase{
 		Pattern: `$date(2000,2000b)`,
-		Error:   `               ^ value error: invalid year 2000b`,
+		Error:   `           ^^^^^ value error: invalid year 2000b`,
 	})
 	testErr(&genErrCase{
 		Pattern: `$date(2000,{{2000}})`,
@@ -1511,11 +1511,11 @@ func TestGenerate(t *testing.T) {
 	})
 	testErr(&genErrCase{
 		Pattern: `(abc) test1 \2 test2`,
-		Error:   `             ^ value error: invalid group id '2'`,
+		Error:   `            ^^ value error: invalid group id '2'`,
 	})
 	testErr(&genErrCase{
 		Pattern: `(abc) test1 \20 test2`,
-		Error:   `              ^ value error: invalid group id '20'`,
+		Error:   `            ^^^ value error: invalid group id '20'`,
 	})
 	test(&genCase{
 		Pattern:  `(a(b(c))) 1:'\1' 2:'\2' 3:'\3'`,

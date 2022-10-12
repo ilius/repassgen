@@ -14,6 +14,7 @@ import (
 func bip39encode(s *State, in []rune) ([]rune, error) {
 	data, err := hex.DecodeString(string(in))
 	if err != nil {
+		s.errorMarkLen = len(in)
 		return nil, s.errorValue("invalid hex number %#v", string(in))
 	}
 	return []rune(bip39.Encode(data)), nil
@@ -61,7 +62,8 @@ func newBIP39WordGenerator(s *State, arg string) (*bip39WordGenerator, error) {
 	}
 	argInt64, err := strconv.ParseInt(arg, 10, 64)
 	if err != nil {
-		s.errorOffset += int64(len(arg) + 1)
+		s.errorOffset += int64(len(arg))
+		s.errorMarkLen = len(arg)
 		return nil, s.errorValue("invalid number '%v'", arg)
 	}
 	return &bip39WordGenerator{

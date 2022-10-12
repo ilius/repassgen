@@ -168,6 +168,7 @@ func (g *encoderFunctionCallGenerator) Generate(s *State) error {
 	funcName := g.funcName
 	funcObj, ok := encoderFunctions[funcName]
 	if !ok {
+		s.errorMarkLen = len(funcName) + 2
 		return s.errorValue("invalid function '%v'", funcName)
 	}
 	err := baseFunctionCallGenerator(
@@ -217,5 +218,6 @@ func getFuncGenerator(s *State, funcName string, arg []rune) (generatorIface, er
 	case "center":
 		return newCenterGenerator(s, arg)
 	}
+	s.errorMarkLen = len(funcName) + 2
 	return nil, s.errorValue("invalid function '%v'", funcName)
 }
