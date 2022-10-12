@@ -97,9 +97,11 @@ func TestGenerate(t *testing.T) {
 				}
 				is.Equal(tErr.typ, expErrTyped.typ)
 				is.Equal(tErr.Message(), expErrTyped.Message())
-				is.AddMsg(
+				is = is.AddMsg(
 					"msg=%#v", tErr.Message(),
-				).Equal(tErr.pos, expErrTyped.pos)
+				)
+				is.Equal(tErr.pos, expErrTyped.pos)
+				is.Equal(tErr.markLen, expErrTyped.markLen)
 			} else {
 				is.ErrMsg(err, expErr)
 			}
@@ -108,9 +110,11 @@ func TestGenerate(t *testing.T) {
 		case *Error:
 			is.Equal(tErr.typ, expErr.typ)
 			is.Equal(tErr.Message(), expErr.Message())
-			is.AddMsg(
+			is = is.AddMsg(
 				"msg=%#v", tErr.Message(),
-			).Equal(tErr.pos, expErr.pos)
+			)
+			is.Equal(tErr.pos, expErr.pos)
+			is.Equal(tErr.markLen, expErr.markLen)
 		case error:
 			is.ErrMsg(err, expErr.Error())
 		default:

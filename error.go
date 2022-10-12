@@ -22,9 +22,10 @@ const (
 // NewError creates a new Error
 func NewError(typ ErrorType, pos uint, msg string) *Error {
 	return &Error{
-		typ:  typ,
-		pos:  pos,
-		msgs: []string{msg},
+		typ:     typ,
+		pos:     pos,
+		markLen: 1,
+		msgs:    []string{msg},
 	}
 }
 
