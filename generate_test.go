@@ -189,6 +189,10 @@ func TestGenerate(t *testing.T) {
 		Error:   `       ^ syntax error: repetition range syntax is '{M,N}' not '{M-N}'`,
 	})
 	testErr(&genErrCase{
+		Pattern: `[a-z]{1,-3}`,
+		Error:   `        ^ syntax error: invalid natural number`,
+	})
+	testErr(&genErrCase{
 		Pattern: `test([a-z]{1-3})`,
 		Error:   `            ^ syntax error: repetition range syntax is '{M,N}' not '{M-N}'`,
 	})

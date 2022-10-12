@@ -29,6 +29,9 @@ func lexRepeat(s *State) (LexType, error) {
 		s.patternBuff = append(s.patternBuff, c)
 		return lexRepeat, nil
 	case '-':
+		if hasRune(s.patternBuff, ',') {
+			return nil, s.errorSyntax("invalid natural number")
+		}
 		return nil, s.errorSyntax("repetition range syntax is '{M,N}' not '{M-N}'")
 	case '}':
 		if len(s.patternBuff) == 0 {
