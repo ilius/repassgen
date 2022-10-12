@@ -10,6 +10,8 @@ type SharedState struct {
 
 	errorOffset int64
 
+	errorMarkLen uint
+
 	patternEntropy float64
 
 	lastGroupId  uint64
@@ -85,7 +87,7 @@ func (s *State) errorSyntax(msg string, args ...interface{}) error {
 		ErrorSyntax,
 		s.getErrorPos(),
 		fmt.Sprintf(msg, args...),
-	)
+	).WithMarkLen(s.errorMarkLen)
 }
 
 func (s *State) errorArg(msg string, args ...interface{}) error {
@@ -93,7 +95,7 @@ func (s *State) errorArg(msg string, args ...interface{}) error {
 		ErrorArg,
 		s.getErrorPos(),
 		fmt.Sprintf(msg, args...),
-	)
+	).WithMarkLen(s.errorMarkLen)
 }
 
 func (s *State) errorValue(msg string, args ...interface{}) error {
@@ -101,7 +103,7 @@ func (s *State) errorValue(msg string, args ...interface{}) error {
 		ErrorValue,
 		s.getErrorPos(),
 		fmt.Sprintf(msg, args...),
-	)
+	).WithMarkLen(s.errorMarkLen)
 }
 
 func (s *State) errorUnknown(msg string, args ...interface{}) error {
@@ -109,13 +111,14 @@ func (s *State) errorUnknown(msg string, args ...interface{}) error {
 		ErrorUnknown,
 		s.getErrorPos(),
 		fmt.Sprintf(msg, args...),
-	)
+	).WithMarkLen(s.errorMarkLen)
 }
 
 // NewSharedState is factory function for SharedState
 func NewSharedState() *SharedState {
 	return &SharedState{
 		groupsOutput: map[uint64][]rune{},
+		errorMarkLen: 1,
 	}
 }
 
