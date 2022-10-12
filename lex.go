@@ -120,12 +120,12 @@ func makeLexUnicode(parentLex LexType, symbol rune, width int, toBuff bool) LexT
 			buff = append(buff, s.pattern[s.patternPos])
 		}
 		if len(buff) != width {
-			s.errorOffset -= int64(len(buff) - 1)
+			s.errorMarkLen = len(buff)
 			return nil, s.errorSyntax("invalid escape sequence")
 		}
 		char, _, _, err := strconv.UnquoteChar(string(buff), '"')
 		if err != nil {
-			s.errorOffset -= int64(width - 1)
+			s.errorMarkLen = width
 			return nil, s.errorSyntax("invalid escape sequence")
 		}
 		if toBuff {

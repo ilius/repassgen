@@ -10,7 +10,7 @@ type SharedState struct {
 
 	errorOffset int64
 
-	errorMarkLen uint
+	errorMarkLen int
 
 	patternEntropy float64
 

@@ -100,8 +100,8 @@ func TestGenerate(t *testing.T) {
 				is = is.AddMsg(
 					"msg=%#v", tErr.Message(),
 				)
-				is.Equal(tErr.pos, expErrTyped.pos)
-				is.Equal(tErr.markLen, expErrTyped.markLen)
+				is.AddMsg("mismatch pos").Equal(tErr.pos, expErrTyped.pos)
+				is.AddMsg("mismatch markLen").Equal(tErr.markLen, expErrTyped.markLen)
 			} else {
 				is.ErrMsg(err, expErr)
 			}
@@ -113,8 +113,8 @@ func TestGenerate(t *testing.T) {
 			is = is.AddMsg(
 				"msg=%#v", tErr.Message(),
 			)
-			is.Equal(tErr.pos, expErr.pos)
-			is.Equal(tErr.markLen, expErr.markLen)
+			is.AddMsg("mismatch pos").Equal(tErr.pos, expErr.pos)
+			is.AddMsg("mismatch markLen").Equal(tErr.markLen, expErr.markLen)
 		case error:
 			is.ErrMsg(err, expErr.Error())
 		default:
@@ -145,20 +145,28 @@ func TestGenerate(t *testing.T) {
 		Error:   ` ^ syntax error: nested '['`,
 	})
 	testErr(&genErrCase{
-		Pattern: `[:x]`,
-		Error:   `   ^ syntax error: ':' not closed`,
+		Pattern: `test [:x]`,
+		Error:   `      ^^^ syntax error: ':' not closed`,
 	})
 	testErr(&genErrCase{
-		Pattern: `[:x`,
-		Error:   `   ^ syntax error: ':' not closed`,
+		Pattern: `test [:abcde]`,
+		Error:   `      ^^^^^^^ syntax error: ':' not closed`,
 	})
 	testErr(&genErrCase{
-		Pattern: `[a-`,
-		Error:   `   ^ syntax error: '[' not closed`,
+		Pattern: `test [:x`,
+		Error:   `      ^^^ syntax error: ':' not closed`,
 	})
 	testErr(&genErrCase{
-		Pattern: `[a-]`,
-		Error:   `   ^ syntax error: no character after '-'`,
+		Pattern: `test [a-`,
+		Error:   `     ^^^^ syntax error: '[' not closed`,
+	})
+	testErr(&genErrCase{
+		Pattern: `test [hello-`,
+		Error:   `     ^^^^^^^^ syntax error: '[' not closed`,
+	})
+	testErr(&genErrCase{
+		Pattern: `test [hello-]`,
+		Error:   `            ^ syntax error: no character after '-'`,
 	})
 	testErr(&genErrCase{
 		Pattern: `[-a]`,
@@ -603,8 +611,8 @@ func TestGenerate(t *testing.T) {
 		// FIXME: if one part of alteration has no error, test becomes flaky
 		Pattern: `([:foobar1:]|[:foobar2:])`,
 		Error: []interface{}{
-			`value error near index 2: invalid character class "foobar1"`,
-			`value error near index 13: invalid character class "foobar2"`,
+			`value error near index 8: invalid character class "foobar1"`,
+			`value error near index 19: invalid character class "foobar2"`,
 		},
 	})
 	test(&genCase{
@@ -1118,6 +1126,14 @@ func TestGenerate(t *testing.T) {
 		Error:   `       ^ value error: invalid character class "x"`,
 	})
 	testErr(&genErrCase{
+		Pattern: `[:hello:]`,
+		Error:   `  ^^^^^ value error: invalid character class "hello"`,
+	})
+	testErr(&genErrCase{
+		Pattern: `$hex([:hello:])`,
+		Error:   `       ^^^^^ value error: invalid character class "hello"`,
+	})
+	testErr(&genErrCase{
 		Pattern: `(`,
 		Error:   ` ^ syntax error: '(' not closed`,
 	})
@@ -1194,11 +1210,11 @@ func TestGenerate(t *testing.T) {
 	})
 	testErr(&genErrCase{
 		Pattern: `\u00e0-\u00e`,
-		Error:   `       ^ syntax error: invalid escape sequence`,
+		Error:   `       ^^^^^ syntax error: invalid escape sequence`,
 	})
 	testErr(&genErrCase{
 		Pattern: `\u00e0-\U00e6`,
-		Error:   `       ^ syntax error: invalid escape sequence`,
+		Error:   `       ^^^^^^ syntax error: invalid escape sequence`,
 	})
 	test(&genCase{
 		Pattern:  `test1 \u00e1 test2 \u00e2 test3`,
@@ -1208,23 +1224,23 @@ func TestGenerate(t *testing.T) {
 	})
 	testErr(&genErrCase{
 		Pattern: `\u00mn`,
-		Error:   `^ syntax error: invalid escape sequence`,
+		Error:   `^^^^^^ syntax error: invalid escape sequence`,
 	})
 	testErr(&genErrCase{
 		Pattern: `test1 \u00mn test2`,
-		Error:   `      ^ syntax error: invalid escape sequence`,
+		Error:   `      ^^^^^^ syntax error: invalid escape sequence`,
 	})
 	testErr(&genErrCase{
 		Pattern: `(test1 \u00mn test2){2}`,
-		Error:   `       ^ syntax error: invalid escape sequence`,
+		Error:   `       ^^^^^^ syntax error: invalid escape sequence`,
 	})
 	testErr(&genErrCase{
 		Pattern: `test[\u00mn-\u00e0]abc`,
-		Error:   `     ^ syntax error: invalid escape sequence`,
+		Error:   `     ^^^^^^ syntax error: invalid escape sequence`,
 	})
 	testErr(&genErrCase{
 		Pattern: `test[\u00e0-\u00mn]abc`,
-		Error:   `            ^ syntax error: invalid escape sequence`,
+		Error:   `            ^^^^^^ syntax error: invalid escape sequence`,
 	})
 	test(&genCase{
 		Pattern: `[\u00e0-\u00e6]{10}`,

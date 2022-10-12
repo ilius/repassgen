@@ -4,6 +4,7 @@ import (
 	"encoding/base32"
 	"encoding/base64"
 	"encoding/hex"
+	"encoding/json"
 	"strconv"
 	"strings"
 
@@ -133,6 +134,19 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 	"escape": func(s *State, in []rune) ([]rune, error) {
 		q := strconv.QuoteToASCII(string(in))
 		return []rune(q[1 : len(q)-1]), nil
+	},
+
+	// Escape characters according to json
+	// Escaped: ampersand, double quote
+	// Not escaped: Unicode characters, newline, tab, backslash
+	"json": func(s *State, in []rune) ([]rune, error) {
+		outB, err := json.Marshal(string(in))
+		if err != nil {
+			return nil, s.errorUnknown("error in json Marshal: %v", err)
+		}
+		outS := string(outB)
+		outS = outS[1 : len(outS)-1]
+		return []rune(outS), nil
 	},
 
 	// BIP-39 encode function

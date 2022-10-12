@@ -51,8 +51,8 @@ func (e *Error) Error() string {
 	)
 }
 
-func (e *Error) WithMarkLen(markLen uint) *Error {
-	e.markLen = markLen
+func (e *Error) WithMarkLen(markLen int) *Error {
+	e.markLen = uint(markLen)
 	return e
 }
 
