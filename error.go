@@ -52,6 +52,9 @@ func (e *Error) Error() string {
 }
 
 func (e *Error) WithMarkLen(markLen int) *Error {
+	if markLen == 0 {
+		markLen = 1
+	}
 	e.markLen = uint(markLen)
 	return e
 }

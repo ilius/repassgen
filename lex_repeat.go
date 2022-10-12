@@ -6,8 +6,6 @@ import (
 	"strings"
 )
 
-const badRepeatCount = "invalid natural number inside {...}"
-
 func lexRepeat(s *State) (LexType, error) {
 	if s.end() {
 		return nil, s.errorSyntax("'{' not closed")
@@ -64,7 +62,8 @@ func lexRepeat(s *State) (LexType, error) {
 		s.patternBuff = nil
 		return LexRoot, nil
 	}
-	return nil, s.errorSyntax(badRepeatCount)
+	s.errorMarkLen = len(s.patternBuff) + 1
+	return nil, s.errorSyntax("invalid natural number inside {...}")
 }
 
 func parseRepeatCount(s *State, countRunes []rune) (int64, error) {
@@ -77,9 +76,13 @@ func parseRepeatCount(s *State, countRunes []rune) (int64, error) {
 	if len(parts) == 1 {
 		countI64, err := strconv.ParseInt(countStr, 10, 64)
 		if err != nil {
+			s.errorOffset--
+			s.errorMarkLen = len(countStr)
 			return 0, s.errorSyntax("invalid natural number '%v'", countStr)
 		}
 		if countI64 < 1 {
+			s.errorOffset--
+			s.errorMarkLen = len(countStr)
 			return 0, s.errorSyntax("invalid natural number '%v'", countStr)
 		}
 		return countI64, nil
@@ -96,16 +99,21 @@ func parseRepeatCount(s *State, countRunes []rune) (int64, error) {
 	maxStr := parts[1]
 	minCount, err := strconv.ParseInt(minStr, 10, 64)
 	if err != nil {
-		return 0, s.errorSyntax(badRepeatCount)
+		// s.errorMarkLen = len(minStr)
+		return 0, s.errorSyntax("invalid natural number '%v'", minStr)
 	}
 	if minCount < 1 {
-		return 0, s.errorSyntax(badRepeatCount)
+		// s.errorMarkLen = len(minStr)
+		return 0, s.errorSyntax("invalid natural number '%v'", minStr)
 	}
 	maxCount, err := strconv.ParseInt(maxStr, 10, 64)
 	if err != nil {
-		return 0, s.errorSyntax(badRepeatCount)
+		// s.errorMarkLen = len(maxStr)
+		return 0, s.errorSyntax("invalid natural number '%v'", maxCount)
 	}
 	if maxCount < minCount {
+		s.errorOffset--
+		s.errorMarkLen = len(countRunes)
 		return 0, s.errorValue("invalid numbers %v > %v inside {...}", minCount, maxCount)
 	}
 	return minCount + math_rand.Int63n(maxCount-minCount+1), nil

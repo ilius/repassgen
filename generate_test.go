@@ -178,11 +178,11 @@ func TestGenerate(t *testing.T) {
 	})
 	testErr(&genErrCase{
 		Pattern: `[a-z]{2.5}`,
-		Error:   `       ^ syntax error: invalid natural number inside {...}`,
+		Error:   `      ^^ syntax error: invalid natural number inside {...}`,
 	})
 	testErr(&genErrCase{
 		Pattern: `[a-z]{2.0}`,
-		Error:   `       ^ syntax error: invalid natural number inside {...}`,
+		Error:   `      ^^ syntax error: invalid natural number inside {...}`,
 	})
 	testErr(&genErrCase{
 		Pattern: `[a-z]{1-3}`,
@@ -218,7 +218,7 @@ func TestGenerate(t *testing.T) {
 	})
 	testErr(&genErrCase{
 		Pattern: `test([a-z]{1a})`,
-		Error:   `            ^ syntax error: invalid natural number inside {...}`,
+		Error:   `           ^^ syntax error: invalid natural number inside {...}`,
 	})
 	testErr(&genErrCase{
 		Pattern: `test([a-z]{})`,
@@ -226,7 +226,7 @@ func TestGenerate(t *testing.T) {
 	})
 	testErr(&genErrCase{
 		Pattern: `[a-z]{3,1}`,
-		Error:   `         ^ value error: invalid numbers 3 > 1 inside {...}`,
+		Error:   `      ^^^ value error: invalid numbers 3 > 1 inside {...}`,
 	})
 	testErr(&genErrCase{
 		Pattern: `{3}`,
@@ -234,7 +234,11 @@ func TestGenerate(t *testing.T) {
 	})
 	testErr(&genErrCase{
 		Pattern: `x{0}`,
-		Error:   `   ^ syntax error: invalid natural number '0'`,
+		Error:   `  ^ syntax error: invalid natural number '0'`,
+	})
+	testErr(&genErrCase{
+		Pattern: `x{000}`,
+		Error:   `  ^^^ syntax error: invalid natural number '000'`,
 	})
 	test(&genCase{
 		Pattern: `[abc$]{8}`,
@@ -1452,16 +1456,20 @@ func TestGenerate(t *testing.T) {
 		Error:   `          ^ argument error: rjust: at least 2 arguments are required`,
 	})
 	testErr(&genErrCase{
-		Pattern: `$rjust(abc,a)`,
-		Error:   `           ^ value error: invalid width a`,
+		Pattern: `$rjust(abc,aaaa)`,
+		Error:   `           ^^^^ value error: invalid width aaaa`,
 	})
 	testErr(&genErrCase{
 		Pattern: `$rjust(abc,0)`,
 		Error:   `           ^ value error: invalid width 0`,
 	})
 	testErr(&genErrCase{
+		Pattern: `$rjust(abc,-100)`,
+		Error:   `           ^^^^ value error: invalid width -100`,
+	})
+	testErr(&genErrCase{
 		Pattern: `$rjust(abc,1,ab)`,
-		Error:   `              ^ value error: invalid fillChar="ab", must have length 1`,
+		Error:   `             ^^ value error: invalid fillChar="ab", must have length 1`,
 	})
 	testErr(&genErrCase{
 		Pattern: `$rjust({{}},7)`,

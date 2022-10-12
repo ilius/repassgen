@@ -92,10 +92,12 @@ func parseJustifyArgs(s *State, argsStr []rune, funcName string) (*JustifyArgs, 
 	width, err := strconv.Atoi(strings.TrimSpace(string(args[1])))
 	if err != nil {
 		s.errorOffset += int64(len(args[0]) + len(args[1]) + 1)
+		s.errorMarkLen = len(args[1])
 		return nil, s.errorValue("invalid width %s", string(args[1]))
 	}
 	if width < 1 {
 		s.errorOffset += int64(len(args[0]) + len(args[1]) + 1)
+		s.errorMarkLen = len(args[1])
 		return nil, s.errorValue("invalid width %s", string(args[1]))
 	}
 	fillChar := ' '
@@ -103,6 +105,7 @@ func parseJustifyArgs(s *State, argsStr []rune, funcName string) (*JustifyArgs, 
 		fillCharA := []rune(args[2])
 		if len(fillCharA) != 1 {
 			s.errorOffset += int64(len(args[0]) + len(args[1]) + len(args[2]) + 2)
+			s.errorMarkLen = len(args[2])
 			return nil, s.errorValue("invalid fillChar=%#v, must have length 1", string(args[2]))
 		}
 		fillChar = fillCharA[0]
