@@ -244,6 +244,16 @@ func TestGenerate(t *testing.T) {
 		Pattern: `x{000}`,
 		Error:   `  ^^^ syntax error: invalid natural number '000'`,
 	})
+	testErr(&genErrCase{
+		Pattern: `test{000000,00000000}`,
+		Error:   `     ^^^^^^ syntax error: invalid natural number '000000'`,
+	})
+	testErr(&genErrCase{
+		Pattern: `test{100000,0000000a}`,
+		Error:   `     ^^^^^^^^^^^^^^^ syntax error: invalid natural number inside {...}`,
+		//Error:   `            ^^^^^^^^ syntax error: invalid natural number inside {...}`,
+		//FIXME
+	})
 	test(&genCase{
 		Pattern: `[abc$]{8}`,
 		PassLen: [2]int{8, 8},

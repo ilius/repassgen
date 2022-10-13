@@ -106,7 +106,8 @@ func parseRepeatCount(s *State, countRunes []rune) (int64, error) {
 		return 0, s.errorSyntax("invalid natural number '%v'", minStr)
 	}
 	if minCount < 1 {
-		// s.errorMarkLen = len(minStr)
+		s.errorOffset -= int64(len(maxStr)) + 2
+		s.errorMarkLen = len(minStr)
 		return 0, s.errorSyntax("invalid natural number '%v'", minStr)
 	}
 	maxCount, err := strconv.ParseInt(maxStr, 10, 64)
