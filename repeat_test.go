@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/ilius/is/v2"
@@ -51,5 +52,35 @@ func TestRepeatGeneratorByStatic(t *testing.T) {
 		entropy, err := g.Entropy(s)
 		is.NotErr(err)
 		is.Equal(0, entropy)
+	}
+}
+
+func Test_parseRepeatCount(t *testing.T) {
+	is := is.New(t)
+	pre := "test [a-z]"
+	{
+		count := "10a0,abc"
+		pattern := fmt.Sprintf("%s{%s}", pre, count)
+		s := newTestState(pattern)
+		s.move(uint64(len(pattern)))
+		c, err := parseRepeatCount(s, []rune(count))
+		is.Equal(0, c)
+		is.Equal(
+			strings.Repeat(" ", len(pre)+1)+`^^^^ syntax error: invalid natural number '10a0'`,
+			err.(*Error).SpacedError(),
+		)
+	}
+	{
+		minStr := "1000"
+		count := minStr + ",abc"
+		pattern := fmt.Sprintf("%s{%s}", pre, count)
+		s := newTestState(pattern)
+		s.move(uint64(len(pattern)))
+		c, err := parseRepeatCount(s, []rune(count))
+		is.Equal(0, c)
+		is.Equal(
+			err.(*Error).SpacedError(),
+			strings.Repeat(" ", len(pre+minStr)+1)+`^^^ syntax error: invalid natural number 'abc'`,
+		)
 	}
 }

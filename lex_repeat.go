@@ -102,7 +102,9 @@ func parseRepeatCount(s *State, countRunes []rune) (int64, error) {
 	maxStr := parts[1]
 	minCount, err := strconv.ParseInt(minStr, 10, 64)
 	if err != nil {
-		// s.errorMarkLen = len(minStr)
+		// I don't know how to produce this by high-level Generate test
+		s.errorOffset -= int64(len(maxStr)) + 2
+		s.errorMarkLen = len(minStr)
 		return 0, s.errorSyntax("invalid natural number '%v'", minStr)
 	}
 	if minCount < 1 {
@@ -112,8 +114,10 @@ func parseRepeatCount(s *State, countRunes []rune) (int64, error) {
 	}
 	maxCount, err := strconv.ParseInt(maxStr, 10, 64)
 	if err != nil {
-		// s.errorMarkLen = len(maxStr)
-		return 0, s.errorSyntax("invalid natural number '%v'", maxCount)
+		// I don't know how to produce this by high-level Generate test
+		s.errorOffset -= 2
+		s.errorMarkLen = len(maxStr)
+		return 0, s.errorSyntax("invalid natural number '%v'", maxStr)
 	}
 	if maxCount < minCount {
 		s.errorOffset--
