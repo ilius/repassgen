@@ -255,6 +255,16 @@ func TestGenerate(t *testing.T) {
 		//FIXME
 	})
 	test(&genCase{
+		Pattern: `(ab|c\\)`,
+		PassLen: [2]int{2, 2},
+		Entropy: [2]float64{1, 1},
+	})
+	test(&genCase{
+		Pattern: `(ab|c\)`,
+		PassLen: [2]int{2, 2},
+		Entropy: [2]float64{1, 1},
+	})
+	test(&genCase{
 		Pattern: `[abc$]{8}`,
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{16, 16},

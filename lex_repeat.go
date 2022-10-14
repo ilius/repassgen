@@ -38,6 +38,7 @@ func lexRepeat(s *State) (LexType, error) {
 			return nil, s.errorSyntax("missing number inside {}")
 		}
 		if s.lastGen == nil {
+			// I don't know how to test this without calling lexRepeat directly
 			return nil, s.errorSyntax("nothing to repeat")
 		}
 		child := s.lastGen
@@ -53,6 +54,7 @@ func lexRepeat(s *State) (LexType, error) {
 		{
 			err = gen.Generate(s)
 			if err != nil {
+				// I don't know how to test this without calling lexRepeat directly
 				return nil, err
 			}
 		}

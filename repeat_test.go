@@ -55,6 +55,21 @@ func TestRepeatGeneratorByStatic(t *testing.T) {
 	}
 }
 
+func TestRepeatGeneratorGroupFuncError(t *testing.T) {
+	is := is.New(t)
+	g := &repeatGenerator{
+		child: newGroupGenerator([]rune("$foo()")),
+		count: 2,
+	}
+	s := NewState(NewSharedState(), []rune(`($foo()){2}`))
+	err := g.Generate(s)
+	tErr := err.(*Error)
+	is.Equal(
+		`^^^^^ value error: invalid function 'foo'`,
+		tErr.SpacedError(),
+	)
+}
+
 func Test_parseRepeatCount(t *testing.T) {
 	is := is.New(t)
 	pre := "test [a-z]"
@@ -87,6 +102,13 @@ func Test_parseRepeatCount(t *testing.T) {
 		err := testError(minStr + ",abc")
 		is.Equal(
 			strings.Repeat(" ", len(pre+minStr)+1)+`^^^ syntax error: invalid natural number 'abc'`,
+			err.SpacedError(),
+		)
+	}
+	{
+		err := testError("10,20,30")
+		is.Equal(
+			`                   ^ syntax error: multiple ',' inside {...}`,
 			err.SpacedError(),
 		)
 	}

@@ -45,6 +45,7 @@ Loop:
 		case '\\':
 			s.move(1)
 			if s.end() {
+				// I don't know how to test this
 				pattern = append(pattern, '\\')
 				break
 			}
