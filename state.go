@@ -73,10 +73,6 @@ func (s *State) getErrorPos() uint {
 	}
 	pos := int64(s.absPos) + s.errorOffset - 1
 	if pos < 0 {
-		fmt.Printf("Warning: getErrorPos: pos=%v, pattern=%#v\n", pos, string(s.pattern))
-		pos = 0
-	}
-	if pos < 0 {
 		panic("pos < 0")
 	}
 	return uint(pos)
