@@ -109,9 +109,6 @@ func (p *ArgsParser) parse(input []rune) error {
 	if p.openCurly {
 		return fmt.Errorf("unclosed '{'")
 	}
-	if len(p.res[len(p.res)-1]) == 0 {
-		p.res = p.res[:len(p.res)-1]
-	}
 	return nil
 }
 
