@@ -43,6 +43,12 @@ func TestError(t *testing.T) {
 		is.ErrMsg(err, "syntax error near index 5: dummy error")
 		is.Equal(err.SpacedError(), `  ^^^^ syntax error: dummy error`)
 	}
+	{
+		err := NewError(ErrorSyntax, 5, "dummy error")
+		err.markLen = 0
+		is.ErrMsg(err, "syntax error near index 5: dummy error")
+		is.Equal(err.SpacedError(), `     ^ syntax error: dummy error`)
+	}
 }
 
 func TestParseSpacedError(t *testing.T) {

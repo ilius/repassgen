@@ -254,6 +254,10 @@ func TestGenerate(t *testing.T) {
 		//Error:   `            ^^^^^^^^ syntax error: invalid natural number inside {...}`,
 		//FIXME
 	})
+	//testErr(&genErrCase{
+	//	Pattern: `(a|)`,
+	//	Error:   `  ^ '|' at the end of group`,
+	//})
 	test(&genCase{
 		Pattern: `(ab|c\\)`,
 		PassLen: [2]int{2, 2},
