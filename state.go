@@ -6,16 +6,12 @@ import (
 
 // SharedState is the shared part of State
 type SharedState struct {
-	absPos uint64
-
-	errorOffset int64
-
-	errorMarkLen int
-
+	groupsOutput   map[uint64][]rune
+	absPos         uint64
+	errorOffset    int64
+	errorMarkLen   int
 	patternEntropy float64
-
-	lastGroupId  uint64
-	groupsOutput map[uint64][]rune
+	lastGroupId    uint64
 }
 
 // State is lex inputs, output and temp state

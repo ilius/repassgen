@@ -7,9 +7,9 @@ import (
 )
 
 type alterGenerator struct {
+	entropy   *float64
 	parts     [][]rune
 	indexList []uint64
-	entropy   *float64
 	absPos    uint64
 }
 

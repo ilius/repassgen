@@ -6,8 +6,8 @@ import (
 )
 
 type onceOrNoneGenerator struct {
-	entropy float64
 	pattern []rune
+	entropy float64
 }
 
 func randBool() bool {
