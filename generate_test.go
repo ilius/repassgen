@@ -6,18 +6,19 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
+	"os"
 	"strings"
 	"testing"
-
-	"os"
 
 	"github.com/ilius/bip39-coder/bip39"
 	"github.com/ilius/crock32"
 	"github.com/ilius/is/v2"
 )
 
-var verbose = os.Getenv("TEST_VERBOSE") == "1"
-var bip39WordMap = getBIP39WordMap()
+var (
+	verbose      = os.Getenv("TEST_VERBOSE") == "1"
+	bip39WordMap = getBIP39WordMap()
+)
 
 func getBIP39WordMap() map[string]bool {
 	count := bip39.WordCount()
@@ -251,8 +252,8 @@ func TestGenerate(t *testing.T) {
 	testErr(&genErrCase{
 		Pattern: `test{100000,0000000a}`,
 		Error:   `     ^^^^^^^^^^^^^^^ syntax error: invalid natural number inside {...}`,
-		//Error:   `            ^^^^^^^^ syntax error: invalid natural number inside {...}`,
-		//FIXME
+		// Error:   `            ^^^^^^^^ syntax error: invalid natural number inside {...}`,
+		// FIXME
 	})
 	//testErr(&genErrCase{
 	//	Pattern: `(a|)`,
