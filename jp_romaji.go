@@ -23,14 +23,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package main
 
 import (
+	"log"
 	"regexp"
 	"strings"
 	"unicode/utf8"
 )
 
 var (
-	consonants = []string{"b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "p", "r", "s", "t", "w", "z"}
-
 	hiraganaRe = regexp.MustCompile(`ん([あいうえおなにぬねの])`)
 	katakanaRe = regexp.MustCompile(`ン([アイウエオナニヌネノ])`)
 
@@ -77,20 +76,29 @@ func KanaToRomaji(kana string) (romaji string) {
 	// (they act more like punctuation)
 	tsus := []string{"っ", "ッ"}
 	for _, tsu := range tsus {
-		if strings.Index(romaji, tsu) > -1 {
-			for _, c := range romaji {
-				ch := string(c)
-				if ch == tsu {
-					i := strings.Index(romaji, ch)
-					runeSize := len(ch)
-					followingLetter, _ := utf8.DecodeRuneInString(romaji[i+runeSize:])
-					followingLetterStr := string(followingLetter)
-					if followingLetterStr != tsu {
-						romaji = strings.Replace(romaji, tsu, followingLetterStr, 1)
-					} else {
-						romaji = strings.Replace(romaji, tsu, "", 1)
-					}
-				}
+		if !strings.Contains(romaji, tsu) {
+			continue
+		}
+		for _, c := range romaji {
+			ch := string(c)
+			if ch != tsu {
+				continue
+			}
+			i := strings.Index(romaji, ch)
+			runeSize := len(ch)
+			followingLetter, _ := utf8.DecodeRuneInString(romaji[i+runeSize:])
+			if followingLetter == utf8.RuneError {
+				log.Printf(
+					"RuneError from DecodeRuneInString for string %#v",
+					romaji[i+runeSize:],
+				)
+				continue
+			}
+			followingLetterStr := string(followingLetter)
+			if followingLetterStr != tsu {
+				romaji = strings.Replace(romaji, tsu, followingLetterStr, 1)
+			} else {
+				romaji = strings.Replace(romaji, tsu, "", 1)
 			}
 		}
 	}
