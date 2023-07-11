@@ -34,41 +34,45 @@ func lexRepeat(s *State) (LexType, error) {
 		}
 		return nil, s.errorSyntax("repetition range syntax is '{M,N}' not '{M-N}'")
 	case '}':
-		if len(s.patternBuff) == 0 {
-			return nil, s.errorSyntax("missing number inside {}")
-		}
-		if s.lastGen == nil {
-			// I don't know how to test this without calling lexRepeat directly
-			return nil, s.errorSyntax("nothing to repeat")
-		}
-		child := s.lastGen
-		// FIXME: lastGen may have used another state
-		count, err := parseRepeatCount(s, s.patternBuff)
-		if err != nil {
-			return nil, err
-		}
-		gen := &repeatGenerator{
-			child: child,
-			count: count - 1,
-		}
-		{
-			err = gen.Generate(s)
-			if err != nil {
-				// I don't know how to test this without calling lexRepeat directly
-				return nil, err
-			}
-		}
-		gen.count = count
-		// we set the gen.count to count-1 initially, because we don't want to
-		// undo adding the characters we already have added to output
-		// but we need to re-set g.count after gen.Generate(s), because the whole thing
-		// might be repeated again
-		s.lastGen = gen
-		s.patternBuff = nil
-		return LexRoot, nil
+		return closeLexRepeat(s)
 	}
 	s.errorMarkLen = len(s.patternBuff) + 1
 	return nil, s.errorSyntax("invalid natural number inside {...}")
+}
+
+func closeLexRepeat(s *State) (LexType, error) {
+	if len(s.patternBuff) == 0 {
+		return nil, s.errorSyntax("missing number inside {}")
+	}
+	if s.lastGen == nil {
+		// I don't know how to test this without calling lexRepeat directly
+		return nil, s.errorSyntax("nothing to repeat")
+	}
+	child := s.lastGen
+	// FIXME: lastGen may have used another state
+	count, err := parseRepeatCount(s, s.patternBuff)
+	if err != nil {
+		return nil, err
+	}
+	gen := &repeatGenerator{
+		child: child,
+		count: count - 1,
+	}
+	{
+		err = gen.Generate(s)
+		if err != nil {
+			// I don't know how to test this without calling lexRepeat directly
+			return nil, err
+		}
+	}
+	gen.count = count
+	// we set the gen.count to count-1 initially, because we don't want to
+	// undo adding the characters we already have added to output
+	// but we need to re-set g.count after gen.Generate(s), because the whole thing
+	// might be repeated again
+	s.lastGen = gen
+	s.patternBuff = nil
+	return LexRoot, nil
 }
 
 func parseRepeatCount(s *State, countRunes []rune) (int64, error) {
