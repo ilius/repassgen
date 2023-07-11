@@ -1457,13 +1457,12 @@ func TestGenerate(t *testing.T) {
 		Entropy: [2]float64{4.7, 4.8},
 		Validate: func(p string) bool {
 			for _, c := range p {
-				if c == ')' || c == '(' || c == '}' {
-					return true
+				switch {
+				case c == ')' || c == '(' || c == '}':
+				case c == '0':
+				default:
+					return false
 				}
-				if c == '0' {
-					return true
-				}
-				return false
 			}
 			return true
 		},
