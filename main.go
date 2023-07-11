@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
+	passgen "github.com/ilius/repassgen/lib"
 )
 
 var entropyFlag = flag.Bool(
@@ -12,13 +14,13 @@ var entropyFlag = flag.Bool(
 	"repassgen [-entropy] PATTERN",
 )
 
-func printError(s *State, err error) {
-	myErr, ok := err.(*Error)
+func printError(s *passgen.State, err error, pattern string) {
+	myErr, ok := err.(*passgen.Error)
 	if !ok {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(string(s.pattern))
+	fmt.Println(string(pattern))
 	fmt.Println(myErr.SpacedError())
 }
 
@@ -27,11 +29,12 @@ func main() {
 
 	calcEnropy := entropyFlag != nil && *entropyFlag
 
-	out, s, err := Generate(GenerateInput{
-		Pattern: []rune(flag.Arg(0)),
+	pattern := flag.Arg(0)
+	out, s, err := passgen.Generate(passgen.GenerateInput{
+		Pattern: []rune(pattern),
 	})
 	if err != nil {
-		printError(s, err)
+		printError(s, err, pattern)
 		os.Exit(1)
 	}
 
