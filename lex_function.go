@@ -83,7 +83,6 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 			if lex != nil {
 				return lex, nil
 			}
-			break
 		}
 		buff = append(buff, c)
 	}
