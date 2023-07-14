@@ -3,6 +3,8 @@ package passgen
 import (
 	"fmt"
 	"log"
+	"os"
+	"strconv"
 )
 
 // SharedState is the shared part of State
@@ -13,6 +15,8 @@ type SharedState struct {
 	errorMarkLen   int
 	patternEntropy float64
 	lastGroupId    uint64
+
+	maxOutputLength int
 }
 
 // State is lex inputs, output and temp state
@@ -46,15 +50,11 @@ func (s *State) moveBack(chars uint64) {
 	s.absPos -= chars
 }
 
-// func (s *State) moveBackAbs(chars uint64) {
-// 	if s.absPos < chars {
-// 		log.Printf("moveBack(%v) with absPos=%v", chars, s.absPos)
-// 		return
-// 	}
-// 	s.absPos -= chars
-// }
-
 func (s *State) addOutputOne(c rune) {
+	if s.tooLong() {
+		s.lastGen = nil
+		return
+	}
 	s.lastGen = &staticStringGenerator{str: []rune{c}}
 	s.lastGen.Generate(s)
 }
@@ -69,7 +69,14 @@ func (s *State) addOutputNonRepeatable(data []rune) {
 	s.output = append(s.output, data...)
 }
 
+func (s *State) tooLong() bool {
+	return s.maxOutputLength > 0 && len(s.output) > s.maxOutputLength
+}
+
 func (s *State) end() bool {
+	if s.tooLong() {
+		return true
+	}
 	return s.inputPos >= uint64(len(s.input))
 }
 
@@ -124,10 +131,19 @@ func (s *State) errorUnknown(msg string, args ...interface{}) error {
 
 // NewSharedState is factory function for SharedState
 func NewSharedState() *SharedState {
-	return &SharedState{
+	ss := &SharedState{
 		groupsOutput: map[uint64][]rune{},
 		errorMarkLen: 1,
 	}
+	maxLengthStr := os.Getenv("REPASSGEN_MAX_LENGTH")
+	if maxLengthStr != "" {
+		maxLength, err := strconv.ParseInt(maxLengthStr, 10, 64)
+		if err != nil {
+			panic("invalid REPASSGEN_MAX_LENGTH: must be an integer")
+		}
+		ss.maxOutputLength = int(maxLength)
+	}
+	return ss
 }
 
 // NewState is factory function for State

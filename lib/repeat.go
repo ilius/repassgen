@@ -10,6 +10,9 @@ func (g *repeatGenerator) Generate(s *State) error {
 	count := g.count
 	for i := int64(0); i < count; i++ {
 		err := child.Generate(s)
+		if s.tooLong() {
+			break
+		}
 		if err != nil {
 			return err
 		}
