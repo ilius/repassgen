@@ -1,6 +1,7 @@
 package passgen_test
 
 import (
+	"os"
 	"testing"
 	"time"
 
@@ -18,8 +19,12 @@ func FuzzGenerate(f *testing.F) {
 	for _, tc := range testcases {
 		f.Add(tc) // Use f.Add to provide a seed corpus
 	}
+	// define a max output length to prevent out-of-memory and crash
+	os.Setenv("REPASSGEN_MAX_LENGTH", "500")
 	f.Fuzz(func(t *testing.T, pattern string) {
-		// TODO: define a max output length to prevent out of memory and crash
+		if len(pattern) > 100 {
+			return
+		}
 		out, _, err := passgen.Generate(passgen.GenerateInput{
 			Pattern: []rune(pattern),
 		})
