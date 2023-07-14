@@ -1,5 +1,10 @@
 package passgen
 
+import (
+	"fmt"
+	"log"
+)
+
 // GenerateInput is struct given to Generate
 type GenerateInput struct {
 	Pattern []rune
@@ -14,6 +19,15 @@ type GenerateOutput struct {
 // Generate generates random password based on given pattern
 // see README.md for examples of pattern
 func Generate(in GenerateInput) (*GenerateOutput, *State, error) {
+	defer func() {
+		r := recover()
+		if r != nil {
+			log.Printf("pattern=`%v`", in.Pattern)
+		}
+	}()
+	if len(in.Pattern) > 1000 {
+		return nil, nil, fmt.Errorf("pattern is too long")
+	}
 	ss := NewSharedState()
 	s := NewState(ss, in.Pattern)
 	g := NewRootGenerator()

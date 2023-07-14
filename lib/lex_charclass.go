@@ -62,8 +62,7 @@ func lexRangeColon(s *State) (LexType, error) {
 			name := string(nameRunes)
 			charset, ok := charClasses[name]
 			if !ok {
-				s.errorOffset--
-				s.errorMarkLen = len(name)
+				s.errorMarkLen = len(name) + 2
 				return nil, s.errorValue("invalid character class %#v", name)
 			}
 			s.patternBuff = append(s.patternBuff, charset...)
@@ -116,6 +115,9 @@ func lexRangeDash(s *State) (LexType, error) {
 }
 
 func lexRangeBackslash(s *State) (LexType, error) {
+	if s.end() {
+		return nil, s.errorSyntax("'[' not closed")
+	}
 	c := s.pattern[s.patternPos]
 	s.move(1)
 	if c == 'u' {
@@ -129,6 +131,9 @@ func lexRangeBackslash(s *State) (LexType, error) {
 }
 
 func lexRangeDashBackslash(s *State) (LexType, error) {
+	if s.end() {
+		return nil, s.errorSyntax("'[' not closed")
+	}
 	c := s.pattern[s.patternPos]
 	s.move(1)
 	if c == 'u' {

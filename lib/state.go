@@ -2,6 +2,7 @@ package passgen
 
 import (
 	"fmt"
+	"log"
 )
 
 // SharedState is the shared part of State
@@ -38,8 +39,20 @@ func (s *State) move(chars uint64) {
 
 func (s *State) moveBack(chars uint64) {
 	s.patternPos -= chars
+	if s.absPos < chars {
+		log.Printf("moveBack(%v) with absPos=%v", chars, s.absPos)
+		return
+	}
 	s.absPos -= chars
 }
+
+// func (s *State) moveBackAbs(chars uint64) {
+// 	if s.absPos < chars {
+// 		log.Printf("moveBack(%v) with absPos=%v", chars, s.absPos)
+// 		return
+// 	}
+// 	s.absPos -= chars
+// }
 
 func (s *State) addOutputOne(c rune) {
 	s.lastGen = &staticStringGenerator{str: []rune{c}}
@@ -63,13 +76,16 @@ func (s *State) end() bool {
 func (s *State) getErrorPos() uint {
 	if s.absPos == 0 {
 		if s.errorOffset < 0 {
-			panic("s.errorOffset < 0")
+			log.Printf("errorOffset = %v < 0, pattern: %v", s.errorOffset, string(s.pattern))
+			return 0
 		}
 		return uint(s.errorOffset)
 	}
 	pos := int64(s.absPos) + s.errorOffset - 1
 	if pos < 0 {
-		panic("pos < 0")
+		// errorOffset=0, absPos=18446744073709551615, pos=-2, pattern: $\(\(\(
+		log.Printf("errorOffset=%v, absPos=%v, pos=%v, pattern: %v", s.errorOffset, s.absPos, pos, string(s.pattern))
+		return 0
 	}
 	return uint(pos)
 }

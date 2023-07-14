@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+const maxRepeatCount = 1 << 28
+
 func lexRepeat(s *State) (LexType, error) {
 	if s.end() {
 		return nil, s.errorSyntax("'{' not closed")
@@ -94,6 +96,9 @@ func parseRepeatCount(s *State, countRunes []rune) (int64, error) {
 			s.errorMarkLen = len(countStr)
 			return 0, s.errorSyntax("invalid natural number '%v'", countStr)
 		}
+		if countI64 > maxRepeatCount {
+			return 0, s.errorSyntax("count value is too large")
+		}
 		return countI64, nil
 	}
 	// now we know len(parts) == 2
@@ -129,6 +134,9 @@ func parseRepeatCount(s *State, countRunes []rune) (int64, error) {
 		s.errorOffset--
 		s.errorMarkLen = len(countRunes)
 		return 0, s.errorValue("invalid numbers %v > %v inside {...}", minCount, maxCount)
+	}
+	if maxCount > maxRepeatCount {
+		return 0, s.errorSyntax("count value is too large")
 	}
 	return minCount + math_rand.Int63n(maxCount-minCount+1), nil
 }

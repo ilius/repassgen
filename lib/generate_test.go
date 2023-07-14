@@ -140,6 +140,32 @@ func TestGenerate(t *testing.T) {
 	})
 
 	testErr(&genErrCase{
+		Pattern: `[\`,
+		Error:   ` ^ syntax error: '[' not closed`,
+	})
+	testErr(&genErrCase{
+		Pattern: `$\(\(\(`,
+		Error:   ` ^ syntax error: expected a function call`,
+	})
+
+	testErr(&genErrCase{
+		Pattern: `[0-\\`,
+		Error:   `    ^ syntax error: '[' not closed`,
+	})
+	testErr(&genErrCase{
+		Pattern: `[::\(\(]`,
+		Error:   ` ^^ value error: invalid character class ""`,
+	})
+	testErr(&genErrCase{
+		Pattern: `([::((]|(`,
+		Error:   `  ^^ value error: invalid character class ""`,
+	})
+	testErr(&genErrCase{
+		Pattern: `$\(\(\(|0`,
+		Error:   ` ^ syntax error: expected a function call`,
+	})
+
+	testErr(&genErrCase{
 		Pattern: `test (`,
 		Error:   `      ^ syntax error: '(' not closed`,
 	})
@@ -283,6 +309,11 @@ func TestGenerate(t *testing.T) {
 	//	Pattern: `(a|)`,
 	//	Error:   `  ^ '|' at the end of group`,
 	//})
+	test(&genCase{
+		Pattern: `(ab|()){8}`,
+		PassLen: [2]int{0, 16},
+		Entropy: [2]float64{8, 8},
+	})
 	test(&genCase{
 		Pattern: `(ab|c\\)`,
 		PassLen: [2]int{2, 2},
@@ -668,8 +699,8 @@ func TestGenerate(t *testing.T) {
 		// FIXME: if one part of alteration has no error, test becomes flaky
 		Pattern: `([:foobar1:]|[:foobar2:])`,
 		Error: []interface{}{
-			`value error near index 8: invalid character class "foobar1"`,
-			`value error near index 19: invalid character class "foobar2"`,
+			`value error near index 9: invalid character class "foobar1"`,
+			`value error near index 20: invalid character class "foobar2"`,
 		},
 	})
 	test(&genCase{
@@ -1180,15 +1211,15 @@ func TestGenerate(t *testing.T) {
 	})
 	testErr(&genErrCase{
 		Pattern: `$hex([:x:])`,
-		Error:   `       ^ value error: invalid character class "x"`,
+		Error:   `      ^^^ value error: invalid character class "x"`,
 	})
 	testErr(&genErrCase{
 		Pattern: `[:hello:]`,
-		Error:   `  ^^^^^ value error: invalid character class "hello"`,
+		Error:   ` ^^^^^^^ value error: invalid character class "hello"`,
 	})
 	testErr(&genErrCase{
 		Pattern: `$hex([:hello:])`,
-		Error:   `       ^^^^^ value error: invalid character class "hello"`,
+		Error:   `      ^^^^^^^ value error: invalid character class "hello"`,
 	})
 	testErr(&genErrCase{
 		Pattern: `(`,

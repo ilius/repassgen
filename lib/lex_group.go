@@ -1,6 +1,7 @@
 package passgen
 
 import (
+	"log"
 	"strconv"
 )
 
@@ -37,9 +38,11 @@ func lexGroup(s *State) (LexType, error) {
 
 func lexGroupAlter(s *State) (LexType, error) {
 	pattern := []rune{}
+	length := uint64(0)
 	openParenth := 1
 Loop:
 	for ; !s.end(); s.move(1) {
+		length++
 		c := s.pattern[s.patternPos]
 		switch c {
 		case '\\':
@@ -64,15 +67,22 @@ Loop:
 			pattern = append(pattern, c)
 		}
 	}
-	// s.absPos = s.absPos - uint(len(pattern)) - 1
+	// s.absPos = s.absPos - uint(length) - 1
 	parts, indexList, err := splitArgsStr(pattern, '|')
 	if err != nil {
 		return nil, err
 	}
+	if length > s.absPos {
+		// FIXME: this happens
+		log.Printf(
+			"pattern=`%v`, s.pattern=`%v`, length=%v, absPos=%v",
+			string(pattern), string(s.pattern), length, s.absPos,
+		)
+	}
 	gen := &alterGenerator{
 		parts:     parts,
 		indexList: indexList,
-		absPos:    s.absPos - uint64(len(pattern)) - 1,
+		absPos:    s.absPos - length,
 	}
 	err = gen.Generate(s)
 	if err != nil {
@@ -101,6 +111,12 @@ func processGroupEnd(s *State) (LexType, error) {
 	lastOutputSize := len(s.output)
 	s2 := NewState(NewSharedState(), s.pattern)
 	s2.output = s.output
+	if len(s.patternBuff) > int(s.absPos) {
+		log.Printf(
+			"patternBuff=%#v, len(patternBuff)=%v, absPos=%v",
+			string(s.patternBuff), len(s.patternBuff), s.absPos,
+		)
+	}
 	s2.absPos = s.absPos - uint64(len(s.patternBuff)) - 1
 	s2.patternEntropy = s.patternEntropy
 	s2.lastGroupId = groupId
