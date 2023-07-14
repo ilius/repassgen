@@ -2,17 +2,18 @@ package passgen
 
 import (
 	"fmt"
+	"io"
 	"log"
 )
 
 // GenerateInput is struct given to Generate
 type GenerateInput struct {
 	Pattern []rune
+	Output  io.Writer
 }
 
 // GenerateOutput is struct returned by Generate
 type GenerateOutput struct {
-	Password       []rune
 	PatternEntropy float64
 }
 
@@ -38,23 +39,20 @@ func Generate(in GenerateInput) (*GenerateOutput, *State, error) {
 		}
 	}
 	return &GenerateOutput{
-		Password:       s.output,
 		PatternEntropy: s.patternEntropy,
 	}, s, nil
 }
 
-func subGenerate(s *State, pattern []rune) ([]rune, error) {
+func subGenerate(s *State, pattern []rune) error {
 	childGen := NewRootGenerator()
 	ss := s.SharedState
-	var output []rune
 	{
 		s := NewState(ss, pattern)
 		err := childGen.Generate(s)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		output = s.output
 	}
 	s.lastGen = nil
-	return output, nil
+	return nil
 }

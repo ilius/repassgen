@@ -12,11 +12,10 @@ type groupGenerator struct {
 }
 
 func (g *groupGenerator) Generate(s *State) error {
-	output, err := subGenerate(s, g.pattern)
+	err := subGenerate(s, g.pattern)
 	if err != nil {
 		return err
 	}
-	s.output = append(s.output, output...)
 	g.entropy = &s.patternEntropy
 	return nil
 }

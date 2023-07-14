@@ -32,13 +32,12 @@ func main() {
 	pattern := flag.Arg(0)
 	out, s, err := passgen.Generate(passgen.GenerateInput{
 		Pattern: []rune(pattern),
+		Output:  os.Stdout,
 	})
 	if err != nil {
 		printError(s, err, pattern)
 		os.Exit(1)
 	}
-
-	fmt.Println(string(out.Password))
 	if calcEnropy {
 		if os.Getenv("REPASSGEN_FLOAT_ENTROPY") == "true" {
 			fmt.Printf(

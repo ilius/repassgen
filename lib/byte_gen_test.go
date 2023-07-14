@@ -12,7 +12,7 @@ func TestByteGenerator(t *testing.T) {
 	is := is.New(t)
 	pattern := `$byte()`
 	g := passgen.NewByteGenerator(false)
-	s := passgen.NewState(passgen.NewSharedState(), []rune(pattern))
+	s := newTestState(pattern)
 	{
 		err := g.Generate(s)
 		is.NotErr(err)

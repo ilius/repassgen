@@ -38,7 +38,11 @@ func TestGenerate(t *testing.T) {
 	test := func(tc *genCase) {
 		is := is.New(t).AddMsg("pattern=%#v", tc.Pattern)
 		is = is.Lax()
-		out, _, err := passgen.Generate(passgen.GenerateInput{Pattern: []rune(tc.Pattern)})
+		outBuf := bytes.NewBuffer(nil)
+		out, _, err := passgen.Generate(passgen.GenerateInput{
+			Pattern: []rune(tc.Pattern),
+			Output:  outBuf,
+		})
 		if !is.NotErr(err) {
 			tErr, okErr := err.(*passgen.Error)
 			if okErr {
@@ -46,7 +50,7 @@ func TestGenerate(t *testing.T) {
 			}
 			return
 		}
-		pwStr := string(out.Password)
+		pwStr := outBuf.String()
 		is = is.AddMsg("password=%#v", pwStr)
 		if tc.Password != nil {
 			if !is.Equal(pwStr, *tc.Password) {
@@ -54,7 +58,7 @@ func TestGenerate(t *testing.T) {
 			}
 		}
 		{
-			length := len(out.Password)
+			length := len(pwStr)
 			minLen := tc.PassLen[0]
 			maxLen := tc.PassLen[1]
 			is.AddMsg(
@@ -86,7 +90,11 @@ func TestGenerate(t *testing.T) {
 	testErr := func(tc *genErrCase) {
 		is := is.New(t).AddMsg("pattern=%#v", tc.Pattern)
 		is = is.Lax()
-		out, _, err := passgen.Generate(passgen.GenerateInput{Pattern: []rune(tc.Pattern)})
+		outBuf := bytes.NewBuffer(nil)
+		out, _, err := passgen.Generate(passgen.GenerateInput{
+			Pattern: []rune(tc.Pattern),
+			Output:  outBuf,
+		})
 		tErr, okErr := err.(*passgen.Error)
 		switch expErr := tc.Error.(type) {
 		case string:
@@ -127,7 +135,7 @@ func TestGenerate(t *testing.T) {
 			t.Log(tErr.SpacedError())
 		}
 		if !is.Nil(out) {
-			t.Log(string(out.Password))
+			t.Log(outBuf.String())
 		}
 		if verbose {
 			t.Log("------------------------------------")

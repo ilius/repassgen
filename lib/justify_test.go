@@ -16,7 +16,7 @@ func TestRJustGenerator(t *testing.T) {
 	{
 		err := g.Generate(s)
 		is.NotErr(err)
-		is.Equal(`     abc`, string(s.output))
+		is.Equal(`     abc`, s.Output())
 	}
 	{
 		entropy, err := g.Entropy(s)

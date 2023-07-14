@@ -108,7 +108,7 @@ func processGroupBackslash(s *State, parentLex LexType) (LexType, error) {
 
 func processGroupEnd(s *State) (LexType, error) {
 	groupId := s.lastGroupId
-	lastOutputSize := len(s.output)
+	// lastOutputSize := len(s.output)
 	s2 := NewState(NewSharedState(), s.pattern)
 	s2.output = s.output
 	if len(s.patternBuff) > int(s.absPos) {
@@ -129,7 +129,7 @@ func processGroupEnd(s *State) (LexType, error) {
 	s.output = s2.output
 	s.patternEntropy = s2.patternEntropy
 	s.lastGroupId = s2.lastGroupId
-	s.groupsOutput[groupId] = s.output[lastOutputSize:]
+	// s.groupsOutput[groupId] = s.output[lastOutputSize:]
 	s.lastGen = gen
 	s.patternBuff = nil
 	return LexRoot, nil

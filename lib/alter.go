@@ -21,8 +21,8 @@ func (g *alterGenerator) calcMinEntropy(s *State) (float64, error) {
 		s2 := NewState(NewSharedState(), part)
 		s2.absPos = g.absPos + g.indexList[i]
 		s2.lastGroupId = groupId
-		s2.groupsOutput = s.groupsOutput
-		_, err := subGenerate(s2, part)
+		// s2.groupsOutput = s.groupsOutput
+		err := subGenerate(s2, part)
 		if err != nil {
 			return 0, err
 		}
@@ -51,11 +51,11 @@ func (g *alterGenerator) Generate(s *State) error {
 	s2.absPos = g.absPos + indexList[i]
 	s2.lastGroupId = groupId
 	s2.groupsOutput = s.groupsOutput
-	output, err := subGenerate(s2, parts[i])
+	s2.output = s.output
+	err = subGenerate(s2, parts[i])
 	if err != nil {
 		return err
 	}
-	s.output = append(s.output, output...)
 
 	minEntropy, err := g.calcMinEntropy(s)
 	if err != nil {
@@ -67,7 +67,7 @@ func (g *alterGenerator) Generate(s *State) error {
 	g.entropy = &s.patternEntropy
 
 	s.lastGroupId = s2.lastGroupId
-	s.groupsOutput[groupId] = output
+	// s.groupsOutput[groupId] = output
 	return nil
 }
 

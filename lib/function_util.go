@@ -1,5 +1,7 @@
 package passgen
 
+import "bytes"
+
 func baseFunctionCallGenerator(
 	s *State,
 	argState *State,
@@ -7,11 +9,13 @@ func baseFunctionCallGenerator(
 	funcObj func(s *State, in []rune) ([]rune, error),
 ) error {
 	g := NewRootGenerator()
+	outBuf := bytes.NewBuffer(nil)
+	argState.output = outBuf
 	err := g.Generate(argState)
 	if err != nil {
 		return err
 	}
-	result, err := funcObj(s, argState.output)
+	result, err := funcObj(s, []rune(outBuf.String()))
 	if err != nil {
 		return err
 	}

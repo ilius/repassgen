@@ -21,7 +21,7 @@ func (g *charClassGenerator) Generate(s *State) error {
 			panic(err)
 		}
 		i := int(ibig.Int64())
-		s.output = append(s.output, charset[i])
+		s.output.Write([]byte(string(charset[i])))
 	}
 	entropy, err := g.Entropy(s)
 	if err != nil {

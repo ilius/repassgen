@@ -2,6 +2,7 @@ package passgen
 
 import (
 	"fmt"
+	"io"
 	"log"
 )
 
@@ -22,7 +23,7 @@ type State struct {
 
 	pattern     []rune
 	patternBuff []rune
-	output      []rune
+	output      io.Writer
 
 	patternPos uint64
 
@@ -66,7 +67,7 @@ func (s *State) addOutput(str []rune) {
 
 func (s *State) addOutputNonRepeatable(data []rune) {
 	s.lastGen = nil
-	s.output = append(s.output, data...)
+	s.output.Write([]byte(string(data)))
 }
 
 func (s *State) end() bool {

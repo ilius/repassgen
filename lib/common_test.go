@@ -20,7 +20,9 @@ func newTestState(patternArg interface{}) *passgen.State {
 	default:
 		panic("invalid patternArg")
 	}
-	s := passgen.NewState(passgen.NewSharedState(), pattern)
+	ss := passgen.NewSharedState()
+	s := passgen.NewState(ss, pattern)
+	s.SetOutput(&passgen.TestOutput{})
 	return s
 }
 

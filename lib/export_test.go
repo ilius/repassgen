@@ -1,7 +1,30 @@
 package passgen
 
+import "io"
+
+type TestOutput struct {
+	output    []byte
+	maxLength int
+}
+
+func (out *TestOutput) Write(data []byte) (int, error) {
+	if out.maxLength > 0 && len(out.output) > out.maxLength {
+		return 0, io.EOF
+	}
+	out.output = append(out.output, data...)
+	return len(data), nil
+}
+
+func (s *State) SetOutput(out io.Writer) {
+	s.output = out
+}
+
 func (s *State) Output() string {
-	return string(s.output)
+	out, ok := s.output.(*TestOutput)
+	if !ok {
+		panic("not a TestOutput")
+	}
+	return string(out.output)
 }
 
 func (e *Error) Pos() int {
