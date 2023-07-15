@@ -10,7 +10,7 @@ func lexGroup(s *State) (LexType, error) {
 		s.errorOffset++
 		return nil, s.errorSyntax("'(' not closed")
 	}
-	c := s.pattern[s.patternPos]
+	c := s.input[s.inputPos]
 	s.move(1)
 	switch c {
 	case '\\':
@@ -20,7 +20,7 @@ func lexGroup(s *State) (LexType, error) {
 	case ')':
 		s.openParenth--
 		if s.openParenth > 0 {
-			s.patternBuff = append(s.patternBuff, ')')
+			s.buff = append(s.buff, ')')
 			return lexGroup, nil
 		}
 		return processGroupEnd(s)
@@ -29,10 +29,10 @@ func lexGroup(s *State) (LexType, error) {
 			s.errorOffset++
 			return nil, s.errorSyntax("'|' at the end of group")
 		}
-		s.moveBack(uint64(len(s.patternBuff) + 1))
+		s.moveBack(uint64(len(s.buff) + 1))
 		return lexGroupAlter, nil
 	}
-	s.patternBuff = append(s.patternBuff, c)
+	s.buff = append(s.buff, c)
 	return lexGroup, nil
 }
 
@@ -43,7 +43,7 @@ func lexGroupAlter(s *State) (LexType, error) {
 Loop:
 	for ; !s.end(); s.move(1) {
 		length++
-		c := s.pattern[s.patternPos]
+		c := s.input[s.inputPos]
 		switch c {
 		case '\\':
 			s.move(1)
@@ -76,7 +76,7 @@ Loop:
 		// FIXME: this happens
 		log.Printf(
 			"pattern=`%v`, s.pattern=`%v`, length=%v, absPos=%v",
-			string(pattern), string(s.pattern), length, s.absPos,
+			string(pattern), string(s.input), length, s.absPos,
 		)
 	}
 	gen := &alterGenerator{
@@ -91,7 +91,7 @@ Loop:
 	s.move(1)
 	s.openParenth--
 	s.lastGen = gen
-	s.patternBuff = nil
+	s.buff = nil
 	return LexRoot, nil
 }
 
@@ -100,28 +100,29 @@ func processGroupBackslash(s *State, parentLex LexType) (LexType, error) {
 		s.errorOffset++
 		return nil, s.errorSyntax("'(' not closed")
 	}
-	c := s.pattern[s.patternPos]
+	c := s.input[s.inputPos]
 	s.move(1)
-	s.patternBuff = append(s.patternBuff, '\\', c)
+	s.buff = append(s.buff, '\\', c)
 	return lexGroup, nil
 }
 
 func processGroupEnd(s *State) (LexType, error) {
 	groupId := s.lastGroupId
 	lastOutputSize := len(s.output)
-	s2 := NewState(NewSharedState(), s.pattern)
+	s2 := NewState(NewSharedState(), s.input)
 	s2.output = s.output
-	if len(s.patternBuff) > int(s.absPos) {
+	if len(s.buff) > int(s.absPos) {
 		log.Printf(
-			"patternBuff=%#v, len(patternBuff)=%v, absPos=%v",
-			string(s.patternBuff), len(s.patternBuff), s.absPos,
+			"buff=%#v, len(buff)=%v, absPos=%v",
+			string(s.buff), len(s.buff), s.absPos,
 		)
 	}
-	s2.absPos = s.absPos - uint64(len(s.patternBuff)) - 1
+	s2.absPos = s.absPos - uint64(len(s.buff)) - 1
+
 	s2.patternEntropy = s.patternEntropy
 	s2.lastGroupId = groupId
 	s2.groupsOutput = s.groupsOutput
-	gen := newGroupGenerator(s.patternBuff)
+	gen := newGroupGenerator(s.buff)
 	err := gen.Generate(s2)
 	if err != nil {
 		return nil, err
@@ -131,14 +132,14 @@ func processGroupEnd(s *State) (LexType, error) {
 	s.lastGroupId = s2.lastGroupId
 	s.groupsOutput[groupId] = s.output[lastOutputSize:]
 	s.lastGen = gen
-	s.patternBuff = nil
+	s.buff = nil
 	return LexRoot, nil
 }
 
 func processGroupRef(s *State, parentLex LexType) (LexType, error) {
 	gid_r := []rune{}
 	for ; !s.end(); s.move(1) {
-		c := s.pattern[s.patternPos]
+		c := s.input[s.inputPos]
 		if c < '0' || c > '9' {
 			break
 		}

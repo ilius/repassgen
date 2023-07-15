@@ -12,7 +12,7 @@ func lexRepeat(s *State) (LexType, error) {
 	if s.end() {
 		return nil, s.errorSyntax("'{' not closed")
 	}
-	c := s.pattern[s.patternPos]
+	c := s.input[s.inputPos]
 	s.move(1)
 	switch c {
 	case '[':
@@ -22,28 +22,28 @@ func lexRepeat(s *State) (LexType, error) {
 	case '$':
 		return nil, s.errorSyntax("'$' inside {...}")
 	case ',':
-		if hasRune(s.patternBuff, ',') {
+		if hasRune(s.buff, ',') {
 			return nil, s.errorSyntax("multiple ',' inside {...}")
 		}
-		s.patternBuff = append(s.patternBuff, c)
+		s.buff = append(s.buff, c)
 		return lexRepeat, nil
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-		s.patternBuff = append(s.patternBuff, c)
+		s.buff = append(s.buff, c)
 		return lexRepeat, nil
 	case '-':
-		if hasRune(s.patternBuff, ',') {
+		if hasRune(s.buff, ',') {
 			return nil, s.errorSyntax("invalid natural number")
 		}
 		return nil, s.errorSyntax("repetition range syntax is '{M,N}' not '{M-N}'")
 	case '}':
 		return closeLexRepeat(s)
 	}
-	s.errorMarkLen = len(s.patternBuff) + 1
+	s.errorMarkLen = len(s.buff) + 1
 	return nil, s.errorSyntax("invalid natural number inside {...}")
 }
 
 func closeLexRepeat(s *State) (LexType, error) {
-	if len(s.patternBuff) == 0 {
+	if len(s.buff) == 0 {
 		return nil, s.errorSyntax("missing number inside {}")
 	}
 	if s.lastGen == nil {
@@ -52,7 +52,7 @@ func closeLexRepeat(s *State) (LexType, error) {
 	}
 	child := s.lastGen
 	// FIXME: lastGen may have used another state
-	count, err := parseRepeatCount(s, s.patternBuff)
+	count, err := parseRepeatCount(s, s.buff)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func closeLexRepeat(s *State) (LexType, error) {
 	// but we need to re-set g.count after gen.Generate(s), because the whole thing
 	// might be repeated again
 	s.lastGen = gen
-	s.patternBuff = nil
+	s.buff = nil
 	return LexRoot, nil
 }
 

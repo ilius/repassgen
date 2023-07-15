@@ -9,13 +9,13 @@ func _lexIdentFuncCallParanClose(s *State, buff []rune) (LexType, error) {
 		return nil, nil
 	}
 	s.move(1)
-	s2 := NewState(NewSharedState(), s.pattern)
+	s2 := NewState(NewSharedState(), s.input)
 	s2.output = s.output
 	s2.absPos = s.absPos - uint64(len(buff)) - 1
 	s2.patternEntropy = s.patternEntropy
 	s2.lastGroupId = s.lastGroupId
 	s2.groupsOutput = s.groupsOutput
-	funcName := string(s.patternBuff)
+	funcName := string(s.buff)
 	if funcName == "" {
 		return nil, s2.errorSyntax("missing function name")
 	}
@@ -30,7 +30,7 @@ func _lexIdentFuncCallParanClose(s *State, buff []rune) (LexType, error) {
 	s.output = s2.output
 	s.patternEntropy = s2.patternEntropy
 	s.lastGroupId = s2.lastGroupId
-	s.patternBuff = nil
+	s.buff = nil
 	s.lastGen = gen
 	return LexRoot, nil
 }
@@ -47,7 +47,7 @@ func _lexIdentFuncCallBackslash(s *State, buff []rune) []rune {
 	buff = append(buff, '\\')
 	s.move(1)
 	if !s.end() {
-		buff = append(buff, s.pattern[s.patternPos])
+		buff = append(buff, s.input[s.inputPos])
 	}
 	return buff
 }
@@ -58,7 +58,7 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 	}
 	buff := []rune{}
 	for ; !s.end(); s.move(1) {
-		c := s.pattern[s.patternPos]
+		c := s.input[s.inputPos]
 		switch c {
 		case '\\':
 			buff = _lexIdentFuncCallBackslash(s, buff)

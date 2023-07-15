@@ -20,11 +20,11 @@ type State struct {
 	*SharedState
 	lastGen generatorIface
 
-	pattern     []rune
-	patternBuff []rune
-	output      []rune
+	input  []rune
+	buff   []rune
+	output []rune
 
-	patternPos uint64
+	inputPos uint64
 
 	openParenth uint64
 	openBracket bool
@@ -33,12 +33,12 @@ type State struct {
 }
 
 func (s *State) move(chars uint64) {
-	s.patternPos += chars
+	s.inputPos += chars
 	s.absPos += chars
 }
 
 func (s *State) moveBack(chars uint64) {
-	s.patternPos -= chars
+	s.inputPos -= chars
 	if s.absPos < chars {
 		log.Printf("moveBack(%v) with absPos=%v", chars, s.absPos)
 		return
@@ -70,13 +70,13 @@ func (s *State) addOutputNonRepeatable(data []rune) {
 }
 
 func (s *State) end() bool {
-	return s.patternPos >= uint64(len(s.pattern))
+	return s.inputPos >= uint64(len(s.input))
 }
 
 func (s *State) getErrorPos() uint {
 	if s.absPos == 0 {
 		if s.errorOffset < 0 {
-			log.Printf("errorOffset = %v < 0, pattern: %v", s.errorOffset, string(s.pattern))
+			log.Printf("errorOffset = %v < 0, pattern: %v", s.errorOffset, string(s.input))
 			return 0
 		}
 		return uint(s.errorOffset)
@@ -84,7 +84,7 @@ func (s *State) getErrorPos() uint {
 	pos := int64(s.absPos) + s.errorOffset - 1
 	if pos < 0 {
 		// errorOffset=0, absPos=18446744073709551615, pos=-2, pattern: $\(\(\(
-		log.Printf("errorOffset=%v, absPos=%v, pos=%v, pattern: %v", s.errorOffset, s.absPos, pos, string(s.pattern))
+		log.Printf("errorOffset=%v, absPos=%v, pos=%v, pattern: %v", s.errorOffset, s.absPos, pos, string(s.input))
 		return 0
 	}
 	return uint(pos)
@@ -134,7 +134,7 @@ func NewSharedState() *SharedState {
 func NewState(ss *SharedState, pattern []rune) *State {
 	s := &State{
 		SharedState: ss,
-		pattern:     pattern,
+		input:       pattern,
 	}
 	return s
 }

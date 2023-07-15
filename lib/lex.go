@@ -17,8 +17,8 @@ func init() {
 
 // LexRoot is the root lex implementation
 func LexRoot(s *State) (LexType, error) {
-	if s.patternBuff != nil {
-		return nil, s.errorUnknown("incomplete buffer: %s", string(s.patternBuff))
+	if s.buff != nil {
+		return nil, s.errorUnknown("incomplete buffer: %s", string(s.buff))
 	}
 	if s.end() {
 		if s.openParenth > 0 {
@@ -26,7 +26,7 @@ func LexRoot(s *State) (LexType, error) {
 		}
 		return nil, nil
 	}
-	c := s.pattern[s.patternPos]
+	c := s.input[s.inputPos]
 	s.move(1)
 	switch c {
 	case '\\':
@@ -73,20 +73,20 @@ func lexBackslash(s *State) (LexType, error) {
 	if s.end() {
 		return LexRoot, nil
 	}
-	c := s.pattern[s.patternPos]
+	c := s.input[s.inputPos]
 	if c >= '1' && c <= '9' {
 		return processGroupRef(s, LexRoot)
 	}
 	s.move(1)
 	if c == 'u' {
-		if s.patternBuff != nil {
-			return nil, s.errorUnknown("incomplete buffer: %s", string(s.patternBuff))
+		if s.buff != nil {
+			return nil, s.errorUnknown("incomplete buffer: %s", string(s.buff))
 		}
 		return lexRootUnicode, nil
 	}
 	if c == 'U' {
-		if s.patternBuff != nil {
-			return nil, s.errorUnknown("incomplete buffer: %s", string(s.patternBuff))
+		if s.buff != nil {
+			return nil, s.errorUnknown("incomplete buffer: %s", string(s.buff))
 		}
 		return lexRootUnicodeWide, nil
 	}
@@ -99,7 +99,7 @@ func lexIdent(s *State) (LexType, error) {
 		s.errorOffset++
 		return nil, s.errorSyntax("expected a function call")
 	}
-	c := s.pattern[s.patternPos]
+	c := s.input[s.inputPos]
 	s.move(1)
 	switch c {
 	case '\\', '[', '{', '$':
@@ -108,7 +108,7 @@ func lexIdent(s *State) (LexType, error) {
 		s.openParenth++
 		return lexIdentFuncCall, nil
 	}
-	s.patternBuff = append(s.patternBuff, c)
+	s.buff = append(s.buff, c)
 	return lexIdent, nil
 }
 
@@ -117,7 +117,7 @@ func makeLexUnicode(parentLex LexType, symbol rune, width int, toBuff bool) LexT
 		buff := make([]rune, 0, width)
 		buff = append(buff, '\\', symbol)
 		for ; len(buff) < width && !s.end(); s.move(1) {
-			buff = append(buff, s.pattern[s.patternPos])
+			buff = append(buff, s.input[s.inputPos])
 		}
 		if len(buff) != width {
 			s.errorMarkLen = len(buff)
@@ -129,7 +129,7 @@ func makeLexUnicode(parentLex LexType, symbol rune, width int, toBuff bool) LexT
 			return nil, s.errorSyntax("invalid escape sequence")
 		}
 		if toBuff {
-			s.patternBuff = append(s.patternBuff, char)
+			s.buff = append(s.buff, char)
 		} else {
 			s.addOutputOne(char)
 		}
