@@ -95,7 +95,6 @@ func (s *State) getErrorPos() uint {
 	}
 	pos := int64(s.absPos) + s.errorOffset - 1
 	if pos < 0 {
-		// errorOffset=0, absPos=18446744073709551615, pos=-2, pattern: $\(\(\(
 		log.Printf("errorOffset=%v, absPos=%v, pos=%v, pattern: %v", s.errorOffset, s.absPos, pos, string(s.input))
 		return 0
 	}
