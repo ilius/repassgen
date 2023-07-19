@@ -19,11 +19,11 @@ func randBool() bool {
 }
 
 func (g *onceOrNoneGenerator) Generate(s *State) error {
-	output, err := subGenerate(s, g.pattern)
-	if err != nil {
-		return err
-	}
 	if randBool() {
+		output, err := subGenerate(s, g.pattern)
+		if err != nil {
+			return err
+		}
 		s.output = append(s.output, output...)
 	}
 	s.patternEntropy += 1.0
