@@ -1,7 +1,6 @@
 package passgen
 
 import (
-	"log"
 	"strconv"
 )
 
@@ -67,17 +66,9 @@ Loop:
 			pattern = append(pattern, c)
 		}
 	}
-	// s.absPos = s.absPos - uint(length) - 1
 	parts, indexList, err := splitArgsStr(pattern, '|')
 	if err != nil {
 		return nil, err
-	}
-	if length > s.absPos {
-		// FIXME: this happens
-		log.Printf(
-			"pattern=`%v`, s.pattern=`%v`, length=%v, absPos=%v",
-			string(pattern), string(s.input), length, s.absPos,
-		)
 	}
 	gen := &alterGenerator{
 		parts:     parts,
@@ -111,12 +102,6 @@ func processGroupEnd(s *State) (LexType, error) {
 	lastOutputSize := len(s.output)
 	s2 := NewState(s.SharedState.Copy(), s.input)
 	s2.output = s.output
-	if len(s.buff) > int(s.absPos) {
-		log.Printf(
-			"buff=%#v, len(buff)=%v, absPos=%v",
-			string(s.buff), len(s.buff), s.absPos,
-		)
-	}
 	s2.errorOffset -= int64(len(s.buff) + 1)
 	gen := newGroupGenerator(s.buff)
 	err := gen.Generate(s2)
