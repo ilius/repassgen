@@ -19,6 +19,11 @@ type SharedState struct {
 	maxOutputLength int
 }
 
+func (ss *SharedState) Copy() *SharedState {
+	new_ss := *ss
+	return &new_ss
+}
+
 // State is lex inputs, output and temp state
 type State struct {
 	*SharedState

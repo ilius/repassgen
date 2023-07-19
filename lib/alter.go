@@ -10,18 +10,16 @@ type alterGenerator struct {
 	entropy   *float64
 	parts     [][]rune
 	indexList []uint64
-	absPos    uint64
+	length    uint64
 }
 
 func (g *alterGenerator) calcMinEntropy(s *State) (float64, error) {
 	// TODO: optimize
 	minEntropy := 0.0
-	groupId := s.lastGroupId
 	for i, part := range g.parts {
-		s2 := NewState(NewSharedState(), part)
-		s2.absPos = g.absPos + g.indexList[i]
-		s2.lastGroupId = groupId
-		s2.groupsOutput = s.groupsOutput
+		s2 := NewState(s.SharedState.Copy(), part)
+		s2.errorOffset += int64(g.indexList[i] - g.length)
+		s2.patternEntropy = 0
 		_, err := subGenerate(s2, part)
 		if err != nil {
 			return 0, err
@@ -39,7 +37,6 @@ func (g *alterGenerator) calcMinEntropy(s *State) (float64, error) {
 
 func (g *alterGenerator) Generate(s *State) error {
 	parts := g.parts
-	indexList := g.indexList
 	ibig, err := rand.Int(rand.Reader, big.NewInt(int64(len(parts))))
 	if err != nil {
 		panic(err)
@@ -47,10 +44,9 @@ func (g *alterGenerator) Generate(s *State) error {
 
 	i := ibig.Int64()
 	groupId := s.lastGroupId
-	s2 := NewState(NewSharedState(), parts[i])
-	s2.absPos = g.absPos + indexList[i]
-	s2.lastGroupId = groupId
-	s2.groupsOutput = s.groupsOutput
+	s2 := NewState(s.SharedState.Copy(), parts[i])
+	s2.patternEntropy = 0
+	s2.errorOffset += int64(g.indexList[i] - g.length)
 	output, err := subGenerate(s2, parts[i])
 	if err != nil {
 		return err

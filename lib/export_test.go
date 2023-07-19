@@ -20,7 +20,6 @@ func NewAlterGenerator(parts [][]rune, indexList []uint64) *alterGenerator {
 	return &alterGenerator{
 		parts:     parts,
 		indexList: indexList,
-		absPos:    0,
 	}
 }
 

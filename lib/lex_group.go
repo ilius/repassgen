@@ -82,7 +82,7 @@ Loop:
 	gen := &alterGenerator{
 		parts:     parts,
 		indexList: indexList,
-		absPos:    s.absPos - length,
+		length:    length,
 	}
 	err = gen.Generate(s)
 	if err != nil {
@@ -109,7 +109,7 @@ func processGroupBackslash(s *State, parentLex LexType) (LexType, error) {
 func processGroupEnd(s *State) (LexType, error) {
 	groupId := s.lastGroupId
 	lastOutputSize := len(s.output)
-	s2 := NewState(NewSharedState(), s.input)
+	s2 := NewState(s.SharedState.Copy(), s.input)
 	s2.output = s.output
 	if len(s.buff) > int(s.absPos) {
 		log.Printf(
@@ -117,11 +117,7 @@ func processGroupEnd(s *State) (LexType, error) {
 			string(s.buff), len(s.buff), s.absPos,
 		)
 	}
-	s2.absPos = s.absPos - uint64(len(s.buff)) - 1
-
-	s2.patternEntropy = s.patternEntropy
-	s2.lastGroupId = groupId
-	s2.groupsOutput = s.groupsOutput
+	s2.errorOffset -= int64(len(s.buff) + 1)
 	gen := newGroupGenerator(s.buff)
 	err := gen.Generate(s2)
 	if err != nil {
