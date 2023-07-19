@@ -16,20 +16,20 @@ type alterGenerator struct {
 func (g *alterGenerator) calcMinEntropy(s *State) (float64, error) {
 	// TODO: optimize
 	minEntropy := 0.0
-	for i, part := range g.parts {
+	for partI, part := range g.parts {
 		s2 := NewState(s.SharedState.Copy(), part)
-		s2.errorOffset += int64(g.indexList[i] - g.length)
+		s2.errorOffset += int64(g.indexList[partI] - g.length)
 		s2.patternEntropy = 0
 		_, err := subGenerate(s2, part)
 		if err != nil {
 			return 0, err
 		}
 		entropy := s2.patternEntropy
-		if i == 0 || entropy < minEntropy {
+		if entropy == 0 {
+			return 0, nil
+		}
+		if partI == 0 || entropy < minEntropy {
 			minEntropy = entropy
-			if minEntropy == 0 {
-				break
-			}
 		}
 	}
 	return minEntropy, nil
@@ -45,7 +45,6 @@ func (g *alterGenerator) Generate(s *State) error {
 	i := ibig.Int64()
 	groupId := s.lastGroupId
 	s2 := NewState(s.SharedState.Copy(), parts[i])
-	s2.patternEntropy = 0
 	s2.errorOffset += int64(g.indexList[i] - g.length)
 	output, err := subGenerate(s2, parts[i])
 	if err != nil {
