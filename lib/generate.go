@@ -22,21 +22,20 @@ func Generate(in GenerateInput) (*GenerateOutput, *State, error) {
 	defer func() {
 		r := recover()
 		if r != nil {
-			log.Printf("pattern=`%v`", in.Pattern)
+			log.Printf("panic in Generate: %v, pattern=`%v`", r, in.Pattern)
 		}
 	}()
 	if len(in.Pattern) > 1000 {
 		return nil, nil, fmt.Errorf("pattern is too long")
 	}
-	ss := NewSharedState()
-	s := NewState(ss, in.Pattern)
+	s := NewState(NewSharedState(), in.Pattern)
 	g := NewRootGenerator()
-	{
-		err := g.Generate(s)
-		if err != nil {
-			return nil, s, err
-		}
+
+	err := g.Generate(s)
+	if err != nil {
+		return nil, s, err
 	}
+
 	return &GenerateOutput{
 		Password:       s.output,
 		PatternEntropy: s.patternEntropy,
@@ -45,16 +44,11 @@ func Generate(in GenerateInput) (*GenerateOutput, *State, error) {
 
 func subGenerate(s *State, pattern []rune) ([]rune, error) {
 	childGen := NewRootGenerator()
-	ss := s.SharedState
-	var output []rune
-	{
-		s := NewState(ss, pattern)
-		err := childGen.Generate(s)
-		if err != nil {
-			return nil, err
-		}
-		output = s.output
+	s2 := NewState(s.SharedState, pattern)
+	err := childGen.Generate(s2)
+	if err != nil {
+		return nil, err
 	}
 	s.lastGen = nil
-	return output, nil
+	return s2.output, nil
 }
