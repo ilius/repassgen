@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 
 	passgen "github.com/ilius/repassgen/lib"
@@ -25,6 +26,10 @@ func printError(s *passgen.State, err error, pattern string) {
 }
 
 func main() {
+	Main(os.Stdout)
+}
+
+func Main(stdout io.Writer) {
 	flag.Parse()
 
 	calcEnropy := entropyFlag != nil && *entropyFlag
@@ -38,15 +43,17 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(string(out.Password))
+	fmt.Fprintln(stdout, string(out.Password))
 	if calcEnropy {
 		if os.Getenv("REPASSGEN_FLOAT_ENTROPY") == "true" {
-			fmt.Printf(
+			fmt.Fprintf(
+				stdout,
 				"Entropy of pattern: %.2f bits\n",
 				out.PatternEntropy,
 			)
 		} else {
-			fmt.Printf(
+			fmt.Fprintf(
+				stdout,
 				"Entropy of pattern: %d bits\n",
 				int(out.PatternEntropy),
 			)
