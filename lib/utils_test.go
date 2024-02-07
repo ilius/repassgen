@@ -1,7 +1,7 @@
 package passgen
 
 import (
-	"math/rand"
+	math_rand "math/rand/v2"
 	"testing"
 )
 
@@ -41,7 +41,7 @@ func Benchmark_removeDuplicateRunes(b *testing.B) {
 	for i := 0; i < count; i++ {
 		list := make([]rune, listLength)
 		for j := 0; j < listLength; j++ {
-			list[j] = rune(rand.Intn(256))
+			list[j] = rune(math_rand.Int32N(256))
 		}
 		lists[i] = list
 	}
@@ -64,7 +64,7 @@ func Benchmark_excludeCharsASCII(b *testing.B) {
 	for i := 0; i < count; i++ {
 		list := make([]rune, listLength)
 		for j := 0; j < listLength; j++ {
-			list[j] = rune(rand.Intn(256))
+			list[j] = rune(math_rand.Int32N(256))
 		}
 		lists[i] = list
 	}

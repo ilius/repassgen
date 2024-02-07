@@ -1,7 +1,7 @@
 package passgen
 
 import (
-	math_rand "math/rand"
+	math_rand "math/rand/v2"
 	"strconv"
 	"strings"
 )
@@ -138,5 +138,5 @@ func parseRepeatCount(s *State, countRunes []rune) (int64, error) {
 	if maxCount > maxRepeatCount {
 		return 0, s.errorSyntax("count value is too large")
 	}
-	return minCount + math_rand.Int63n(maxCount-minCount+1), nil
+	return minCount + math_rand.Int64N(maxCount-minCount+1), nil
 }
