@@ -38,7 +38,7 @@ func Benchmark_removeDuplicateRunes(b *testing.B) {
 	listLength := 100
 	count := b.N * 10000
 	lists := make([][]rune, count)
-	for i := 0; i < count; i++ {
+	for i := range count {
 		list := make([]rune, listLength)
 		for j := 0; j < listLength; j++ {
 			list[j] = rune(math_rand.Int32N(256))
@@ -61,7 +61,7 @@ func Benchmark_excludeCharsASCII(b *testing.B) {
 	listLength := 100
 	count := b.N * 10000
 	lists := make([][]rune, count)
-	for i := 0; i < count; i++ {
+	for i := range count {
 		list := make([]rune, listLength)
 		for j := 0; j < listLength; j++ {
 			list[j] = rune(math_rand.Int32N(256))

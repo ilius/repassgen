@@ -11,7 +11,7 @@ func rjust(in []rune, width int, fillChar rune) []rune {
 	}
 	out := make([]rune, width)
 	fcc := width - len(in)
-	for i := 0; i < fcc; i++ {
+	for i := range fcc {
 		out[i] = fillChar
 	}
 	copy(out[fcc:], in)
@@ -36,7 +36,7 @@ func center(in []rune, width int, fillChar rune) []rune {
 	}
 	out := make([]rune, width)
 	fcc := int((width - len(in)) / 2)
-	for i := 0; i < fcc; i++ {
+	for i := range fcc {
 		out[i] = fillChar
 	}
 	copy(out[fcc:], in)

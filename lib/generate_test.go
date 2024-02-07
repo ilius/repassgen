@@ -24,7 +24,7 @@ var (
 func getBIP39WordMap() map[string]bool {
 	count := bip39.WordCount()
 	m := make(map[string]bool, count)
-	for i := 0; i < count; i++ {
+	for i := range count {
 		word, ok := bip39.GetWord(i)
 		if !ok {
 			panic("NOT OK")
@@ -513,7 +513,7 @@ func TestGenerate(t *testing.T) {
 		PassLen: [2]int{14, 14},
 		Entropy: [2]float64{59.6, 59.7},
 		Validate: func(p string) bool {
-			for i := 0; i < 2; i++ {
+			for i := range 2 {
 				k := 7 * i
 				for _, c := range p[k : k+5] {
 					if c < 'a' || c > 'z' {
@@ -568,7 +568,7 @@ func TestGenerate(t *testing.T) {
 		PassLen: [2]int{16, 16},
 		Entropy: [2]float64{59.6, 59.7},
 		Validate: func(p string) bool {
-			for i := 0; i < 2; i++ {
+			for i := range 2 {
 				k := 8 * i
 				for _, c := range p[k : k+5] {
 					if c < 'a' || c > 'z' {
@@ -654,7 +654,7 @@ func TestGenerate(t *testing.T) {
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{16, 16},
 		Validate: func(p string) bool {
-			for i := 0; i < len(p); i += 1 {
+			for i := range len(p) {
 				switch p[i : i+1] {
 				case "a", "b", "c", "d", "e", "f":
 				default:
@@ -669,7 +669,7 @@ func TestGenerate(t *testing.T) {
 		PassLen: [2]int{1, 1},
 		Entropy: [2]float64{3, 3},
 		Validate: func(p string) bool {
-			for i := 0; i < len(p); i += 1 {
+			for i := range len(p) {
 				switch p[i : i+1] {
 				case "a", "b", "c", "d", "e", "f", "g", "h", "i", "j":
 				default:
@@ -684,7 +684,7 @@ func TestGenerate(t *testing.T) {
 		PassLen: [2]int{8, 8},
 		Entropy: [2]float64{24, 24},
 		Validate: func(p string) bool {
-			for i := 0; i < len(p); i += 1 {
+			for i := range len(p) {
 				switch p[i : i+1] {
 				case "a", "b", "c", "d", "e", "f", "g", "h", "i", "j":
 				default:

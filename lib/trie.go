@@ -69,11 +69,11 @@ func (t *Trie) convert(origin string) (result string) {
 	originRune := []rune(origin)
 	result = ""
 
-	for l := 0; l < len(originRune); l++ {
+	for l := range len(originRune) {
 		t = root
 		foundVal := ""
 		depth := 0
-		for i := 0; i+l < len(originRune); i++ {
+		for i := range len(originRune) - l {
 			letter := string(originRune[l+i])
 			if t.children[letter] == nil {
 				// not found
