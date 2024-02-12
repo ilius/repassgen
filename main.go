@@ -43,20 +43,29 @@ func Main(stdout io.Writer) {
 		os.Exit(1)
 	}
 
-	fmt.Fprintln(stdout, string(out.Password))
+	_, err = fmt.Fprintln(stdout, string(out.Password))
+	if err != nil {
+		panic(err)
+	}
 	if calcEnropy {
 		if os.Getenv("REPASSGEN_FLOAT_ENTROPY") == "true" {
-			fmt.Fprintf(
+			_, err := fmt.Fprintf(
 				stdout,
 				"Entropy of pattern: %.2f bits\n",
 				out.PatternEntropy,
 			)
+			if err != nil {
+				panic(err)
+			}
 		} else {
-			fmt.Fprintf(
+			_, err := fmt.Fprintf(
 				stdout,
 				"Entropy of pattern: %d bits\n",
 				int(out.PatternEntropy),
 			)
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
 }

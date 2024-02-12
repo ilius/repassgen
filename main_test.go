@@ -13,7 +13,10 @@ func TestMainFunc(t *testing.T) {
 		os.Args = args
 	}()
 
-	os.Setenv("REPASSGEN_FLOAT_ENTROPY", "")
+	err := os.Setenv("REPASSGEN_FLOAT_ENTROPY", "")
+	if err != nil {
+		panic(err)
+	}
 
 	os.Args = []string{"repassgen", "[a-z]{6}"}
 	Main(stdout)
@@ -21,7 +24,10 @@ func TestMainFunc(t *testing.T) {
 	os.Args = []string{"repassgen", "-entropy", "[a-z]{6}"}
 	Main(stdout)
 
-	os.Setenv("REPASSGEN_FLOAT_ENTROPY", "true")
+	err = os.Setenv("REPASSGEN_FLOAT_ENTROPY", "true")
+	if err != nil {
+		panic(err)
+	}
 
 	os.Args = []string{"repassgen", "-entropy", "[a-z]{6}"}
 	Main(stdout)

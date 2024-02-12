@@ -135,6 +135,11 @@ func processGroupRef(s *State, parentLex LexType) (LexType, error) {
 		s.errorMarkLen = len(gid_r) + 1
 		return nil, s.errorValue("invalid group id '%v'", gid)
 	}
-	s.addOutput(output)
+
+	err = s.addOutput(output)
+	if err != nil {
+		return nil, err
+	}
+
 	return parentLex, nil
 }

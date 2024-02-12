@@ -20,7 +20,7 @@ func FuzzGenerate(f *testing.F) {
 		f.Add(tc) // Use f.Add to provide a seed corpus
 	}
 	// define a max output length to prevent out-of-memory and crash
-	os.Setenv("REPASSGEN_MAX_LENGTH", "500")
+	errPanic(os.Setenv("REPASSGEN_MAX_LENGTH", "500"))
 	f.Fuzz(func(t *testing.T, pattern string) {
 		if len(pattern) > 100 {
 			return

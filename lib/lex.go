@@ -49,7 +49,10 @@ func LexRoot(s *State) (LexType, error) {
 	case '$':
 		return lexIdent, nil
 	}
-	s.addOutputOne(c)
+	err := s.addOutputOne(c)
+	if err != nil {
+		return nil, err
+	}
 	return LexRoot, nil
 }
 
@@ -90,7 +93,10 @@ func lexBackslash(s *State) (LexType, error) {
 		}
 		return lexRootUnicodeWide, nil
 	}
-	s.addOutputOne(backslashEscape(c))
+	err := s.addOutputOne(backslashEscape(c))
+	if err != nil {
+		return nil, err
+	}
 	return LexRoot, nil
 }
 
@@ -131,7 +137,10 @@ func makeLexUnicode(parentLex LexType, symbol rune, width int, toBuff bool) LexT
 		if toBuff {
 			s.buff = append(s.buff, char)
 		} else {
-			s.addOutputOne(char)
+			err := s.addOutputOne(char)
+			if err != nil {
+				return nil, err
+			}
 		}
 		return parentLex, nil
 	}

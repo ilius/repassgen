@@ -55,18 +55,18 @@ func (s *State) moveBack(chars uint64) {
 	s.absPos -= chars
 }
 
-func (s *State) addOutputOne(c rune) {
+func (s *State) addOutputOne(c rune) error {
 	if s.tooLong() {
 		s.lastGen = nil
-		return
+		return nil
 	}
 	s.lastGen = &staticStringGenerator{str: []rune{c}}
-	s.lastGen.Generate(s)
+	return s.lastGen.Generate(s)
 }
 
-func (s *State) addOutput(str []rune) {
+func (s *State) addOutput(str []rune) error {
 	s.lastGen = &staticStringGenerator{str: str}
-	s.lastGen.Generate(s)
+	return s.lastGen.Generate(s)
 }
 
 func (s *State) addOutputNonRepeatable(data []rune) {

@@ -16,6 +16,9 @@ func NewRandSource() *math_rand.Rand {
 
 func (CryptoRandSource) Uint64() uint64 {
 	var b [8]byte
-	rand.Read(b[:])
+	_, err := rand.Read(b[:])
+	if err != nil {
+		panic(err)
+	}
 	return binary.LittleEndian.Uint64(b[:])
 }

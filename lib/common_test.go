@@ -5,6 +5,12 @@ import (
 	passgen "github.com/ilius/repassgen/lib"
 )
 
+func errPanic(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
 func strPtr(s string) *string {
 	s2 := s
 	return &s2
