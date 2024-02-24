@@ -1,5 +1,5 @@
-github.com/ilius/bip39-coder v0.0.0-20190820221636-dd78355e9ae3 h1:j0HfmT+JMiHB+vRimsqg4gds6bYr2nmzobJjV/HYuGE=
-github.com/ilius/bip39-coder v0.0.0-20190820221636-dd78355e9ae3/go.mod h1:m5pCh97aa9ru54bNU8cZ6AQ2pqA5WkuNPiZ19aYQ+aU=
+github.com/ilius/bip39-coder v0.0.0-20230505232837-79ff47003d74 h1:f/nvBN7QFqPfg14j+NISLVkYfMKOTOKuIBif9CXDY3g=
+github.com/ilius/bip39-coder v0.0.0-20230505232837-79ff47003d74/go.mod h1:uzESCURlNnGOS7UMscmRD9KIOGCGKDB/m6Q89BfCqr0=
 github.com/ilius/crock32 v1.0.0 h1:MNudn10Sb0yv8JByQoy7GoEgCzB4/LOAhVr4Wg+usC8=
 github.com/ilius/crock32 v1.0.0/go.mod h1:qVDHZPtpx9fchO4hIuHYKLV4LRf8EqWgq0t5CqWBDKA=
 github.com/ilius/is/v2 v2.3.0 h1:xr0OLNTuiYw5LT1N7KETTCgoMo5IUoEDQsQD4ohcW7U=
