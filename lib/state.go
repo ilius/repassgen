@@ -101,7 +101,7 @@ func (s *State) getErrorPos() uint {
 	return uint(pos)
 }
 
-func (s *State) errorSyntax(msg string, args ...interface{}) error {
+func (s *State) errorSyntax(msg string, args ...any) error {
 	return NewError(
 		ErrorSyntax,
 		s.getErrorPos(),
@@ -109,7 +109,7 @@ func (s *State) errorSyntax(msg string, args ...interface{}) error {
 	).WithMarkLen(s.errorMarkLen)
 }
 
-func (s *State) errorArg(msg string, args ...interface{}) error {
+func (s *State) errorArg(msg string, args ...any) error {
 	return NewError(
 		ErrorArg,
 		s.getErrorPos(),
@@ -117,7 +117,7 @@ func (s *State) errorArg(msg string, args ...interface{}) error {
 	).WithMarkLen(s.errorMarkLen)
 }
 
-func (s *State) errorValue(msg string, args ...interface{}) error {
+func (s *State) errorValue(msg string, args ...any) error {
 	return NewError(
 		ErrorValue,
 		s.getErrorPos(),
@@ -125,7 +125,7 @@ func (s *State) errorValue(msg string, args ...interface{}) error {
 	).WithMarkLen(s.errorMarkLen)
 }
 
-func (s *State) errorUnknown(msg string, args ...interface{}) error {
+func (s *State) errorUnknown(msg string, args ...any) error {
 	return NewError(
 		ErrorUnknown,
 		s.getErrorPos(),

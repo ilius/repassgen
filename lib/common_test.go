@@ -16,7 +16,7 @@ func strPtr(s string) *string {
 	return &s2
 }
 
-func newTestState(patternArg interface{}) *passgen.State {
+func newTestState(patternArg any) *passgen.State {
 	var pattern []rune
 	switch patternTyped := patternArg.(type) {
 	case string:
@@ -56,5 +56,5 @@ type genCase struct {
 type genErrCase struct {
 	Pattern string
 
-	Error interface{}
+	Error any
 }

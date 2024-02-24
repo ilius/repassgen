@@ -8,7 +8,7 @@ import (
 	"github.com/ilius/is/v2"
 )
 
-func newTestState(patternArg interface{}) *State {
+func newTestState(patternArg any) *State {
 	var pattern []rune
 	switch patternTyped := patternArg.(type) {
 	case string:

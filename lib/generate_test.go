@@ -75,7 +75,7 @@ func TestGenerate(t *testing.T) {
 			is.Equal(actual, tc.WordCount)
 		}
 	}
-	checkErrorIsInList := func(is *is.Is, err error, expMsgs []interface{}) {
+	checkErrorIsInList := func(is *is.Is, err error, expMsgs []any) {
 		if !is.Err(err) {
 			return
 		}
@@ -107,7 +107,7 @@ func TestGenerate(t *testing.T) {
 			} else {
 				is.ErrMsg(err, expErr)
 			}
-		case []interface{}:
+		case []any:
 			checkErrorIsInList(is, err, expErr)
 		case *passgen.Error:
 			is.Equal(tErr.Type(), expErr.Type())
@@ -698,7 +698,7 @@ func TestGenerate(t *testing.T) {
 	testErr(&genErrCase{
 		// FIXME: if one part of alteration has no error, test becomes flaky
 		Pattern: `([:foobar1:]|[:foobar2:])`,
-		Error: []interface{}{
+		Error: []any{
 			`value error near index 9: invalid character class "foobar1"`,
 			`value error near index 20: invalid character class "foobar2"`,
 		},
