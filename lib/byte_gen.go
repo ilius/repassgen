@@ -21,16 +21,12 @@ func (g *byteGenerator) Generate(s *State) error {
 		byteStr = strings.ToUpper(byteStr)
 	}
 	s.addOutputNonRepeatable([]rune(byteStr))
-	s.patternEntropy += g.entropy()
+	s.patternEntropy += 8
 	return nil
 }
 
-func (g *byteGenerator) entropy() float64 {
-	return 8
-}
-
 func (g *byteGenerator) Entropy(s *State) (float64, error) {
-	return g.entropy(), nil
+	return 8, nil
 }
 
 func newByteGenerator(s *State, argsStr []rune, uppercase bool) (*byteGenerator, error) {
