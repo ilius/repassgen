@@ -18,7 +18,6 @@ func (g *shuffleGenerator) Generate(s *State) error {
 	err := baseFunctionCallGenerator(
 		s,
 		argState,
-		"shuffle",
 		shuffle,
 	)
 	if err != nil {

@@ -174,7 +174,6 @@ func (g *encoderFunctionCallGenerator) Generate(s *State) error {
 	err := baseFunctionCallGenerator(
 		s,
 		NewState(s.SharedState, []rune(g.argPattern)),
-		funcName,
 		funcObj,
 	)
 	if err != nil {

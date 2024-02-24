@@ -15,7 +15,7 @@ var entropyFlag = flag.Bool(
 	"repassgen [-entropy] PATTERN",
 )
 
-func printError(s *passgen.State, err error, pattern string) {
+func printError(err error, pattern string) {
 	myErr, ok := err.(*passgen.Error)
 	if !ok {
 		fmt.Println(err)
@@ -35,11 +35,11 @@ func Main(stdout io.Writer) {
 	calcEnropy := entropyFlag != nil && *entropyFlag
 
 	pattern := flag.Arg(0)
-	out, s, err := passgen.Generate(passgen.GenerateInput{
+	out, _, err := passgen.Generate(passgen.GenerateInput{
 		Pattern: []rune(pattern),
 	})
 	if err != nil {
-		printError(s, err, pattern)
+		printError(err, pattern)
 		os.Exit(1)
 	}
 

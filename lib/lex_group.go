@@ -13,7 +13,7 @@ func lexGroup(s *State) (LexType, error) {
 	s.move(1)
 	switch c {
 	case '\\':
-		return processGroupBackslash(s, lexGroup)
+		return processGroupBackslash(s)
 	case '(':
 		s.openParenth++
 	case ')':
@@ -86,7 +86,7 @@ Loop:
 	return LexRoot, nil
 }
 
-func processGroupBackslash(s *State, parentLex LexType) (LexType, error) {
+func processGroupBackslash(s *State) (LexType, error) {
 	if s.end() {
 		s.errorOffset++
 		return nil, s.errorSyntax("'(' not closed")

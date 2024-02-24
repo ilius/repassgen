@@ -3,7 +3,6 @@ package passgen
 func baseFunctionCallGenerator(
 	s *State,
 	argState *State,
-	funcName string,
 	funcObj func(s *State, in []rune) ([]rune, error),
 ) error {
 	g := NewRootGenerator()
