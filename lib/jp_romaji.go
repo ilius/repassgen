@@ -45,9 +45,9 @@ func InitRomaji() {
 	tables := []string{HiraganaTable, KatakanaTable}
 	for _, table := range tables {
 		rows := strings.Split(table, "\n")
-		colNames := strings.Split(string(rows[0]), "\t")[1:]
+		colNames := strings.Split(rows[0], "\t")[1:]
 		for _, row := range rows[1:] {
-			cols := strings.Split(string(row), "\t")
+			cols := strings.Split(row, "\t")
 			rowName := cols[0]
 			for i, kana := range cols[1:] {
 				value := rowName + colNames[i]

@@ -35,7 +35,7 @@ func center(in []rune, width int, fillChar rune) []rune {
 		return in
 	}
 	out := make([]rune, width)
-	fcc := int((width - len(in)) / 2)
+	fcc := (width - len(in)) / 2
 	for i := range fcc {
 		out[i] = fillChar
 	}
@@ -88,7 +88,7 @@ func parseJustifyArgs(s *State, argsStr []rune, funcName string) (*JustifyArgs, 
 		s.errorOffset += int64(len(argsStr) + 1)
 		return nil, s.errorArg("%s: at least 2 arguments are required", funcName)
 	}
-	pattern := []rune(args[0])
+	pattern := args[0]
 	width, err := strconv.Atoi(strings.TrimSpace(string(args[1])))
 	if err != nil {
 		s.errorOffset += int64(len(args[0]) + len(args[1]) + 1)
@@ -102,7 +102,7 @@ func parseJustifyArgs(s *State, argsStr []rune, funcName string) (*JustifyArgs, 
 	}
 	fillChar := ' '
 	if len(args) > 2 {
-		fillCharA := []rune(args[2])
+		fillCharA := args[2]
 		if len(fillCharA) != 1 {
 			s.errorOffset += int64(len(args[0]) + len(args[1]) + len(args[2]) + 2)
 			s.errorMarkLen = len(args[2])

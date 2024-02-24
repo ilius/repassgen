@@ -16,7 +16,7 @@ func TestByteGenerator(t *testing.T) {
 	{
 		err := g.Generate(s)
 		is.NotErr(err)
-		password := string(s.Output())
+		password := s.Output()
 		is.Equal(2, len(password))
 		is.Equal(password, strings.ToLower(password))
 	}
@@ -35,7 +35,7 @@ func TestByteGenerator2(t *testing.T) {
 	{
 		err := g.Generate(s)
 		is.NotErr(err)
-		password := string(s.Output())
+		password := s.Output()
 		is.Equal(2, len(password))
 		is.Equal(password, strings.ToUpper(password))
 	}

@@ -21,7 +21,7 @@ func printError(err error, pattern string) {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(string(pattern))
+	fmt.Println(pattern)
 	fmt.Println(myErr.SpacedError())
 }
 

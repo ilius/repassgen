@@ -15,7 +15,7 @@ func TestDateGenerator(t *testing.T) {
 	{
 		err := g.Generate(s)
 		is.NotErr(err)
-		is.Equal(10, len(string(s.Output())))
+		is.Equal(10, len(s.Output()))
 	}
 	{
 		entropy, err := g.Entropy(s)

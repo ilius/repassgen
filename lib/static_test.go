@@ -15,7 +15,7 @@ func TestStaticStringGenerator(t *testing.T) {
 	{
 		err := g.Generate(s)
 		is.NotErr(err)
-		is.Equal(pattern, string(s.Output()))
+		is.Equal(pattern, s.Output())
 	}
 	{
 		entropy, err := g.Entropy(s)
