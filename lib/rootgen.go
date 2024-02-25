@@ -39,5 +39,5 @@ func (g *RootGenerator) Entropy(s *State) (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil
 	}
-	return 0, s.errorUnknown("entropy is not calculated")
+	return 0, s.errorUnknown(s_entropy_not_calc)
 }

@@ -28,7 +28,7 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 	"base64": func(s *State, in []rune) ([]rune, error) {
 		data, err := hex.DecodeString(string(in))
 		if err != nil {
-			return nil, s.errorValue("invalid hex number %#v", string(in))
+			return nil, s.errorValue(s_invalid_hex_num, string(in))
 		}
 		return []rune(
 			base64.StdEncoding.EncodeToString(data),
@@ -37,7 +37,7 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 	"base64url": func(s *State, in []rune) ([]rune, error) {
 		data, err := hex.DecodeString(string(in))
 		if err != nil {
-			return nil, s.errorValue("invalid hex number %#v", string(in))
+			return nil, s.errorValue(s_invalid_hex_num, string(in))
 		}
 		return []rune(
 			base64.URLEncoding.EncodeToString(data),
@@ -48,7 +48,7 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 	"base32": func(s *State, in []rune) ([]rune, error) {
 		data, err := hex.DecodeString(string(in))
 		if err != nil {
-			return nil, s.errorValue("invalid hex number %#v", string(in))
+			return nil, s.errorValue(s_invalid_hex_num, string(in))
 		}
 		return []rune(
 			strings.ToLower(crock32.Encode(data)),
@@ -57,7 +57,7 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 	"BASE32": func(s *State, in []rune) ([]rune, error) {
 		data, err := hex.DecodeString(string(in))
 		if err != nil {
-			return nil, s.errorValue("invalid hex number %#v", string(in))
+			return nil, s.errorValue(s_invalid_hex_num, string(in))
 		}
 		return []rune(
 			crock32.Encode(data),
@@ -68,7 +68,7 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 	"base32std": func(s *State, in []rune) ([]rune, error) {
 		data, err := hex.DecodeString(string(in))
 		if err != nil {
-			return nil, s.errorValue("invalid hex number %#v", string(in))
+			return nil, s.errorValue(s_invalid_hex_num, string(in))
 		}
 		return []rune(
 			base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(
@@ -95,7 +95,7 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 		//}
 		i64, err := strconv.ParseInt(string(in), 16, 64)
 		if err != nil {
-			return nil, s.errorValue("invalid hex number %#v", string(in))
+			return nil, s.errorValue(s_invalid_hex_num, string(in))
 		}
 		return []rune(strconv.FormatInt(i64, 10)), nil
 	},
@@ -104,7 +104,7 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 	"pyhex": func(s *State, in []rune) ([]rune, error) {
 		data, err := hex.DecodeString(string(in))
 		if err != nil {
-			return nil, s.errorValue("invalid hex number %#v", string(in))
+			return nil, s.errorValue(s_invalid_hex_num, string(in))
 		}
 		out := ""
 		for _, cbyte := range data {
@@ -187,7 +187,7 @@ func (g *encoderFunctionCallGenerator) Entropy(s *State) (float64, error) {
 	if g.entropy != nil {
 		return *g.entropy, nil
 	}
-	return 0, s.errorUnknown("entropy is not calculated")
+	return 0, s.errorUnknown(s_entropy_not_calc)
 }
 
 func getFuncGenerator(s *State, funcName string, arg []rune) (generatorIface, error) {

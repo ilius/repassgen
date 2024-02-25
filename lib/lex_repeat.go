@@ -89,12 +89,12 @@ func parseRepeatCount(s *State, countRunes []rune) (int64, error) {
 		if err != nil {
 			s.errorOffset--
 			s.errorMarkLen = len(countStr)
-			return 0, s.errorSyntax("invalid natural number '%v'", countStr)
+			return 0, s.errorSyntax(s_invalid_natural_num, countStr)
 		}
 		if countI64 < 1 {
 			s.errorOffset--
 			s.errorMarkLen = len(countStr)
-			return 0, s.errorSyntax("invalid natural number '%v'", countStr)
+			return 0, s.errorSyntax(s_invalid_natural_num, countStr)
 		}
 		if countI64 > maxRepeatCount {
 			return 0, s.errorSyntax("count value is too large")
@@ -116,19 +116,19 @@ func parseRepeatCount(s *State, countRunes []rune) (int64, error) {
 		// I don't know how to produce this by high-level Generate test
 		s.errorOffset -= int64(len(maxStr)) + 2
 		s.errorMarkLen = len(minStr)
-		return 0, s.errorSyntax("invalid natural number '%v'", minStr)
+		return 0, s.errorSyntax(s_invalid_natural_num, minStr)
 	}
 	if minCount < 1 {
 		s.errorOffset -= int64(len(maxStr)) + 2
 		s.errorMarkLen = len(minStr)
-		return 0, s.errorSyntax("invalid natural number '%v'", minStr)
+		return 0, s.errorSyntax(s_invalid_natural_num, minStr)
 	}
 	maxCount, err := strconv.ParseInt(maxStr, 10, 64)
 	if err != nil {
 		// I don't know how to produce this by high-level Generate test
 		s.errorOffset -= 2
 		s.errorMarkLen = len(maxStr)
-		return 0, s.errorSyntax("invalid natural number '%v'", maxStr)
+		return 0, s.errorSyntax(s_invalid_natural_num, maxStr)
 	}
 	if maxCount < minCount {
 		s.errorOffset--

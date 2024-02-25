@@ -32,7 +32,7 @@ func (g *shuffleGenerator) Entropy(s *State) (float64, error) {
 	if g.argPatternEntropy != nil {
 		return *g.argPatternEntropy, nil
 	}
-	return 0, s.errorUnknown("entropy is not calculated")
+	return 0, s.errorUnknown(s_entropy_not_calc)
 }
 
 func newShuffleGenerator(arg []rune) (*shuffleGenerator, error) {

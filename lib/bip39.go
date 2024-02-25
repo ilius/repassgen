@@ -15,7 +15,7 @@ func bip39encode(s *State, in []rune) ([]rune, error) {
 	data, err := hex.DecodeString(string(in))
 	if err != nil {
 		s.errorMarkLen = len(in)
-		return nil, s.errorValue("invalid hex number %#v", string(in))
+		return nil, s.errorValue(s_invalid_hex_num, string(in))
 	}
 	return []rune(bip39.Encode(data)), nil
 }

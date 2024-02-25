@@ -103,13 +103,13 @@ func lexBackslash(s *State) (LexType, error) {
 func lexIdent(s *State) (LexType, error) {
 	if s.end() {
 		s.errorOffset++
-		return nil, s.errorSyntax("expected a function call")
+		return nil, s.errorSyntax(s_func_call_expected)
 	}
 	c := s.input[s.inputPos]
 	s.move(1)
 	switch c {
 	case '\\', '[', '{', '$':
-		return nil, s.errorSyntax("expected a function call")
+		return nil, s.errorSyntax(s_func_call_expected)
 	case '(':
 		s.openParenth++
 		return lexIdentFuncCall, nil

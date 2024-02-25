@@ -36,7 +36,7 @@ func _lexIdentFuncCallEndError(s *State) error {
 	if s.openParenth > 0 {
 		return s.errorSyntax("'(' not closed")
 	}
-	return s.errorSyntax("expected a function call")
+	return s.errorSyntax(s_func_call_expected)
 }
 
 func _lexIdentFuncCallBackslash(s *State, buff []rune) []rune {
@@ -86,5 +86,5 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 	if s.openParenth > 0 {
 		return nil, s.errorSyntax("'(' not closed")
 	}
-	return nil, s.errorSyntax("expected a function call")
+	return nil, s.errorSyntax(s_func_call_expected)
 }
