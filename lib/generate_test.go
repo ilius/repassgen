@@ -302,13 +302,12 @@ func TestGenerate(t *testing.T) {
 	testErr(&genErrCase{
 		Pattern: `test{100000,0000000a}`,
 		Error:   `     ^^^^^^^^^^^^^^^ syntax error: invalid natural number inside {...}`,
-		// Error:   `            ^^^^^^^^ syntax error: invalid natural number inside {...}`,
-		// FIXME
 	})
-	//testErr(&genErrCase{
-	//	Pattern: `(a|)`,
-	//	Error:   `  ^ '|' at the end of group`,
-	//})
+	// ^ FIXME: Error:   `            ^^^^^^^^ syntax error: invalid natural number inside {...}`,
+	//  testErr(&genErrCase{
+	//		Pattern: `(a|)`,
+	//		Error:   `  ^ '|' at the end of group`,
+	//  })
 	test(&genCase{
 		Pattern: `(ab|()){8}`,
 		PassLen: [2]int{0, 16},
@@ -755,8 +754,7 @@ func TestGenerate(t *testing.T) {
 		Entropy: [2]float64{65.5, 65.6},
 		Validate: func(p string) bool {
 			for _, c := range p {
-				switch c {
-				case '^':
+				if c == '^' {
 					return false
 				}
 			}
