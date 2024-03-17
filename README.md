@@ -40,6 +40,10 @@ Then `repassgen` binary file will be created in current directory.
 - [x] `[:ascii:]` ASCII characters
 - [x] [Unicode code points](https://www.regular-expressions.info/unicode.html), like `[\u00e0-\u00ef]{5}`
 - [x] Group references `\1`, `\2`, etc
+- [x] `\d` Digits
+- [x] `\w` Word characters: alphanumeric and underline, same as `[a-zA-Z0-9_]`
+
+
 
 # Aditional Features (not part of regexp)
 - [x] Combined multiple named/manual character classes, for example:

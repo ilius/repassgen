@@ -1,5 +1,10 @@
 package passgen
 
+// \w == [a-zA-Z0-9_]
+var wordChars = []rune(
+	`abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_`,
+)
+
 var charClasses = map[string][]rune{
 	// POSIX character classes, https://www.regular-expressions.info/posixbrackets.html
 	"alpha": []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"),

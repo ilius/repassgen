@@ -92,6 +92,10 @@ func lexBackslash(s *State) (LexType, error) {
 			return nil, s.errorUnknown("incomplete buffer: %s", string(s.buffer))
 		}
 		return lexRootUnicodeWide, nil
+	case 'd':
+		return processRange(s, []rune("0123456789"))
+	case 'w':
+		return processRange(s, wordChars)
 	}
 	err := s.addOutputOne(backslashEscape(c))
 	if err != nil {

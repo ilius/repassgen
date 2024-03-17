@@ -777,6 +777,33 @@ func TestGenerate(t *testing.T) {
 			return true
 		},
 	})
+	test(&genCase{
+		Pattern: `\d{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{13.2, 13.3},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < '0' || c > '9' {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	const wordChars = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_`
+	test(&genCase{
+		Pattern: `\w{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{23.9, 23.91},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if !strings.ContainsRune(wordChars, c) {
+					return false
+				}
+			}
+			return true
+		},
+	})
 	testErr(&genErrCase{
 		Pattern: `$base64(gh)`,
 		Error:   `         ^ value error: invalid hex number "gh"`,
