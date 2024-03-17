@@ -12,16 +12,16 @@ type charClassGenerator struct {
 }
 
 func (g *charClassGenerator) Generate(s *State) error {
-	for _, charset := range g.charClasses {
-		if len(charset) == 0 {
+	for _, chars := range g.charClasses {
+		if len(chars) == 0 {
 			continue
 		}
-		ibig, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
+		ibig, err := rand.Int(rand.Reader, big.NewInt(int64(len(chars))))
 		if err != nil {
 			panic(err)
 		}
 		i := int(ibig.Int64())
-		s.output = append(s.output, charset[i])
+		s.output = append(s.output, chars[i])
 	}
 	entropy, err := g.Entropy(s)
 	if err != nil {
@@ -36,11 +36,11 @@ func (g *charClassGenerator) Entropy(s *State) (float64, error) {
 		return *g.entropy, nil
 	}
 	entropy := 0.0
-	for _, charset := range g.charClasses {
-		if len(charset) == 0 {
+	for _, chars := range g.charClasses {
+		if len(chars) == 0 {
 			continue
 		}
-		entropy += math.Log2(float64(len(charset)))
+		entropy += math.Log2(float64(len(chars)))
 	}
 	g.entropy = &entropy
 	return entropy, nil

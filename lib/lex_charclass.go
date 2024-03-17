@@ -1,15 +1,15 @@
 package passgen
 
-func processRange(s *State, charset []rune) (LexType, error) {
+func processCharClass(s *State, chars []rune) (LexType, error) {
 	reverse := s.rangeReverse
 	s.openBracket = false
 	s.rangeReverse = false
-	charset = removeDuplicateRunes(charset)
+	chars = removeDuplicateRunes(chars)
 	if reverse {
-		charset = excludeCharsASCII(charset)
+		chars = excludeCharsASCII(chars)
 	}
 	gen := &charClassGenerator{
-		charClasses: [][]rune{charset},
+		charClasses: [][]rune{chars},
 	}
 	err := gen.Generate(s)
 	if err != nil {
@@ -42,7 +42,7 @@ func lexRange(s *State) (LexType, error) {
 			return lexRange, nil
 		}
 	case ']':
-		return processRange(s, s.buffer)
+		return processCharClass(s, s.buffer)
 	}
 	s.buffer = append(s.buffer, c)
 	return lexRange, nil
@@ -60,12 +60,12 @@ func lexRangeColon(s *State) (LexType, error) {
 		switch c {
 		case ':':
 			name := string(nameRunes)
-			charset, ok := charClasses[name]
+			chars, ok := charClasses[name]
 			if !ok {
 				s.errorMarkLen = len(name) + 2
 				return nil, s.errorValue("invalid character class %#v", name)
 			}
-			s.buffer = append(s.buffer, charset...)
+			s.buffer = append(s.buffer, chars...)
 			return lexRange, nil
 		case ']':
 			s.errorMarkLen = len(nameRunes) + 2

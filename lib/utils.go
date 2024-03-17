@@ -1,16 +1,16 @@
 package passgen
 
-func removeDuplicateRunes(list []rune) []rune {
+func removeDuplicateRunes(chars []rune) []rune {
 	set := map[rune]bool{}
-	newlist := make([]rune, 0, len(list))
-	for _, c := range list {
+	newChars := make([]rune, 0, len(chars))
+	for _, c := range chars {
 		if set[c] {
 			continue
 		}
 		set[c] = true
-		newlist = append(newlist, c)
+		newChars = append(newChars, c)
 	}
-	return newlist
+	return newChars
 }
 
 func byteRange(start uint, end uint) []rune {

@@ -93,9 +93,9 @@ func lexBackslash(s *State) (LexType, error) {
 		}
 		return lexRootUnicodeWide, nil
 	case 'd':
-		return processRange(s, []rune("0123456789"))
+		return processCharClass(s, []rune("0123456789"))
 	case 'w':
-		return processRange(s, wordChars)
+		return processCharClass(s, wordChars)
 	}
 	err := s.addOutputOne(backslashEscape(c))
 	if err != nil {
