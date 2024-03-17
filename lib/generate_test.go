@@ -139,6 +139,33 @@ func TestGenerate(t *testing.T) {
 		Entropy: [2]float64{0, 0},
 	})
 
+	test(&genCase{
+		Pattern: `[:alpha:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{22.8, 22.81},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if !strings.ContainsRune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", c) {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:alnum:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{23.81, 23.82},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if !strings.ContainsRune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", c) {
+					return false
+				}
+			}
+			return true
+		},
+	})
+
 	const wordChars = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_`
 	test(&genCase{
 		Pattern: `\w{4}`,
@@ -180,6 +207,33 @@ func TestGenerate(t *testing.T) {
 		},
 	})
 	test(&genCase{
+		Pattern: `[:lower:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{18.8, 18.81},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < 'a' || c > 'z' {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:upper:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{18.8, 18.81},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < 'A' || c > 'Z' {
+					return false
+				}
+			}
+			return true
+		},
+	})
+
+	test(&genCase{
 		Pattern: `[:digit:]{4}`,
 		PassLen: [2]int{4, 4},
 		Entropy: [2]float64{13.28, 13.29},
@@ -205,7 +259,168 @@ func TestGenerate(t *testing.T) {
 			return true
 		},
 	})
-
+	test(&genCase{
+		Pattern: `[:xdigit:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{17.83, 17.84},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if !strings.ContainsRune("0123456789abcdefABCDEF", c) {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:punct:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{20, 20},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if !strings.ContainsRune("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~", c) {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:b32:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{20, 20},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if !strings.ContainsRune("0123456789abcdefghjkmnpqrstvwxyz", c) {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:B32:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{20, 20},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if !strings.ContainsRune("0123456789ABCDEFGHJKMNPQRSTVWXYZ", c) {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:B32STD:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{20, 20},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if !strings.ContainsRune("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", c) {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:b64:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{24, 24},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if !strings.ContainsRune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", c) {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:b64url:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{24, 24},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if !strings.ContainsRune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_", c) {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:print:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{26.27, 26.28},
+	})
+	test(&genCase{
+		Pattern: `[:graph:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{26.21, 26.22},
+	})
+	test(&genCase{
+		Pattern: `[:space:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{10.33, 10.34},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				switch c {
+				case ' ', '\t', '\r', '\n', '\v', '\f':
+				default:
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:blank:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{4, 4},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				switch c {
+				case ' ', '\t':
+				default:
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:cntrl:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{20.17, 20.18},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				switch {
+				case c >= '\x00' && c <= '\x1F':
+				case c == '\x7F':
+				default:
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:ascii:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{28, 28},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				switch {
+				case c <= '\x7F':
+				default:
+					return false
+				}
+			}
+			return true
+		},
+	})
 	testErr(&genErrCase{
 		Pattern: `[\`,
 		Error:   ` ^ syntax error: '[' not closed`,
