@@ -32,12 +32,12 @@ Then `repassgen` binary file will be created in current directory.
 - \[x\] Repeatable groups with `(...){N}`, like  `([a-z]{2}[1-9]){3}`
 - \[x\] `[:alnum:]` Alphanumeric characters
 - \[x\] `[:alpha:]` Alphabetic characters
-- \[x\] `[:word:]` Word characters (letters, numbers and underscores)
+- \[x\] `[:word:]`, `[:w:]` or `\w`: Word characters (letters, numbers and underscores, same as `[a-zA-Z0-9_]`)
 - \[x\] `[:upper:]` Uppercase letters
 - \[x\] `[:lower:]` Lowercase letters
 - \[x\] `[:graph:]` Visible characters
 - \[x\] `[:print:]` Visible characters and spaces (anything except control characters)
-- \[x\] `[:digit:]` Digits
+- \[x\] `[:digit:]` or `\d` Digits
 - \[x\] `[:xdigit:]` Hexadecimal digits
 - \[x\] `[:punct:]` Punctuation (and symbols).
 - \[x\] `[:space:]` All whitespace characters, including line breaks
@@ -46,8 +46,6 @@ Then `repassgen` binary file will be created in current directory.
 - \[x\] `[:ascii:]` ASCII characters
 - \[x\] [Unicode code points](https://www.regular-expressions.info/unicode.html), like `[\u00e0-\u00ef]{5}`
 - \[x\] Group references `\1`, `\2`, etc
-- \[x\] `\d` Digits
-- \[x\] `\w` Word characters: alphanumeric and underline, same as `[a-zA-Z0-9_]`
 
 # Aditional Features (not part of regexp)
 

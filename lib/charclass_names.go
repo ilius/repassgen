@@ -11,12 +11,14 @@ var charClasses = map[string][]rune{
 	"alnum": []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
 
 	// Word characters (letters, numbers and underscores), [A-Za-z0-9_]
-	"word": []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"),
+	"word": wordChars,
+	"w":    wordChars,
 
 	"lower": []rune("abcdefghijklmnopqrstuvwxyz"),
 	"upper": []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
 
 	"digit":  []rune("0123456789"),
+	"d":      []rune("0123456789"),
 	"xdigit": []rune("0123456789abcdefABCDEF"),
 
 	"punct": []rune("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"),

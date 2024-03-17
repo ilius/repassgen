@@ -139,6 +139,73 @@ func TestGenerate(t *testing.T) {
 		Entropy: [2]float64{0, 0},
 	})
 
+	const wordChars = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_`
+	test(&genCase{
+		Pattern: `\w{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{23.9, 23.91},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if !strings.ContainsRune(wordChars, c) {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:word:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{23.9, 23.91},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if !strings.ContainsRune(wordChars, c) {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:w:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{23.9, 23.91},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if !strings.ContainsRune(wordChars, c) {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:digit:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{13.28, 13.29},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < '0' || c > '9' {
+					return false
+				}
+			}
+			return true
+		},
+	})
+	test(&genCase{
+		Pattern: `[:d:]{4}`,
+		PassLen: [2]int{4, 4},
+		Entropy: [2]float64{13.28, 13.29},
+		Validate: func(p string) bool {
+			for _, c := range p {
+				if c < '0' || c > '9' {
+					return false
+				}
+			}
+			return true
+		},
+	})
+
 	testErr(&genErrCase{
 		Pattern: `[\`,
 		Error:   ` ^ syntax error: '[' not closed`,
@@ -784,20 +851,6 @@ func TestGenerate(t *testing.T) {
 		Validate: func(p string) bool {
 			for _, c := range p {
 				if c < '0' || c > '9' {
-					return false
-				}
-			}
-			return true
-		},
-	})
-	const wordChars = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_`
-	test(&genCase{
-		Pattern: `\w{4}`,
-		PassLen: [2]int{4, 4},
-		Entropy: [2]float64{23.9, 23.91},
-		Validate: func(p string) bool {
-			for _, c := range p {
-				if !strings.ContainsRune(wordChars, c) {
 					return false
 				}
 			}
