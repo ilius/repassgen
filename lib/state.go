@@ -30,7 +30,7 @@ type State struct {
 	lastGen generatorIface
 
 	input  []rune
-	buff   []rune
+	buffer []rune
 	output []rune
 
 	inputPos uint64

@@ -19,7 +19,7 @@ func lexGroup(s *State) (LexType, error) {
 	case ')':
 		s.openParenth--
 		if s.openParenth > 0 {
-			s.buff = append(s.buff, ')')
+			s.buffer = append(s.buffer, ')')
 			return lexGroup, nil
 		}
 		return processGroupEnd(s)
@@ -28,10 +28,10 @@ func lexGroup(s *State) (LexType, error) {
 			s.errorOffset++
 			return nil, s.errorSyntax("'|' at the end of group")
 		}
-		s.moveBack(uint64(len(s.buff) + 1))
+		s.moveBack(uint64(len(s.buffer) + 1))
 		return lexGroupAlter, nil
 	}
-	s.buff = append(s.buff, c)
+	s.buffer = append(s.buffer, c)
 	return lexGroup, nil
 }
 
@@ -82,7 +82,7 @@ Loop:
 	s.move(1)
 	s.openParenth--
 	s.lastGen = gen
-	s.buff = nil
+	s.buffer = nil
 	return LexRoot, nil
 }
 
@@ -93,7 +93,7 @@ func processGroupBackslash(s *State) (LexType, error) {
 	}
 	c := s.input[s.inputPos]
 	s.move(1)
-	s.buff = append(s.buff, '\\', c)
+	s.buffer = append(s.buffer, '\\', c)
 	return lexGroup, nil
 }
 
@@ -102,8 +102,8 @@ func processGroupEnd(s *State) (LexType, error) {
 	lastOutputSize := len(s.output)
 	s2 := NewState(s.SharedState.Copy(), s.input)
 	s2.output = s.output
-	s2.errorOffset -= int64(len(s.buff) + 1)
-	gen := newGroupGenerator(s.buff)
+	s2.errorOffset -= int64(len(s.buffer) + 1)
+	gen := newGroupGenerator(s.buffer)
 	err := gen.Generate(s2)
 	if err != nil {
 		return nil, err
@@ -113,7 +113,7 @@ func processGroupEnd(s *State) (LexType, error) {
 	s.lastGroupId = s2.lastGroupId
 	s.groupsOutput[groupId] = s.output[lastOutputSize:]
 	s.lastGen = gen
-	s.buff = nil
+	s.buffer = nil
 	return LexRoot, nil
 }
 

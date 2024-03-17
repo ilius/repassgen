@@ -22,28 +22,28 @@ func lexRepeat(s *State) (LexType, error) {
 	case '$':
 		return nil, s.errorSyntax("'$' inside {...}")
 	case ',':
-		if hasRune(s.buff, ',') {
+		if hasRune(s.buffer, ',') {
 			return nil, s.errorSyntax("multiple ',' inside {...}")
 		}
-		s.buff = append(s.buff, c)
+		s.buffer = append(s.buffer, c)
 		return lexRepeat, nil
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-		s.buff = append(s.buff, c)
+		s.buffer = append(s.buffer, c)
 		return lexRepeat, nil
 	case '-':
-		if hasRune(s.buff, ',') {
+		if hasRune(s.buffer, ',') {
 			return nil, s.errorSyntax("invalid natural number")
 		}
 		return nil, s.errorSyntax("repetition range syntax is '{M,N}' not '{M-N}'")
 	case '}':
 		return closeLexRepeat(s)
 	}
-	s.errorMarkLen = len(s.buff) + 1
+	s.errorMarkLen = len(s.buffer) + 1
 	return nil, s.errorSyntax("invalid natural number inside {...}")
 }
 
 func closeLexRepeat(s *State) (LexType, error) {
-	if len(s.buff) == 0 {
+	if len(s.buffer) == 0 {
 		return nil, s.errorSyntax("missing number inside {}")
 	}
 	if s.lastGen == nil {
@@ -52,7 +52,7 @@ func closeLexRepeat(s *State) (LexType, error) {
 	}
 	child := s.lastGen
 	// FIXME: lastGen may have used another state
-	count, err := parseRepeatCount(s, s.buff)
+	count, err := parseRepeatCount(s, s.buffer)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func closeLexRepeat(s *State) (LexType, error) {
 	// but we need to re-set g.count after gen.Generate(s), because the whole thing
 	// might be repeated again
 	s.lastGen = gen
-	s.buff = nil
+	s.buffer = nil
 	return LexRoot, nil
 }
 

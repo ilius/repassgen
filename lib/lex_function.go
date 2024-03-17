@@ -1,6 +1,6 @@
 package passgen
 
-func _lexIdentFuncCallParanClose(s *State, buff []rune) (LexType, error) {
+func _lexIdentFuncCallParanClose(s *State, buffer []rune) (LexType, error) {
 	if s.openBracket {
 		return nil, nil
 	}
@@ -10,12 +10,12 @@ func _lexIdentFuncCallParanClose(s *State, buff []rune) (LexType, error) {
 	}
 	s.move(1)
 	s2 := NewState(s.SharedState.Copy(), s.input)
-	s2.errorOffset -= int64(len(buff) + 1)
-	funcName := string(s.buff)
+	s2.errorOffset -= int64(len(buffer) + 1)
+	funcName := string(s.buffer)
 	if funcName == "" {
 		return nil, s2.errorSyntax("missing function name")
 	}
-	gen, err := getFuncGenerator(s2, funcName, buff)
+	gen, err := getFuncGenerator(s2, funcName, buffer)
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +26,7 @@ func _lexIdentFuncCallParanClose(s *State, buff []rune) (LexType, error) {
 	s.output = append(s.output, s2.output...)
 	s.patternEntropy = s2.patternEntropy
 	s.lastGroupId = s2.lastGroupId
-	s.buff = nil
+	s.buffer = nil
 	s.lastGen = gen
 	return LexRoot, nil
 }
@@ -39,25 +39,25 @@ func _lexIdentFuncCallEndError(s *State) error {
 	return s.errorSyntax(s_func_call_expected)
 }
 
-func _lexIdentFuncCallBackslash(s *State, buff []rune) []rune {
-	buff = append(buff, '\\')
+func _lexIdentFuncCallBackslash(s *State, buffer []rune) []rune {
+	buffer = append(buffer, '\\')
 	s.move(1)
 	if !s.end() {
-		buff = append(buff, s.input[s.inputPos])
+		buffer = append(buffer, s.input[s.inputPos])
 	}
-	return buff
+	return buffer
 }
 
 func lexIdentFuncCall(s *State) (LexType, error) {
 	if s.end() {
 		return nil, _lexIdentFuncCallEndError(s)
 	}
-	buff := []rune{}
+	buffer := []rune{}
 	for ; !s.end(); s.move(1) {
 		c := s.input[s.inputPos]
 		switch c {
 		case '\\':
-			buff = _lexIdentFuncCallBackslash(s, buff)
+			buffer = _lexIdentFuncCallBackslash(s, buffer)
 			continue
 		case '(':
 			if s.openBracket {
@@ -72,7 +72,7 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 		case ']':
 			s.openBracket = false
 		case ')':
-			lex, err := _lexIdentFuncCallParanClose(s, buff)
+			lex, err := _lexIdentFuncCallParanClose(s, buffer)
 			if err != nil {
 				return nil, err
 			}
@@ -80,7 +80,7 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 				return lex, nil
 			}
 		}
-		buff = append(buff, c)
+		buffer = append(buffer, c)
 	}
 	s.errorOffset++
 	if s.openParenth > 0 {

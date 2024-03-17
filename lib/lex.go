@@ -17,8 +17,8 @@ func init() {
 
 // LexRoot is the root lex implementation
 func LexRoot(s *State) (LexType, error) {
-	if s.buff != nil {
-		return nil, s.errorUnknown("incomplete buffer: %s", string(s.buff))
+	if s.buffer != nil {
+		return nil, s.errorUnknown("incomplete buffer: %s", string(s.buffer))
 	}
 	if s.end() {
 		if s.openParenth > 0 {
@@ -83,13 +83,13 @@ func lexBackslash(s *State) (LexType, error) {
 	s.move(1)
 	switch c {
 	case 'u':
-		if s.buff != nil {
-			return nil, s.errorUnknown("incomplete buffer: %s", string(s.buff))
+		if s.buffer != nil {
+			return nil, s.errorUnknown("incomplete buffer: %s", string(s.buffer))
 		}
 		return lexRootUnicode, nil
 	case 'U':
-		if s.buff != nil {
-			return nil, s.errorUnknown("incomplete buffer: %s", string(s.buff))
+		if s.buffer != nil {
+			return nil, s.errorUnknown("incomplete buffer: %s", string(s.buffer))
 		}
 		return lexRootUnicodeWide, nil
 	}
@@ -114,28 +114,28 @@ func lexIdent(s *State) (LexType, error) {
 		s.openParenth++
 		return lexIdentFuncCall, nil
 	}
-	s.buff = append(s.buff, c)
+	s.buffer = append(s.buffer, c)
 	return lexIdent, nil
 }
 
-func makeLexUnicode(parentLex LexType, symbol rune, width int, toBuff bool) LexType {
+func makeLexUnicode(parentLex LexType, symbol rune, width int, toBuffer bool) LexType {
 	return func(s *State) (LexType, error) {
-		buff := make([]rune, 0, width)
-		buff = append(buff, '\\', symbol)
-		for ; len(buff) < width && !s.end(); s.move(1) {
-			buff = append(buff, s.input[s.inputPos])
+		buffer := make([]rune, 0, width)
+		buffer = append(buffer, '\\', symbol)
+		for ; len(buffer) < width && !s.end(); s.move(1) {
+			buffer = append(buffer, s.input[s.inputPos])
 		}
-		if len(buff) != width {
-			s.errorMarkLen = len(buff)
+		if len(buffer) != width {
+			s.errorMarkLen = len(buffer)
 			return nil, s.errorSyntax("invalid escape sequence")
 		}
-		char, _, _, err := strconv.UnquoteChar(string(buff), '"')
+		char, _, _, err := strconv.UnquoteChar(string(buffer), '"')
 		if err != nil {
 			s.errorMarkLen = width
 			return nil, s.errorSyntax("invalid escape sequence")
 		}
-		if toBuff {
-			s.buff = append(s.buff, char)
+		if toBuffer {
+			s.buffer = append(s.buffer, char)
 		} else {
 			err := s.addOutputOne(char)
 			if err != nil {
