@@ -81,13 +81,13 @@ func lexBackslash(s *State) (LexType, error) {
 		return processGroupRef(s, LexRoot)
 	}
 	s.move(1)
-	if c == 'u' {
+	switch c {
+	case 'u':
 		if s.buff != nil {
 			return nil, s.errorUnknown("incomplete buffer: %s", string(s.buff))
 		}
 		return lexRootUnicode, nil
-	}
-	if c == 'U' {
+	case 'U':
 		if s.buff != nil {
 			return nil, s.errorUnknown("incomplete buffer: %s", string(s.buff))
 		}
