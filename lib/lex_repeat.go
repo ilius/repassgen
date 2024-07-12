@@ -2,6 +2,7 @@ package passgen
 
 import (
 	math_rand "math/rand/v2"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -22,7 +23,7 @@ func lexRepeat(s *State) (LexType, error) {
 	case '$':
 		return nil, s.errorSyntax("'$' inside {...}")
 	case ',':
-		if hasRune(s.buffer, ',') {
+		if slices.Contains(s.buffer, ',') {
 			return nil, s.errorSyntax("multiple ',' inside {...}")
 		}
 		s.buffer = append(s.buffer, c)
@@ -31,7 +32,7 @@ func lexRepeat(s *State) (LexType, error) {
 		s.buffer = append(s.buffer, c)
 		return lexRepeat, nil
 	case '-':
-		if hasRune(s.buffer, ',') {
+		if slices.Contains(s.buffer, ',') {
 			return nil, s.errorSyntax("invalid natural number")
 		}
 		return nil, s.errorSyntax("repetition range syntax is '{M,N}' not '{M-N}'")
