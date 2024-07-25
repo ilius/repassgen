@@ -71,4 +71,7 @@ func TestParseSpacedError(t *testing.T) {
 		is.Equal(err.Type(), passgen.ErrorSyntax)
 		// is.Equal(err.msgs, []string{"dummy error"})
 	}
+
+	is.Nil(passgen.ParseSpacedError(`     x^`))
+	is.Nil(passgen.ParseSpacedError(`     ^ x x error:`))
 }

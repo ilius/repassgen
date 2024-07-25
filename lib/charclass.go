@@ -18,22 +18,19 @@ func (g *charClassGenerator) Generate(s *State) error {
 		}
 		ibig, err := rand.Int(rand.Reader, big.NewInt(int64(len(chars))))
 		if err != nil {
-			panic(err)
+			panic(err) // not sure how to trigger this in test
 		}
 		i := int(ibig.Int64())
 		s.output = append(s.output, chars[i])
 	}
-	entropy, err := g.Entropy(s)
-	if err != nil {
-		return err
-	}
+	entropy := g.getEntropy()
 	s.patternEntropy += entropy
 	return nil
 }
 
-func (g *charClassGenerator) Entropy(s *State) (float64, error) {
+func (g *charClassGenerator) getEntropy() float64 {
 	if g.entropy != nil {
-		return *g.entropy, nil
+		return *g.entropy
 	}
 	entropy := 0.0
 	for _, chars := range g.charClasses {
@@ -43,5 +40,9 @@ func (g *charClassGenerator) Entropy(s *State) (float64, error) {
 		entropy += math.Log2(float64(len(chars)))
 	}
 	g.entropy = &entropy
-	return entropy, nil
+	return entropy
+}
+
+func (g *charClassGenerator) Entropy(s *State) (float64, error) {
+	return g.getEntropy(), nil
 }

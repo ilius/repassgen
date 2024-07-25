@@ -37,9 +37,13 @@ func (g *alterGenerator) calcMinEntropy(s *State) (float64, error) {
 
 func (g *alterGenerator) Generate(s *State) error {
 	parts := g.parts
+	// rand.Int panics if the arg is zero, which means len(parts) == 0
+	if len(parts) == 0 {
+		return s.errorSyntax("no arguments in alteration")
+	}
 	ibig, err := rand.Int(rand.Reader, big.NewInt(int64(len(parts))))
 	if err != nil {
-		panic(err)
+		panic(err) // not sure how to trigger this in test
 	}
 
 	i := ibig.Int64()

@@ -30,3 +30,17 @@ func TestAlterGenerator(t *testing.T) {
 		isFloatBetween(is, entropy, 1, 1)
 	}
 }
+
+func TestAlterGeneratorEmpty(t *testing.T) {
+	is := is.New(t)
+	pattern := []rune("()")
+	g := passgen.NewAlterGenerator(
+		[][]rune{},
+		[]uint64{0, 1},
+	)
+	s := newTestState(pattern)
+	{
+		err := g.Generate(s)
+		is.ErrMsg(err, "syntax error near index 0: no arguments in alteration")
+	}
+}

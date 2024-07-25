@@ -14,7 +14,7 @@ type byteGenerator struct {
 func (g *byteGenerator) Generate(s *State) error {
 	randBig, err := rand.Int(rand.Reader, big.NewInt(0xff))
 	if err != nil {
-		panic(err)
+		panic(err) // not sure how to trigger this in test
 	}
 	byteStr := hex.EncodeToString([]byte{uint8(randBig.Uint64())})
 	if g.uppercase {

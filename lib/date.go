@@ -22,7 +22,7 @@ func (g *dateGenerator) Generate(s *State) error {
 	endJd := g.endJd
 	randBig, err := rand.Int(rand.Reader, big.NewInt(int64(endJd-startJd)))
 	if err != nil {
-		panic(err)
+		panic(err) // not sure how to trigger this in test
 	}
 	jd := startJd + int(randBig.Int64())
 	date := gregorian.JdTo(jd)

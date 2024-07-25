@@ -60,7 +60,7 @@ func (e *Error) WithMarkLen(markLen int) *Error {
 }
 
 func (e *Error) SpacedError() string {
-	if e.markLen <= 0 {
+	if e.markLen == 0 {
 		return fmt.Sprintf(
 			"%s^ %s error: %s",
 			strings.Repeat(" ", int(e.pos)),

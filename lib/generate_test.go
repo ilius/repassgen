@@ -1888,6 +1888,18 @@ func TestGenerate(t *testing.T) {
 		Password: strPtr(`  abc,  `),
 	})
 	test(&genCase{
+		Pattern:  `$json(test)`,
+		PassLen:  [2]int{4, 4},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`test`),
+	})
+	test(&genCase{
+		Pattern:  `$json("")`,
+		PassLen:  [2]int{4, 4},
+		Entropy:  [2]float64{0, 0},
+		Password: strPtr(`\"\"`),
+	})
+	test(&genCase{
 		Pattern:  `(abc) test1 \1 test2`,
 		PassLen:  [2]int{19, 19},
 		Entropy:  [2]float64{0, 0},
@@ -1928,5 +1940,9 @@ func TestGenerate(t *testing.T) {
 		PassLen:  [2]int{25, 25},
 		Entropy:  [2]float64{0, 0},
 		Password: strPtr(`kana: そうたい romaji: soutai`),
+	})
+	testErr(&genErrCase{
+		Pattern: strings.Repeat("a", 1001),
+		Error:   `pattern is too long`,
 	})
 }

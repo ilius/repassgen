@@ -111,7 +111,7 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 			chex := make([]byte, 2)
 			n := hex.Encode(chex, []byte{cbyte})
 			if n != 2 {
-				return nil, s.errorUnknown("failed converting byte %x to hex", cbyte)
+				return nil, s.errorUnknown("failed converting byte %x to hex", cbyte) // TODO: cover in test
 			}
 			out += "\\x" + string(chex)
 		}
@@ -142,7 +142,7 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 	"json": func(s *State, in []rune) ([]rune, error) {
 		outB, err := json.Marshal(string(in))
 		if err != nil {
-			return nil, s.errorUnknown("error in json Marshal: %v", err)
+			return nil, s.errorUnknown("error in json Marshal: %v", err) // how to cover in test?
 		}
 		outS := string(outB)
 		outS = outS[1 : len(outS)-1]
