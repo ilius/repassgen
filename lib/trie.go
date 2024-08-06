@@ -1,4 +1,5 @@
 /*
+From https://github.com/gojp/kana
 Copyright 2013 Herman Schaaf and Shawn Smith
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -69,7 +70,9 @@ func (t *Trie) convert(origin string) (result string) {
 	originRune := []rune(origin)
 	result = ""
 
-	for l := range len(originRune) {
+	// Note: loop var `l` is modified inside the loop
+	// so do not use `for l := range len(originRune)`
+	for l := 0; l < len(originRune); l++ {
 		t = root
 		foundVal := ""
 		depth := 0
