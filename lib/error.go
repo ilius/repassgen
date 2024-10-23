@@ -2,6 +2,7 @@ package passgen
 
 import (
 	"fmt"
+
 	"strings"
 )
 
