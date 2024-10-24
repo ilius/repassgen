@@ -33,7 +33,7 @@ func Main(stdout io.Writer, args []string) {
 		"repassgen [-entropy] PATTERN",
 	)
 
-	err := xflag.ParseToEnd(flagSet, args)
+	err := xflag.ParseToEnd(flagSet, args[1:])
 	if err != nil {
 		os.Stderr.WriteString(err.Error() + "\n")
 		os.Exit(1)
@@ -41,7 +41,7 @@ func Main(stdout io.Writer, args []string) {
 
 	calcEnropy := entropyFlag != nil && *entropyFlag
 
-	pattern := flagSet.Arg(1)
+	pattern := flagSet.Arg(0)
 	out, _, err := passgen.Generate(passgen.GenerateInput{
 		Pattern: []rune(pattern),
 	})
