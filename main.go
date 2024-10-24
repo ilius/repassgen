@@ -7,12 +7,7 @@ import (
 	"os"
 
 	passgen "github.com/ilius/repassgen/lib"
-)
-
-var entropyFlag = flag.Bool(
-	"entropy",
-	false,
-	"repassgen [-entropy] PATTERN",
+	"github.com/ilius/repassgen/xflag"
 )
 
 func printError(err error, pattern string) {
@@ -26,15 +21,27 @@ func printError(err error, pattern string) {
 }
 
 func main() {
-	Main(os.Stdout)
+	Main(os.Stdout, os.Args)
 }
 
-func Main(stdout io.Writer) {
-	flag.Parse()
+func Main(stdout io.Writer, args []string) {
+	flagSet := &flag.FlagSet{}
+
+	entropyFlag := flagSet.Bool(
+		"entropy",
+		false,
+		"repassgen [-entropy] PATTERN",
+	)
+
+	err := xflag.ParseToEnd(flagSet, args)
+	if err != nil {
+		os.Stderr.WriteString(err.Error() + "\n")
+		os.Exit(1)
+	}
 
 	calcEnropy := entropyFlag != nil && *entropyFlag
 
-	pattern := flag.Arg(0)
+	pattern := flagSet.Arg(1)
 	out, _, err := passgen.Generate(passgen.GenerateInput{
 		Pattern: []rune(pattern),
 	})
