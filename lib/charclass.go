@@ -43,6 +43,6 @@ func (g *charClassGenerator) getEntropy() float64 {
 	return entropy
 }
 
-func (g *charClassGenerator) Entropy(s *State) (float64, error) {
+func (g *charClassGenerator) Entropy(_ *State) (float64, error) {
 	return g.getEntropy(), nil
 }

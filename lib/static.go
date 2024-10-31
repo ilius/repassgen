@@ -9,6 +9,6 @@ func (g *staticStringGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *staticStringGenerator) Entropy(s *State) (float64, error) {
+func (g *staticStringGenerator) Entropy(_ *State) (float64, error) {
 	return 0, nil
 }

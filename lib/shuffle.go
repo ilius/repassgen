@@ -1,6 +1,6 @@
 package passgen
 
-func shuffle(s *State, in []rune) ([]rune, error) {
+func shuffle(_ *State, in []rune) ([]rune, error) {
 	r := NewRandSource()
 	r.Shuffle(len(in), func(i int, j int) {
 		in[i], in[j] = in[j], in[i]

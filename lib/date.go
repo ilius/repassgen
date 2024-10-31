@@ -36,7 +36,7 @@ func (g *dateGenerator) entropy() float64 {
 	return math.Log2(float64(g.endJd - g.startJd))
 }
 
-func (g *dateGenerator) Entropy(s *State) (float64, error) {
+func (g *dateGenerator) Entropy(_ *State) (float64, error) {
 	return g.entropy(), nil
 }
 

@@ -25,7 +25,7 @@ func (g *byteGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *byteGenerator) Entropy(s *State) (float64, error) {
+func (g *byteGenerator) Entropy(_ *State) (float64, error) {
 	return 8, nil
 }
 

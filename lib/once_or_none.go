@@ -31,7 +31,7 @@ func (g *onceOrNoneGenerator) Generate(s *State) error {
 	return nil
 }
 
-func (g *onceOrNoneGenerator) Entropy(s *State) (float64, error) {
+func (g *onceOrNoneGenerator) Entropy(_ *State) (float64, error) {
 	return g.entropy, nil
 }
 
