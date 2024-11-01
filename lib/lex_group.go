@@ -7,7 +7,7 @@ import (
 func lexGroup(s *State) (LexType, error) {
 	if s.end() {
 		s.errorOffset++
-		return nil, s.errorSyntax("'(' not closed")
+		return nil, s.errorSyntax(err_paranthNotClosed)
 	}
 	c := s.input[s.inputPos]
 	s.move(1)
@@ -89,7 +89,7 @@ Loop:
 func processGroupBackslash(s *State) (LexType, error) {
 	if s.end() {
 		s.errorOffset++
-		return nil, s.errorSyntax("'(' not closed")
+		return nil, s.errorSyntax(err_paranthNotClosed)
 	}
 	c := s.input[s.inputPos]
 	s.move(1)

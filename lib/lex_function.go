@@ -34,7 +34,7 @@ func _lexIdentFuncCallParanClose(s *State, buffer []rune) (LexType, error) {
 func _lexIdentFuncCallEndError(s *State) error {
 	s.errorOffset++
 	if s.openParenth > 0 {
-		return s.errorSyntax("'(' not closed")
+		return s.errorSyntax(err_paranthNotClosed)
 	}
 	return s.errorSyntax(s_func_call_expected)
 }
@@ -66,7 +66,7 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 			s.openParenth++
 		case '[':
 			if s.openBracket {
-				return nil, s.errorSyntax("nested '['")
+				return nil, s.errorSyntax(err_nestedBracket)
 			}
 			s.openBracket = true
 		case ']':
@@ -84,7 +84,7 @@ func lexIdentFuncCall(s *State) (LexType, error) {
 	}
 	s.errorOffset++
 	if s.openParenth > 0 {
-		return nil, s.errorSyntax("'(' not closed")
+		return nil, s.errorSyntax(err_paranthNotClosed)
 	}
 	return nil, s.errorSyntax(s_func_call_expected)
 }

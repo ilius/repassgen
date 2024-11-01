@@ -1,5 +1,7 @@
 package passgen
 
+const s_digits = "0123456789"
+
 // \w == [a-zA-Z0-9_]
 var wordChars = []rune(
 	`abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_`,
@@ -17,8 +19,8 @@ var charClasses = map[string][]rune{
 	"lower": []rune("abcdefghijklmnopqrstuvwxyz"),
 	"upper": []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
 
-	"digit":  []rune("0123456789"),
-	"d":      []rune("0123456789"),
+	"digit":  []rune(s_digits),
+	"d":      []rune(s_digits),
 	"xdigit": []rune("0123456789abcdefABCDEF"),
 
 	"punct": []rune("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"),

@@ -18,7 +18,7 @@ func init() {
 // LexRoot is the root lex implementation
 func LexRoot(s *State) (LexType, error) {
 	if s.buffer != nil {
-		return nil, s.errorUnknown("incomplete buffer: %s", string(s.buffer))
+		return nil, s.errorUnknown(err_incompleteBuffer, string(s.buffer))
 	}
 	if s.end() {
 		if s.openParenth > 0 {
@@ -33,7 +33,7 @@ func LexRoot(s *State) (LexType, error) {
 		return lexBackslash, nil
 	case '[':
 		if s.openBracket {
-			return nil, s.errorSyntax("nested '['")
+			return nil, s.errorSyntax(err_nestedBracket)
 		}
 		s.openBracket = true
 		return lexRange, nil
@@ -84,16 +84,16 @@ func lexBackslash(s *State) (LexType, error) {
 	switch c {
 	case 'u':
 		if s.buffer != nil {
-			return nil, s.errorUnknown("incomplete buffer: %s", string(s.buffer))
+			return nil, s.errorUnknown(err_incompleteBuffer, string(s.buffer))
 		}
 		return lexRootUnicode, nil
 	case 'U':
 		if s.buffer != nil {
-			return nil, s.errorUnknown("incomplete buffer: %s", string(s.buffer))
+			return nil, s.errorUnknown(err_incompleteBuffer, string(s.buffer))
 		}
 		return lexRootUnicodeWide, nil
 	case 'd':
-		return processCharClass(s, []rune("0123456789"))
+		return processCharClass(s, []rune(s_digits))
 	case 'w':
 		return processCharClass(s, wordChars)
 	}

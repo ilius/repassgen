@@ -23,7 +23,7 @@ func processCharClass(s *State, chars []rune) (LexType, error) {
 func lexRange(s *State) (LexType, error) {
 	if s.end() {
 		s.errorOffset++
-		return nil, s.errorSyntax("'[' not closed")
+		return nil, s.errorSyntax(err_rangeNotClosed)
 	}
 	c := s.input[s.inputPos]
 	s.move(1)
@@ -31,7 +31,7 @@ func lexRange(s *State) (LexType, error) {
 	case '\\':
 		return lexRangeBackslash, nil
 	case '[':
-		return nil, s.errorSyntax("nested '['")
+		return nil, s.errorSyntax(err_nestedBracket)
 	case ':':
 		return lexRangeColon, nil
 	case '-':
@@ -51,7 +51,7 @@ func lexRange(s *State) (LexType, error) {
 func lexRangeColon(s *State) (LexType, error) {
 	if s.end() {
 		s.errorOffset++
-		return nil, s.errorSyntax("':' not closed")
+		return nil, s.errorSyntax(err_colonNotClosed)
 	}
 	nameRunes := []rune{}
 	for !s.end() {
@@ -69,20 +69,20 @@ func lexRangeColon(s *State) (LexType, error) {
 			return lexRange, nil
 		case ']':
 			s.errorMarkLen = len(nameRunes) + 2
-			return nil, s.errorSyntax("':' not closed")
+			return nil, s.errorSyntax(err_colonNotClosed)
 		}
 		nameRunes = append(nameRunes, c)
 	}
 	s.errorOffset++
 	s.errorMarkLen = len(nameRunes) + 2
-	return nil, s.errorSyntax("':' not closed")
+	return nil, s.errorSyntax(err_colonNotClosed)
 }
 
 func lexRangeDashInit(s *State) (LexType, error) {
 	if s.end() {
 		s.errorOffset++
 		s.errorMarkLen = len(s.buffer) + 3
-		return nil, s.errorSyntax("'[' not closed")
+		return nil, s.errorSyntax(err_rangeNotClosed)
 	}
 	s.buffer = append(s.buffer, s.input[s.inputPos-1], s.input[s.inputPos])
 	s.move(1)
@@ -116,7 +116,7 @@ func lexRangeDash(s *State) (LexType, error) {
 
 func lexRangeBackslash(s *State) (LexType, error) {
 	if s.end() {
-		return nil, s.errorSyntax("'[' not closed")
+		return nil, s.errorSyntax(err_rangeNotClosed)
 	}
 	c := s.input[s.inputPos]
 	s.move(1)
@@ -132,7 +132,7 @@ func lexRangeBackslash(s *State) (LexType, error) {
 
 func lexRangeDashBackslash(s *State) (LexType, error) {
 	if s.end() {
-		return nil, s.errorSyntax("'[' not closed")
+		return nil, s.errorSyntax(err_rangeNotClosed)
 	}
 	c := s.input[s.inputPos]
 	s.move(1)
