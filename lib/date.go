@@ -1,7 +1,7 @@
 package passgen
 
 import (
-	rand "crypto/rand"
+	"crypto/rand"
 	"math"
 	"math/big"
 	"strconv"

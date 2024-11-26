@@ -1,7 +1,7 @@
 package passgen
 
 import (
-	rand "crypto/rand"
+	"crypto/rand"
 	"encoding/binary"
 	math_rand "math/rand/v2"
 )
