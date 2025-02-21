@@ -11,9 +11,9 @@ import (
 	"testing"
 
 	"github.com/ilius/bip39-coder/bip39"
-	"github.com/ilius/crock32"
 	"github.com/ilius/is/v2"
 	passgen "github.com/ilius/repassgen/lib"
+	"github.com/ilius/repassgen/lib/crock32"
 )
 
 var (
@@ -1186,7 +1186,7 @@ func TestGenerate(t *testing.T) {
 			if strings.ToLower(p) != p {
 				return false
 			}
-			pwBytes, err := crock32.Decode(p)
+			pwBytes, err := crock32.DecodeStrings(p)
 			if err != nil {
 				panic(err)
 			}
@@ -1210,7 +1210,7 @@ func TestGenerate(t *testing.T) {
 			if strings.ToUpper(p) != p {
 				return false
 			}
-			pwBytes, err := crock32.Decode(p)
+			pwBytes, err := crock32.DecodeStrings(p)
 			if err != nil {
 				panic(err)
 			}

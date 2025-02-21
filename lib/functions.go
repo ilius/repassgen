@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ilius/crock32"
+	"github.com/ilius/repassgen/lib/crock32"
 )
 
 func expand1(sep rune, in []rune) []rune {
@@ -51,7 +51,7 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 			return nil, s.errorValue(s_invalid_hex_num, string(in))
 		}
 		return []rune(
-			strings.ToLower(crock32.Encode(data)),
+			strings.ToLower(crock32.EncodeToString(data)),
 		), nil
 	},
 	"BASE32": func(s *State, in []rune) ([]rune, error) {
@@ -60,7 +60,7 @@ var encoderFunctions = map[string]func(s *State, in []rune) ([]rune, error){
 			return nil, s.errorValue(s_invalid_hex_num, string(in))
 		}
 		return []rune(
-			crock32.Encode(data),
+			crock32.EncodeToString(data),
 		), nil
 	},
 
