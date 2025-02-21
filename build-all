@@ -10,6 +10,11 @@ function build_for_os32() {
 	GOOS=$1 GOARCH=386 go build -o repassgen-$1-x86 "${FLAGS[@]}"
 }
 
+function build_for_darwin_arm64() {
+	OUT=repassgen-darwin-arm64
+	GOOS=darwin GOARCH=arm64 go build -o $OUT "${FLAGS[@]}" "$@"
+	#bzip2 -f $OUT
+}
 
 build_for_os64 linux
 build_for_os32 linux
@@ -20,5 +25,6 @@ build_for_os32 windows
 build_for_os64 freebsd
 build_for_os32 freebsd
 
+build_for_darwin_arm64
 build_for_os64 darwin
 
