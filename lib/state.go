@@ -3,6 +3,7 @@ package passgen
 import (
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"strconv"
 )
@@ -144,6 +145,9 @@ func NewSharedState() *SharedState {
 		maxLength, err := strconv.ParseInt(maxLengthStr, 10, 64)
 		if err != nil {
 			panic("invalid REPASSGEN_MAX_LENGTH: must be an integer")
+		}
+		if maxLength > math.MaxInt {
+			panic("REPASSGEN_MAX_LENGTH is larger than MaxInt")
 		}
 		ss.maxOutputLength = int(maxLength)
 	}
