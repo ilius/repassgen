@@ -8,7 +8,7 @@ type repeatGenerator struct {
 func (g *repeatGenerator) Generate(s *State) error {
 	child := g.child
 	count := g.count
-	for i := int64(0); i < count; i++ {
+	for range count {
 		err := child.Generate(s)
 		if s.tooLong() {
 			break

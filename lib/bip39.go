@@ -27,7 +27,7 @@ type bip39WordGenerator struct {
 func (g *bip39WordGenerator) Generate(s *State) error {
 	count := g.wordCount
 	words := make([]string, count)
-	for ai := int64(0); ai < count; ai++ {
+	for ai := range count {
 		ibig, err := rand.Int(rand.Reader, big.NewInt(int64(bip39.WordCount())))
 		if err != nil {
 			panic(err)

@@ -87,7 +87,7 @@ func EncodeWithPadding(dst, src []byte, padChar rune) {
 			dst[6] = alphabet[b[6]&31]
 			dst[7] = alphabet[b[7]&31]
 		} else {
-			for i := 0; i < size; i++ {
+			for i := range size {
 				dst[i] = alphabet[b[i]&31]
 			}
 		}
@@ -187,7 +187,7 @@ func decode(dst, src []byte, padChar rune) (n int, end bool, err error) {
 					// not enough padding
 					return n, false, CorruptInputError(olen)
 				}
-				for k := 0; k < 8-1-j; k++ {
+				for k := range 8 - 1 - j {
 					if len(src) > k && src[k] != byte(padChar) {
 						// incorrect padding
 						return n, false, CorruptInputError(olen - len(src) + k - 1)
