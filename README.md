@@ -4,6 +4,8 @@ This program generates **fully customizable random passwords**, with almost **an
 
 See [examples](#examples) for clarity.
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/ilius/repassgen)](https://goreportcard.com/report/github.com/ilius/repassgen)
+
 # Build and install
 
 Run:
