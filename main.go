@@ -39,6 +39,11 @@ func Main(stdout io.Writer, args []string) {
 		os.Exit(1)
 	}
 
+	if len(flagSet.Args()) != 1 {
+		os.Stderr.WriteString("Need exactly one pattern (as positional argument)\n")
+		os.Exit(1)
+	}
+
 	calcEnropy := entropyFlag != nil && *entropyFlag
 
 	pattern := flagSet.Arg(0)
