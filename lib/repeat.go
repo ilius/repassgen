@@ -1,7 +1,7 @@
 package passgen
 
 type repeatGenerator struct {
-	child generatorIface
+	child GeneratorIface
 	count int64
 }
 

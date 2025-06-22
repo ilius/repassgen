@@ -50,7 +50,7 @@ func NewDateGenerator(sep string, startJd int, endJd int) *dateGenerator {
 	}
 }
 
-func NewRepeatGenerator(child generatorIface, count int64) *repeatGenerator {
+func NewRepeatGenerator(child GeneratorIface, count int64) *repeatGenerator {
 	return &repeatGenerator{
 		child: child,
 		count: count,

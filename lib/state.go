@@ -28,7 +28,7 @@ func (ss *SharedState) Copy() *SharedState {
 // State is lex inputs, output and temp state
 type State struct {
 	*SharedState
-	lastGen generatorIface
+	lastGen GeneratorIface
 
 	input  []rune
 	buffer []rune

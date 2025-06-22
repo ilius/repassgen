@@ -190,7 +190,7 @@ func (g *encoderFunctionCallGenerator) Entropy(s *State) (float64, error) {
 	return 0, s.errorUnknown(s_entropy_not_calc)
 }
 
-func getFuncGenerator(s *State, funcName string, arg []rune) (generatorIface, error) {
+func getFuncGenerator(s *State, funcName string, arg []rune) (GeneratorIface, error) {
 	if _, ok := encoderFunctions[funcName]; ok {
 		return &encoderFunctionCallGenerator{
 			funcName:   funcName,
