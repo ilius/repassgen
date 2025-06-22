@@ -1,5 +1,5 @@
-github.com/ilius/bip39-coder v0.0.0-20230505232837-79ff47003d74 h1:f/nvBN7QFqPfg14j+NISLVkYfMKOTOKuIBif9CXDY3g=
-github.com/ilius/bip39-coder v0.0.0-20230505232837-79ff47003d74/go.mod h1:uzESCURlNnGOS7UMscmRD9KIOGCGKDB/m6Q89BfCqr0=
+github.com/ilius/bip39-coder v0.0.0-20241206173118-1ab674f2290f h1:4y+XYYpZiGFKrQtYgixJE6upwU2J8841TFxJdutHasg=
+github.com/ilius/bip39-coder v0.0.0-20241206173118-1ab674f2290f/go.mod h1:uzESCURlNnGOS7UMscmRD9KIOGCGKDB/m6Q89BfCqr0=
 github.com/ilius/is/v2 v2.3.0/go.mod h1:OMGTmQDDc3Svaj3EoQHeNnXHP0R1HCb5u/Hfm7kuYIM=
 github.com/ilius/is/v2 v2.4.0 h1:JU2iQRNdudJJ1YiX1SHGx9kwFQ2aRlsHLLUTPIUjbRw=
 github.com/ilius/is/v2 v2.4.0/go.mod h1:mAn6VJPQJGfz3XBN+uAhcySCtrPiSOwE1Af3Pu21lO0=
