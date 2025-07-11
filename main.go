@@ -24,6 +24,10 @@ func main() {
 	Main(os.Stdout, os.Args)
 }
 
+type ExitCodeIface interface {
+	ExitCode() int
+}
+
 func Main(stdout io.Writer, args []string) {
 	flagSet := &flag.FlagSet{}
 
@@ -36,12 +40,12 @@ func Main(stdout io.Writer, args []string) {
 	err := xflag.ParseToEnd(flagSet, args[1:])
 	if err != nil {
 		os.Stderr.WriteString(err.Error() + "\n")
-		os.Exit(1)
+		os.Exit(2)
 	}
 
 	if len(flagSet.Args()) != 1 {
 		os.Stderr.WriteString("Need exactly one pattern (as positional argument)\n")
-		os.Exit(1)
+		os.Exit(2)
 	}
 
 	calcEnropy := entropyFlag != nil && *entropyFlag
@@ -52,6 +56,10 @@ func Main(stdout io.Writer, args []string) {
 	})
 	if err != nil {
 		printError(err, pattern)
+		ec, ok := err.(ExitCodeIface)
+		if ok {
+			os.Exit(ec.ExitCode())
+		}
 		os.Exit(1)
 	}
 
