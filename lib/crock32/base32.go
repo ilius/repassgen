@@ -156,7 +156,7 @@ func DecodeWithPadding(dst, src []byte, padChar rune) (n int, err error) {
 	buf := make([]byte, len(src))
 	l := stripNewlines(buf, src)
 	n, _, err = decode(dst, buf[:l], padChar)
-	return
+	return n, err
 }
 
 func decode(dst, src []byte, padChar rune) (n int, end bool, err error) {
