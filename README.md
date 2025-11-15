@@ -1,3 +1,9 @@
+# 🚨 REPOSITORY MOVED
+
+This project has migrated to **Codeberg** for better alignment with open-source values.
+
+## 👉 New Location: [codeberg.org/ilius/repassgen](https://codeberg.org/ilius/repassgen)
+
 # Summary
 
 This program generates **fully customizable random passwords**, with almost **any desired pattern or length**, using the same syntax as [Regular Expressions](https://www.regular-expressions.info/quickstart.html) for **character classes** (POSIX-style), **repetition** (`{N}` or `{M,N}`) and **capturing groups** (`(...)`).
